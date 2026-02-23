@@ -3,776 +3,547 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Cloud Pricing Calculator</title>
-<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<title>NeevCloud | Premium Pricing Calculator</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
   :root {
-    --bg: #0a0e1a;
-    --surface: #111827;
-    --surface2: #1a2235;
-    --border: #1e2d47;
-    --accent: #3b82f6;
-    --accent2: #06b6d4;
+    --primary: #2563eb;
+    --primary-soft: #eff6ff;
+    --bg: #f8fafc;
+    --card: #ffffff;
+    --text-dark: #0f172a;
+    --text-muted: #64748b;
+    --border: #e2e8f0;
+    --shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -2px rgba(0, 0, 0, 0.02);
     --green: #10b981;
-    --orange: #f59e0b;
-    --text: #e2e8f0;
-    --muted: #64748b;
   }
 
   * { margin: 0; padding: 0; box-sizing: border-box; }
 
   body {
-    font-family: 'DM Mono', monospace;
-    background: var(--bg);
-    color: var(--text);
-    min-height: 100vh;
-    background-image: radial-gradient(ellipse at 20% 20%, #1e3a5f22 0%, transparent 50%),
-                      radial-gradient(ellipse at 80% 80%, #06b6d422 0%, transparent 50%);
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    background-color: var(--bg);
+    color: var(--text-dark);
+    line-height: 1.6;
+    background-image: radial-gradient(at 0% 0%, hsla(221,83%,93%,1) 0, transparent 50%), 
+                      radial-gradient(at 50% 0%, hsla(199,89%,94%,1) 0, transparent 50%);
   }
 
   header {
-    padding: 1.5rem 3rem;
-    border-bottom: 1px solid var(--border);
+    background: rgba(255, 255, 255, 0.8);
+    backdrop-filter: blur(10px);
+    padding: 1rem 5%;
     display: flex;
+    justify-content: space-between;
     align-items: center;
-    gap: 1rem;
-    background: linear-gradient(135deg, #111827 0%, #0d1829 100%);
+    border-bottom: 1px solid var(--border);
+    position: sticky;
+    top: 0;
+    z-index: 100;
   }
 
-  .logo-icon {
-    width: 40px; height: 40px;
-    background: linear-gradient(135deg, var(--accent), var(--accent2));
-    border-radius: 10px;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 1.2rem;
-  }
-
-  header h1 {
-    font-family: 'Syne', sans-serif;
+  .logo-text {
     font-size: 1.5rem;
     font-weight: 800;
-    background: linear-gradient(135deg, #e2e8f0, #94a3b8);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    letter-spacing: -0.5px;
+    color: var(--primary);
+    letter-spacing: -1px;
   }
 
   .region-badge {
-    font-size: 0.72rem;
-    color: var(--accent2);
-    background: #06b6d415;
-    border: 1px solid #06b6d430;
-    padding: 0.25rem 0.75rem;
-    border-radius: 20px;
-    margin-left: 0.5rem;
+    background: white;
+    padding: 6px 16px;
+    border-radius: 100px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    box-shadow: var(--shadow);
+    border: 1px solid var(--border);
     display: flex;
     align-items: center;
-    gap: 0.4rem;
+    gap: 8px;
   }
 
   .container {
     display: grid;
-    grid-template-columns: 1fr 360px;
-    gap: 0;
-    min-height: calc(100vh - 69px);
+    grid-template-columns: 1fr 380px;
+    max-width: 1400px;
+    margin: 2rem auto;
+    padding: 0 2rem;
+    gap: 2rem;
   }
 
-  .main-panel {
-    padding: 2rem 3rem;
-    overflow-y: auto;
-  }
-
-  .sidebar {
-    background: var(--surface);
-    border-left: 1px solid var(--border);
-    padding: 2rem;
-    position: sticky;
-    top: 0;
-    height: calc(100vh - 69px);
-    overflow-y: auto;
+  .main-content {
     display: flex;
     flex-direction: column;
-    gap: 1.2rem;
+    gap: 2rem;
   }
 
-  .section { margin-bottom: 2.5rem; }
+  .card {
+    background: var(--card);
+    border-radius: 20px;
+    padding: 2rem;
+    border: 1px solid var(--border);
+    box-shadow: var(--shadow);
+  }
 
-  .section-title {
-    font-family: 'Syne', sans-serif;
-    font-size: 0.7rem;
-    font-weight: 700;
-    color: var(--accent2);
+  .section-label {
+    font-size: 0.75rem;
+    font-weight: 800;
     text-transform: uppercase;
-    letter-spacing: 2px;
-    margin-bottom: 1.2rem;
+    color: var(--primary);
+    margin-bottom: 1.5rem;
+    letter-spacing: 1px;
     display: flex;
     align-items: center;
-    gap: 0.5rem;
+    gap: 10px;
   }
 
-  .section-title::after {
-    content: '';
-    flex: 1;
+  .section-label::after {
+    content: "";
     height: 1px;
-    background: linear-gradient(90deg, var(--border), transparent);
+    flex: 1;
+    background: var(--border);
   }
 
+  /* OS Grid Modern */
   .os-grid {
     display: grid;
-    grid-template-columns: repeat(6, 1fr);
-    gap: 0.6rem;
+    grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+    gap: 15px;
   }
 
   .os-card {
+    background: white;
     border: 1px solid var(--border);
-    border-radius: 10px;
-    padding: 0.9rem 0.5rem;
+    border-radius: 16px;
+    padding: 1.2rem 0.5rem;
     cursor: pointer;
-    transition: all 0.2s;
-    background: var(--surface);
-    text-align: center;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 0.4rem;
+    gap: 10px;
     position: relative;
   }
 
-  .os-card:hover { border-color: var(--accent); }
+  .os-card:hover { transform: translateY(-3px); border-color: var(--primary); }
+  
   .os-card.active {
-    border-color: var(--accent);
-    background: #2563eb15;
-    box-shadow: 0 0 20px #2563eb20;
-  }
-  .os-card.windows-card.active {
-    border-color: #0078d4;
-    background: #0078d415;
-    box-shadow: 0 0 20px #0078d420;
+    background: var(--primary-soft);
+    border-color: var(--primary);
+    box-shadow: 0 10px 15px -3px rgba(37, 99, 235, 0.1);
   }
 
-  .windows-tag {
+  .os-card img {
+    width: 32px;
+    height: 32px;
+    object-fit: contain;
+  }
+
+  .os-name { font-size: 0.75rem; font-weight: 700; color: var(--text-muted); }
+  .os-card.active .os-name { color: var(--primary); }
+
+  .paid-tag {
     position: absolute;
-    top: -6px; right: -6px;
-    background: #0078d4;
-    color: white;
-    font-size: 0.45rem;
-    padding: 0.1rem 0.3rem;
+    top: 8px; right: 8px;
+    font-size: 0.6rem;
+    background: #fef3c7;
+    color: #92400e;
+    padding: 2px 6px;
     border-radius: 4px;
-    font-weight: 700;
-    letter-spacing: 0.5px;
+    font-weight: 800;
   }
 
-  .os-icon { font-size: 1.6rem; }
-  .os-name { font-size: 0.58rem; color: var(--muted); font-family: 'Syne', sans-serif; font-weight: 600; }
-  .os-card.active .os-name { color: var(--accent2); }
-  .os-card.windows-card.active .os-name { color: #60a5fa; }
-
-  .windows-notice {
-    display: none;
-    background: #0078d415;
-    border: 1px solid #0078d440;
-    border-radius: 10px;
-    padding: 0.75rem 1rem;
-    font-size: 0.7rem;
-    color: #60a5fa;
-    margin-top: 1rem;
-    align-items: center;
-    gap: 0.5rem;
-  }
-  .windows-notice.show { display: flex; }
-
+  /* Hardware Tabs */
   .hw-tabs {
     display: flex;
-    gap: 0;
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    overflow: hidden;
-    margin-bottom: 1rem;
+    background: #f1f5f9;
+    padding: 5px;
+    border-radius: 12px;
+    margin-bottom: 1.5rem;
   }
 
   .hw-tab {
     flex: 1;
-    padding: 0.65rem 0.3rem;
-    background: var(--surface);
+    padding: 12px;
     border: none;
-    color: var(--muted);
-    font-family: 'DM Mono', monospace;
-    font-size: 0.6rem;
+    background: transparent;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 0.85rem;
     cursor: pointer;
-    transition: all 0.2s;
-    border-right: 1px solid var(--border);
-    text-align: center;
+    color: var(--text-muted);
+    transition: 0.2s;
   }
 
-  .hw-tab:last-child { border-right: none; }
-  .hw-tab:hover { background: var(--surface2); color: var(--text); }
-  .hw-tab.active { background: var(--accent); color: white; }
-
-  .plan-list { display: flex; flex-direction: column; gap: 0.5rem; }
+  .hw-tab.active {
+    background: white;
+    color: var(--primary);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+  }
 
   .plan-card {
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    padding: 1rem 1.2rem;
-    cursor: pointer;
-    transition: all 0.2s;
-    background: var(--surface);
     display: grid;
-    grid-template-columns: 1fr auto auto auto auto;
+    grid-template-columns: 1.5fr 1fr 1fr 1fr;
     align-items: center;
-    gap: 1rem;
+    padding: 1rem 1.5rem;
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    margin-bottom: 10px;
+    cursor: pointer;
+    transition: 0.2s;
   }
 
-  .plan-card:hover { border-color: #334155; background: var(--surface2); }
+  .plan-card:hover { background: #f8fafc; }
   .plan-card.active {
     border-color: var(--green);
-    background: #10b98110;
-    box-shadow: 0 0 0 1px var(--green) inset;
+    background: #ecfdf5;
   }
 
-  .plan-name { font-family: 'Syne', sans-serif; font-size: 0.85rem; font-weight: 700; color: var(--text); }
-  .plan-spec { font-size: 0.68rem; color: var(--muted); display: flex; flex-direction: column; gap: 0.1rem; }
-  .plan-spec span { color: var(--text); }
-  .plan-price { font-family: 'Syne', sans-serif; font-size: 0.8rem; font-weight: 700; color: var(--accent2); text-align: right; white-space: nowrap; }
-
-  .badge {
-    font-size: 0.55rem;
-    padding: 0.15rem 0.4rem;
-    border-radius: 4px;
-    font-weight: 600;
-    text-transform: uppercase;
-    white-space: nowrap;
+  .plan-name { font-weight: 700; font-size: 0.95rem; }
+  .plan-badge { 
+    font-size: 0.7rem; 
+    padding: 4px 10px; 
+    background: white; 
+    border: 1px solid var(--border); 
+    border-radius: 6px;
+    width: fit-content;
   }
-  .badge-cpu { background: #2563eb20; color: var(--accent); border: 1px solid #2563eb40; }
-  .badge-ram { background: #7c3aed20; color: #a78bfa; border: 1px solid #7c3aed40; }
 
-  .storage-row {
+  /* Storage Slider */
+  .storage-grid {
     display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
-    gap: 0.75rem;
-    align-items: start;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
   }
 
-  .storage-type-card {
+  .storage-type-btn {
+    padding: 1.5rem;
     border: 1px solid var(--border);
-    border-radius: 10px;
-    padding: 1rem;
+    border-radius: 16px;
     cursor: pointer;
-    transition: all 0.2s;
-    background: var(--surface);
-    text-align: center;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
   }
 
-  .storage-type-card:hover { border-color: var(--accent); }
-  .storage-type-card.active { border-color: var(--orange); background: #f59e0b10; box-shadow: 0 0 0 1px var(--orange) inset; }
+  .storage-type-btn.active { border-color: var(--primary); background: var(--primary-soft); }
 
-  .storage-type-card h4 { font-family: 'Syne', sans-serif; font-size: 0.85rem; font-weight: 700; margin-bottom: 0.2rem; }
-  .storage-type-card p { font-size: 0.65rem; color: var(--muted); }
-  .storage-price-tag { font-size: 0.72rem; color: var(--orange); margin-top: 0.4rem; font-weight: 600; }
+  /* Sidebar Summary */
+  .sidebar-inner { position: sticky; top: 100px; }
 
-  .storage-size-box {
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    padding: 1rem;
-    background: var(--surface);
-  }
-
-  .storage-size-box label { font-size: 0.65rem; color: var(--muted); display: block; margin-bottom: 0.6rem; }
-
-  .size-control { display: flex; align-items: center; gap: 0.5rem; }
-
-  .size-btn {
-    width: 30px; height: 30px;
-    border: 1px solid var(--border);
-    background: var(--surface2);
-    color: var(--text);
-    border-radius: 6px;
-    cursor: pointer;
-    font-size: 1rem;
-    transition: all 0.2s;
-    display: flex; align-items: center; justify-content: center;
-    flex-shrink: 0;
-  }
-
-  .size-btn:hover { border-color: var(--accent); background: var(--accent); }
-
-  .size-input {
-    flex: 1;
-    background: var(--surface2);
-    border: 1px solid var(--border);
-    border-radius: 6px;
-    padding: 0.4rem 0.5rem;
-    color: var(--text);
-    font-family: 'DM Mono', monospace;
-    font-size: 0.85rem;
-    text-align: center;
-    outline: none;
-    min-width: 0;
-  }
-
-  .size-input:focus { border-color: var(--accent); }
-
-  .sidebar-title {
-    font-family: 'Syne', sans-serif;
-    font-size: 1rem;
-    font-weight: 800;
-    color: var(--text);
-    padding-bottom: 1rem;
-    border-bottom: 1px solid var(--border);
+  .summary-card {
+    background: #1e293b;
+    color: white;
+    border-radius: 24px;
+    padding: 2rem;
+    box-shadow: 0 20px 25px -5px rgba(0,0,0,0.2);
   }
 
   .summary-item {
     display: flex;
     justify-content: space-between;
-    align-items: center;
-    font-size: 0.72rem;
-    padding: 0.45rem 0;
-    border-bottom: 1px solid #1e2d4730;
-    gap: 0.5rem;
+    margin-bottom: 0.8rem;
+    font-size: 0.85rem;
+    color: #94a3b8;
   }
 
-  .summary-label { color: var(--muted); flex: 1; }
-  .summary-value { color: var(--text); font-weight: 500; text-align: right; }
-  .summary-cost { color: var(--accent2); font-family: 'Syne', sans-serif; font-weight: 700; }
-
-  .group-label {
-    font-size: 0.58rem;
-    color: var(--muted);
-    text-transform: uppercase;
-    letter-spacing: 1.5px;
-    margin-top: 0.3rem;
-    margin-bottom: 0.1rem;
-  }
+  .summary-item span:last-child { color: white; font-weight: 600; }
 
   .total-box {
-    background: linear-gradient(135deg, #2563eb15, #06b6d415);
-    border: 1px solid var(--accent);
-    border-radius: 12px;
-    padding: 1.2rem;
-    margin-top: auto;
+    margin-top: 2rem;
+    padding-top: 2rem;
+    border-top: 1px dashed #334155;
   }
 
-  .total-label { font-size: 0.6rem; color: var(--muted); text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 0.4rem; }
-  .total-amount {
-    font-family: 'Syne', sans-serif;
-    font-size: 2rem;
+  .price-large {
+    font-size: 2.5rem;
     font-weight: 800;
-    background: linear-gradient(135deg, var(--accent), var(--accent2));
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
+    color: #38bdf8;
     line-height: 1;
-  }
-
-  .total-period { font-size: 0.62rem; color: var(--muted); margin-top: 0.25rem; }
-
-  .annual-note {
-    background: #10b98110;
-    border: 1px solid #10b98130;
-    border-radius: 8px;
-    padding: 0.6rem 0.75rem;
-    font-size: 0.65rem;
-    color: var(--green);
-    margin-top: 0.75rem;
   }
 
   .reset-btn {
     width: 100%;
-    padding: 0.75rem;
+    margin-top: 1.5rem;
+    padding: 12px;
     background: transparent;
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    color: var(--muted);
-    font-family: 'DM Mono', monospace;
-    font-size: 0.7rem;
+    border: 1px solid #334155;
+    border-radius: 12px;
+    color: #94a3b8;
     cursor: pointer;
-    transition: all 0.2s;
+    font-family: inherit;
+    font-weight: 600;
   }
 
-  .reset-btn:hover { border-color: #ef444480; color: #f87171; background: #ef444410; }
-
-  .divider { height: 1px; background: var(--border); margin: 0.3rem 0; }
-
-  @media (max-width: 900px) {
+  @media (max-width: 1000px) {
     .container { grid-template-columns: 1fr; }
-    .sidebar { position: static; height: auto; }
-    .os-grid { grid-template-columns: repeat(4, 1fr); }
-    .main-panel { padding: 1.5rem; }
+    .sidebar-inner { position: static; }
   }
 </style>
 </head>
 <body>
 
 <header>
-  <div class="logo-icon"></div>
-  <div style="display:flex;align-items:center;gap:0.5rem;flex-wrap:wrap;">
-    <h1>NeevCLoud</h1>
-    <div class="region-badge">🇮🇳 Central India</div>
-  </div>
+  <div class="logo-text">NEEVCLOUD</div>
+  <div class="region-badge">🇮🇳 Central India Data Center</div>
 </header>
 
 <div class="container">
-  <div class="main-panel">
-
-    <!-- OS -->
-    <div class="section">
-      <div class="section-title">01 — Operating System</div>
-      <div class="os-grid">
-        <div class="os-card active" data-os="centos" onclick="selectOS(this)">
-          <div class="os-icon">🐧</div>
-          <div class="os-name">CentOS</div>
+  <div class="main-content">
+    
+    <div class="card">
+      <div class="section-label">01 — Operating System</div>
+      <div class="os-grid" id="osGrid">
         </div>
-        <div class="os-card windows-card" data-os="windows" onclick="selectOS(this)">
-          <div class="windows-tag">PAID</div>
-          <div class="os-icon">🪟</div>
-          <div class="os-name">Windows</div>
-        </div>
-        <div class="os-card" data-os="almalinux" onclick="selectOS(this)">
-          <div class="os-icon">🦋</div>
-          <div class="os-name">AlmaLinux</div>
-        </div>
-        <div class="os-card" data-os="cloudlinux" onclick="selectOS(this)">
-          <div class="os-icon">☁️</div>
-          <div class="os-name">Cloud Linux</div>
-        </div>
-        <div class="os-card" data-os="fedora" onclick="selectOS(this)">
-          <div class="os-icon">🎩</div>
-          <div class="os-name">Fedora</div>
-        </div>
-        <div class="os-card" data-os="opensuse" onclick="selectOS(this)">
-          <div class="os-icon">🦎</div>
-          <div class="os-name">OpenSUSE</div>
-        </div>
-        <div class="os-card" data-os="debian" onclick="selectOS(this)">
-          <div class="os-icon">🌀</div>
-          <div class="os-name">Debian</div>
-        </div>
-        <div class="os-card" data-os="redhat" onclick="selectOS(this)">
-          <div class="os-icon">🔴</div>
-          <div class="os-name">Red Hat</div>
-        </div>
-        <div class="os-card" data-os="ubuntu" onclick="selectOS(this)">
-          <div class="os-icon">🟠</div>
-          <div class="os-name">Ubuntu</div>
-        </div>
-        <div class="os-card" data-os="rocky" onclick="selectOS(this)">
-          <div class="os-icon">🪨</div>
-          <div class="os-name">Rocky Linux</div>
-        </div>
-        <div class="os-card" data-os="oracle" onclick="selectOS(this)">
-          <div class="os-icon">🔶</div>
-          <div class="os-name">Oracle Linux</div>
-        </div>
-      </div>
-      <div class="windows-notice" id="windowsNotice">
-        🪟 <span>Windows OS uses licensing-included pricing — rates are higher than standard Linux plans.</span>
+      <div id="windowsNotice" style="display:none; margin-top:1.5rem; padding:12px; background:#fffbeb; border-radius:10px; color:#92400e; font-size:0.8rem; border:1px solid #fde68a;">
+        ℹ️ Windows includes licensing fees; pricing reflected in hardware selection.
       </div>
     </div>
 
-    <!-- Hardware -->
-    <div class="section">
-      <div class="section-title">02 — Hardware</div>
+    <div class="card">
+      <div class="section-label">02 — Infrastructure</div>
       <div class="hw-tabs">
-        <button class="hw-tab active" onclick="selectTab(this,'general')">General Purpose</button>
-        <button class="hw-tab" onclick="selectTab(this,'memory')">Memory Opt.</button>
-        <button class="hw-tab" onclick="selectTab(this,'cpu')">CPU Opt.</button>
-        <button class="hw-tab" onclick="selectTab(this,'smart')">Smart Servers</button>
+        <button class="hw-tab active" onclick="selectTab(this,'general')">General</button>
+        <button class="hw-tab" onclick="selectTab(this,'memory')">Memory</button>
+        <button class="hw-tab" onclick="selectTab(this,'cpu')">Compute</button>
+        <button class="hw-tab" onclick="selectTab(this,'smart')">Smart</button>
       </div>
-      <div class="plan-list" id="planList"></div>
+      <div id="planList"></div>
     </div>
 
-    <!-- Storage -->
-    <div class="section">
-      <div class="section-title">03 — Storage Volume</div>
-      <div class="storage-row">
-        <div class="storage-type-card active" data-storage="ssd" onclick="selectStorage(this)">
-          <div class="os-icon">💾</div>
-          <h4>SSD</h4>
-          <p>Standard SSD</p>
-          <div class="storage-price-tag">₹2 / GB</div>
-        </div>
-        <div class="storage-type-card" data-storage="nvme" onclick="selectStorage(this)">
-          <div class="os-icon">⚡</div>
-          <h4>NVMe</h4>
-          <p>Ultra-fast NVMe</p>
-          <div class="storage-price-tag">₹5 / GB</div>
-        </div>
-        <div class="storage-size-box">
-          <label>Volume Size (GB)</label>
-          <div class="size-control">
-            <button class="size-btn" onclick="changeSize(-10)">−</button>
-            <input class="size-input" type="number" id="storageSize" value="20" min="0" max="10000" oninput="updateCalc()">
-            <button class="size-btn" onclick="changeSize(10)">+</button>
+    <div class="card">
+      <div class="section-label">03 — Storage Volume</div>
+      <div class="storage-grid">
+        <div class="storage-type-btn active" id="btn-ssd" onclick="selectStorage('ssd')">
+          <div>
+            <div style="font-weight:700">SSD Storage</div>
+            <div style="font-size:0.75rem; color:var(--text-muted)">Standard Speed</div>
           </div>
+          <div style="font-weight:800; color:var(--primary)">₹2/GB</div>
+        </div>
+        <div class="storage-type-btn" id="btn-nvme" onclick="selectStorage('nvme')">
+          <div>
+            <div style="font-weight:700">NVMe Ultra</div>
+            <div style="font-size:0.75rem; color:var(--text-muted)">Extreme Performance</div>
+          </div>
+          <div style="font-weight:800; color:var(--primary)">₹5/GB</div>
         </div>
       </div>
+      
+      <div style="margin-top:2rem">
+        <div style="display:flex; justify-content:space-between; margin-bottom:10px">
+          <label style="font-weight:700; font-size:0.85rem">Total Capacity</label>
+          <span style="font-family:'JetBrains Mono'; font-weight:700; color:var(--primary)" id="storageLabel">20 GB</span>
+        </div>
+        <input type="range" id="storageSlider" min="20" max="2000" step="10" value="20" style="width:100%" oninput="updateStorageSlider(this.value)">
+      </div>
     </div>
-
   </div>
 
-  <!-- Sidebar -->
   <div class="sidebar">
-    <div class="sidebar-title">📊 Price Summary</div>
+    <div class="sidebar-inner">
+      <div class="summary-card">
+        <h2 style="font-size:1.2rem; font-weight:800; margin-bottom:1.5rem; letter-spacing:-0.5px">Configuration Summary</h2>
+        
+        <div class="summary-item"><span>Region</span><span>India Central</span></div>
+        <div class="summary-item"><span>OS</span><span id="s-os">Ubuntu</span></div>
+        <div class="summary-item"><span>Instance</span><span id="s-plan">—</span></div>
+        <div class="summary-item"><span>vCPU / RAM</span><span id="s-specs">—</span></div>
+        
+        <div style="height:1px; background:#334155; margin:1rem 0"></div>
+        
+        <div class="summary-item"><span>Hardware Base</span><span id="s-planprice">₹0</span></div>
+        <div class="summary-item"><span>Storage (<span id="s-stype">SSD</span>)</span><span id="s-storagecost">₹0</span></div>
 
-    <div>
-      <div class="summary-item">
-        <span class="summary-label">Region</span>
-        <span class="summary-value">🇮🇳 Central India</span>
-      </div>
-      <div class="summary-item">
-        <span class="summary-label">OS</span>
-        <span class="summary-value" id="s-os">CentOS</span>
-      </div>
-      <div class="summary-item">
-        <span class="summary-label">Pricing Mode</span>
-        <span class="summary-value" id="s-mode" style="color:var(--green)">Standard</span>
+        <div class="total-box">
+          <p style="font-size:0.75rem; color:#94a3b8; font-weight:700; text-transform:uppercase; margin-bottom:0.5rem">Estimated Monthly Total</p>
+          <div class="price-large" id="totalAmount">₹0</div>
+          <p style="font-size:0.7rem; color:#64748b; margin-top:10px" id="annualNote">📅 Annual: ₹0 / year</p>
+        </div>
+
+        <button class="reset-btn" onclick="resetAll()">↺ Reset Configuration</button>
       </div>
     </div>
-
-    <div class="divider"></div>
-    <div class="group-label">Hardware</div>
-    <div>
-      <div class="summary-item">
-        <span class="summary-label">Plan</span>
-        <span class="summary-value" id="s-plan">—</span>
-      </div>
-      <div class="summary-item">
-        <span class="summary-label">CPU</span>
-        <span class="summary-value" id="s-cpu">—</span>
-      </div>
-      <div class="summary-item">
-        <span class="summary-label">RAM</span>
-        <span class="summary-value" id="s-ram">—</span>
-      </div>
-      <div class="summary-item">
-        <span class="summary-label">Plan Cost</span>
-        <span class="summary-cost" id="s-planprice">₹0</span>
-      </div>
-    </div>
-
-    <div class="divider"></div>
-    <div class="group-label">Storage</div>
-    <div>
-      <div class="summary-item">
-        <span class="summary-label">Type</span>
-        <span class="summary-value" id="s-storagetype">SSD</span>
-      </div>
-      <div class="summary-item">
-        <span class="summary-label">Size</span>
-        <span class="summary-value" id="s-storagesize">20 GB</span>
-      </div>
-      <div class="summary-item">
-        <span class="summary-label">Rate</span>
-        <span class="summary-value" id="s-storagerate">₹2/GB</span>
-      </div>
-      <div class="summary-item">
-        <span class="summary-label">Storage Cost</span>
-        <span class="summary-cost" id="s-storagecost">₹40</span>
-      </div>
-    </div>
-
-    <div class="divider"></div>
-
-    <div class="total-box">
-      <div class="total-label">Monthly Total</div>
-      <div class="total-amount" id="totalAmount">₹40</div>
-      <div class="total-period">per month / INR</div>
-      <div class="annual-note" id="annualNote">📅 Annual: ₹480 / year</div>
-    </div>
-
-    <button class="reset-btn" onclick="resetAll()">↺ Reset Configuration</button>
   </div>
 </div>
 
 <script>
-// ===== PRICING DATA =====
+// IMAGES DATA
+const osData = [
+  { id: 'ubuntu', name: 'Ubuntu', logo: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/ubuntu/ubuntu-plain.svg' },
+  { id: 'windows', name: 'Windows', logo: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/windows8/windows8-original.svg', paid: true },
+  { id: 'debian', name: 'Debian', logo: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/debian/debian-plain.svg' },
+  { id: 'centos', name: 'CentOS', logo: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/centos/centos-plain.svg' },
+  { id: 'redhat', name: 'Red Hat', logo: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/redhat/redhat-plain.svg' },
+  { id: 'fedora', name: 'Fedora', logo: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/fedora/fedora-plain.svg' },
+  { id: 'linux', name: 'AlmaLinux', logo: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/linux/linux-plain.svg' },
+  { id: 'oracle', name: 'Oracle Linux', logo: 'https://upload.wikimedia.org/wikipedia/commons/5/50/Oracle_logo.svg' },
+  { id: 'cloudlinux', name: 'Cloud Linux', logo: 'https://www.svgrepo.com/show/354881/cloudlinux.svg' },
+  { id: 'rocky', name: 'Rocky Linux', logo: 'https://raw.githubusercontent.com/devicons/devicon/master/icons/rockylinux/rockylinux-original.svg' },
+  { id: 'opensuse', name: 'Open SUSE', logo: 'https://static.opensuse.org/favicon.ico' }
+];
 
-// Standard pricing — all OS except Windows
+// BACKEND DATA (Same as your code)
 const standardPlans = {
   general: [
-    { name: 'Nano',           cpu: 2,  ram: '2 GB RAM',   price: 699  },
-    { name: 'NanoBoost',      cpu: 2,  ram: '4 GB RAM',   price: 899  },
-    { name: 'StellarSurge',   cpu: 4,  ram: '16 GB RAM',  price: 1860 },
-    { name: 'MegaFuse',       cpu: 4,  ram: '8 GB RAM',   price: 1380 },
-    { name: 'VelocityVortex', cpu: 8,  ram: '16 GB RAM',  price: 2660 },
+    { name: 'Nano', cpu: 2, ram: '2 GB', price: 699 },
+    { name: 'NanoBoost', cpu: 2, ram: '4 GB', price: 899 },
+    { name: 'StellarSurge', cpu: 4, ram: '16 GB', price: 1860 },
+    { name: 'MegaFuse', cpu: 4, ram: '8 GB', price: 1380 },
+    { name: 'VelocityVortex', cpu: 8, ram: '16 GB', price: 2660 },
   ],
   memory: [
-    { name: 'CosmicCascade',    cpu: 2,  ram: '8 GB RAM',   price: 1299  },
-    { name: 'TurboNebula',      cpu: 4,  ram: '32 GB RAM',  price: 2820  },
-    { name: 'InfinityIgnition', cpu: 8,  ram: '32 GB RAM',  price: 3620  },
-    { name: 'TitanThunder',     cpu: 16, ram: '64 GB RAM',  price: 7140  },
-    { name: 'AetherAvalanche',  cpu: 32, ram: '128 GB RAM', price: 14180 },
+    { name: 'CosmicCascade', cpu: 2, ram: '8 GB', price: 1299 },
+    { name: 'TurboNebula', cpu: 4, ram: '32 GB', price: 2820 },
+    { name: 'InfinityIgnition', cpu: 8, ram: '32 GB', price: 3620 },
+    { name: 'TitanThunder', cpu: 16, ram: '64 GB', price: 7140 },
+    { name: 'AetherAvalanche', cpu: 32, ram: '128 GB', price: 14180 },
   ],
   cpu: [
-    { name: 'HyperNova',     cpu: 16, ram: '32 GB RAM', price: 5220  },
-    { name: 'NebulaNucleus', cpu: 32, ram: '64 GB RAM', price: 10340 },
+    { name: 'HyperNova', cpu: 16, ram: '32 GB', price: 5220 },
+    { name: 'NebulaNucleus', cpu: 32, ram: '64 GB', price: 10340 },
   ],
   smart: [
-    { name: 'Smart-1', cpu: 12, ram: '24 GB RAM', price: 3940 },
-    { name: 'Smart-2', cpu: 16, ram: '32 GB RAM', price: 5220 },
-    { name: 'Smart-3', cpu: 20, ram: '48 GB RAM', price: 6980 },
-    { name: 'Smart-4', cpu: 24, ram: '64 GB RAM', price: 8740 },
+    { name: 'Smart-1', cpu: 12, ram: '24 GB', price: 3940 },
+    { name: 'Smart-2', cpu: 16, ram: '32 GB', price: 5220 },
+    { name: 'Smart-3', cpu: 20, ram: '48 GB', price: 6980 },
+    { name: 'Smart-4', cpu: 24, ram: '64 GB', price: 8740 },
   ],
 };
 
-// Windows pricing — higher (license included)
 const windowsPlans = {
   general: [
-    { name: 'Nano',           cpu: 2,  ram: '2 GB RAM',   price: 1099 },
-    { name: 'NanoBoost',      cpu: 2,  ram: '4 GB RAM',   price: 1299 },
-    { name: 'StellarSurge',   cpu: 4,  ram: '16 GB RAM',  price: 2660 },
-    { name: 'MegaFuse',       cpu: 4,  ram: '8 GB RAM',   price: 2180 },
-    { name: 'VelocityVortex', cpu: 8,  ram: '16 GB RAM',  price: 4260 },
+    { name: 'Nano', cpu: 2, ram: '2 GB', price: 1099 },
+    { name: 'NanoBoost', cpu: 2, ram: '4 GB', price: 1299 },
+    { name: 'StellarSurge', cpu: 4, ram: '16 GB', price: 2660 },
+    { name: 'MegaFuse', cpu: 4, ram: '8 GB', price: 2180 },
+    { name: 'VelocityVortex', cpu: 8, ram: '16 GB', price: 4260 },
   ],
   memory: [
-    { name: 'CosmicCascade',    cpu: 2,  ram: '8 GB RAM',   price: 1699  },
-    { name: 'TurboNebula',      cpu: 4,  ram: '32 GB RAM',  price: 3620  },
-    { name: 'InfinityIgnition', cpu: 8,  ram: '32 GB RAM',  price: 5220  },
-    { name: 'TitanThunder',     cpu: 16, ram: '64 GB RAM',  price: 10340 },
-    { name: 'AetherAvalanche',  cpu: 32, ram: '128 GB RAM', price: 20580 },
+    { name: 'CosmicCascade', cpu: 2, ram: '8 GB', price: 1699 },
+    { name: 'TurboNebula', cpu: 4, ram: '32 GB', price: 3620 },
+    { name: 'InfinityIgnition', cpu: 8, ram: '32 GB', price: 5220 },
+    { name: 'TitanThunder', cpu: 16, ram: '64 GB', price: 10340 },
+    { name: 'AetherAvalanche', cpu: 32, ram: '128 GB', price: 20580 },
   ],
   cpu: [
-    { name: 'HyperNova',     cpu: 16, ram: '32 GB RAM', price: 8420  },
-    { name: 'NebulaNucleus', cpu: 32, ram: '64 GB RAM', price: 16740 },
+    { name: 'HyperNova', cpu: 16, ram: '32 GB', price: 8420 },
+    { name: 'NebulaNucleus', cpu: 32, ram: '64 GB', price: 16740 },
   ],
   smart: [
-    { name: 'Smart-1', cpu: 12, ram: '24 GB RAM', price: 6340  },
-    { name: 'Smart-2', cpu: 16, ram: '32 GB RAM', price: 8420  },
-    { name: 'Smart-3', cpu: 20, ram: '48 GB RAM', price: 10980 },
-    { name: 'Smart-4', cpu: 24, ram: '64 GB RAM', price: 17480 },
+    { name: 'Smart-1', cpu: 12, ram: '24 GB', price: 6340 },
+    { name: 'Smart-2', cpu: 16, ram: '32 GB', price: 8420 },
+    { name: 'Smart-3', cpu: 20, ram: '48 GB', price: 10980},
+    { name: 'Smart-4', cpu: 24, ram: '64 GB', price: 17480 },
   ],
 };
 
-// ===== STATE =====
+
 let state = {
-  os: 'centos',
+  os: 'ubuntu',
   hwTab: 'general',
   selectedPlan: null,
   storageType: 'ssd',
   storageGB: 20,
 };
 
-function isWindows() { return state.os === 'windows'; }
-function getPlans()   { return isWindows() ? windowsPlans[state.hwTab] : standardPlans[state.hwTab]; }
-
-// ===== HANDLERS =====
-function selectOS(el) {
-  document.querySelectorAll('.os-card').forEach(c => c.classList.remove('active'));
-  el.classList.add('active');
-  state.os = el.dataset.os;
-  state.selectedPlan = null;
-
-  document.getElementById('windowsNotice').classList.toggle('show', isWindows());
-  document.getElementById('s-os').textContent = el.querySelector('.os-name').textContent;
-  document.getElementById('s-mode').textContent = isWindows() ? 'Windows (incl. license)' : 'Standard';
-  document.getElementById('s-mode').style.color = isWindows() ? '#60a5fa' : 'var(--green)';
-
-  renderPlans();
-  updateCalc();
+// INITIALIZE OS GRID
+function initOS() {
+  const grid = document.getElementById('osGrid');
+  osData.forEach(os => {
+    const div = document.createElement('div');
+    div.className = `os-card ${state.os === os.id ? 'active' : ''}`;
+    div.innerHTML = `
+      ${os.paid ? '<span class="paid-tag">PAID</span>' : ''}
+      <img src="${os.logo}" alt="${os.name}">
+      <span class="os-name">${os.name}</span>
+    `;
+    div.onclick = () => {
+      state.os = os.id;
+      document.querySelectorAll('.os-card').forEach(c => c.classList.remove('active'));
+      div.classList.add('active');
+      state.selectedPlan = null;
+      updateCalc();
+      renderPlans();
+    };
+    grid.appendChild(div);
+  });
 }
 
 function selectTab(el, tab) {
+  state.hwTab = tab;
   document.querySelectorAll('.hw-tab').forEach(t => t.classList.remove('active'));
   el.classList.add('active');
-  state.hwTab = tab;
   state.selectedPlan = null;
   renderPlans();
-  updateCalc();
 }
 
-function selectStorage(el) {
-  document.querySelectorAll('.storage-type-card').forEach(c => c.classList.remove('active'));
-  el.classList.add('active');
-  state.storageType = el.dataset.storage;
-  updateCalc();
-}
-
-function changeSize(delta) {
-  const inp = document.getElementById('storageSize');
-  let val = parseInt(inp.value || 0) + delta;
-  if (val < 0) val = 0;
-  inp.value = val;
-  state.storageGB = val;
-  updateCalc();
-}
-
-// ===== RENDER PLANS =====
 function renderPlans() {
   const list = document.getElementById('planList');
-  const data = getPlans();
+  const plans = state.os === 'windows' ? windowsPlans[state.hwTab] : standardPlans[state.hwTab];
   list.innerHTML = '';
-  data.forEach(p => {
+  
+  plans.forEach(p => {
     const div = document.createElement('div');
     const isActive = state.selectedPlan && state.selectedPlan.name === p.name;
-    div.className = 'plan-card' + (isActive ? ' active' : '');
+    div.className = `plan-card ${isActive ? 'active' : ''}`;
     div.innerHTML = `
       <div class="plan-name">${p.name}</div>
-      <span class="badge badge-cpu">${p.cpu} vCPU</span>
-      <span class="badge badge-ram">${p.ram}</span>
-      <div class="plan-spec"><span>0 GB</span>Storage</div>
-      <div class="plan-price">₹${p.price.toLocaleString()}<br><span style="font-size:0.55rem;color:var(--muted);font-weight:400">/month</span></div>
+      <div class="plan-badge">${p.cpu} vCPU</div>
+      <div class="plan-badge">${p.ram} RAM</div>
+      <div style="text-align:right; font-weight:800; color:var(--primary)">₹${p.price.toLocaleString()}</div>
     `;
     div.onclick = () => {
-      document.querySelectorAll('.plan-card').forEach(c => c.classList.remove('active'));
-      div.classList.add('active');
       state.selectedPlan = p;
+      renderPlans();
       updateCalc();
     };
     list.appendChild(div);
   });
 }
 
-// ===== UPDATE SUMMARY =====
-function updateCalc() {
-  const inp = document.getElementById('storageSize');
-  state.storageGB = parseInt(inp.value) || 0;
-
-  const storageRate = state.storageType === 'nvme' ? 5 : 2;
-  const storageCost = state.storageGB * storageRate;
-  const planCost    = state.selectedPlan ? state.selectedPlan.price : 0;
-  const total       = planCost + storageCost;
-
-  if (state.selectedPlan) {
-    document.getElementById('s-plan').textContent      = state.selectedPlan.name;
-    document.getElementById('s-cpu').textContent       = state.selectedPlan.cpu + ' vCPU';
-    document.getElementById('s-ram').textContent       = state.selectedPlan.ram;
-    document.getElementById('s-planprice').textContent = '₹' + planCost.toLocaleString();
-  } else {
-    document.getElementById('s-plan').textContent      = '—';
-    document.getElementById('s-cpu').textContent       = '—';
-    document.getElementById('s-ram').textContent       = '—';
-    document.getElementById('s-planprice').textContent = '₹0';
-  }
-
-  document.getElementById('s-storagetype').textContent = state.storageType === 'nvme' ? 'NVMe' : 'SSD';
-  document.getElementById('s-storagesize').textContent = state.storageGB + ' GB';
-  document.getElementById('s-storagerate').textContent = '₹' + storageRate + '/GB';
-  document.getElementById('s-storagecost').textContent = '₹' + storageCost.toLocaleString();
-
-  document.getElementById('totalAmount').textContent = '₹' + total.toLocaleString();
-  document.getElementById('annualNote').textContent  = '📅 Annual: ₹' + (total * 12).toLocaleString() + ' / year + 18 % GST APPLICATBLE';
+function selectStorage(type) {
+  state.storageType = type;
+  document.getElementById('btn-ssd').classList.toggle('active', type === 'ssd');
+  document.getElementById('btn-nvme').classList.toggle('active', type === 'nvme');
+  updateCalc();
 }
 
-// ===== RESET =====
+function updateStorageSlider(val) {
+  state.storageGB = parseInt(val);
+  document.getElementById('storageLabel').innerText = val + ' GB';
+  updateCalc();
+}
+
+function updateCalc() {
+  const isWin = state.os === 'windows';
+  document.getElementById('windowsNotice').style.display = isWin ? 'block' : 'none';
+  
+  const storageRate = state.storageType === 'nvme' ? 5 : 2;
+  const storageCost = state.storageGB * storageRate;
+  const planCost = state.selectedPlan ? state.selectedPlan.price : 0;
+  const total = planCost + storageCost;
+
+  document.getElementById('s-os').innerText = state.os.toUpperCase();
+  document.getElementById('s-plan').innerText = state.selectedPlan ? state.selectedPlan.name : '—';
+  document.getElementById('s-specs').innerText = state.selectedPlan ? `${state.selectedPlan.cpu} vCPU / ${state.selectedPlan.ram}` : '—';
+  document.getElementById('s-planprice').innerText = '₹' + planCost.toLocaleString();
+  document.getElementById('s-stype').innerText = state.storageType.toUpperCase();
+  document.getElementById('s-storagecost').innerText = '₹' + storageCost.toLocaleString();
+  document.getElementById('totalAmount').innerText = '₹' + total.toLocaleString();
+  document.getElementById('annualNote').innerText = `📅 Annual: ₹${(total * 12).toLocaleString()} / year (+ 18% GST)`;
+}
+
 function resetAll() {
-  state = { os: 'centos', hwTab: 'general', selectedPlan: null, storageType: 'ssd', storageGB: 20 };
-
-  document.querySelectorAll('.os-card').forEach((c, i) => c.classList.toggle('active', i === 0));
-  document.querySelectorAll('.hw-tab').forEach((t, i) => t.classList.toggle('active', i === 0));
-  document.querySelectorAll('.storage-type-card').forEach((c, i) => c.classList.toggle('active', i === 0));
-
-  document.getElementById('storageSize').value = 20;
-  document.getElementById('windowsNotice').classList.remove('show');
-  document.getElementById('s-os').textContent   = 'CentOS';
-  document.getElementById('s-mode').textContent = 'Standard';
-  document.getElementById('s-mode').style.color = 'var(--green)';
-
+  state = { os: 'ubuntu', hwTab: 'general', selectedPlan: null, storageType: 'ssd', storageGB: 20 };
+  document.getElementById('storageSlider').value = 20;
+  document.getElementById('storageLabel').innerText = '20 GB';
   renderPlans();
   updateCalc();
 }
 
-document.getElementById('storageSize').addEventListener('input', updateCalc);
-
 // Init
+initOS();
 renderPlans();
 updateCalc();
 </script>
