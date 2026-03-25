@@ -17,6 +17,7 @@
     --shadow: 0 10px 15px -3px rgba(0,0,0,0.05), 0 4px 6px -2px rgba(0,0,0,0.02);
     --green: #10b981;
     --orange: #f59e0b;
+    --purple: #8b5cf6;
   }
 
   * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -46,18 +47,51 @@
   .logo-container { display: flex; align-items: center; gap: 12px; }
   .logo-text { font-size: 1.5rem; font-weight: 800; color: var(--primary); letter-spacing: -1px; }
 
-  .region-badge {
+  /* ── REGION SELECTOR ── */
+  .region-selector {
+    display: flex;
     background: white;
+    border: 1px solid var(--border);
+    border-radius: 100px;
+    padding: 4px;
+    gap: 4px;
+    box-shadow: var(--shadow);
+  }
+
+  .region-btn {
     padding: 6px 16px;
     border-radius: 100px;
+    border: none;
+    background: transparent;
+    font-family: inherit;
+    font-size: 0.78rem;
+    font-weight: 700;
+    cursor: pointer;
+    color: var(--text-muted);
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    white-space: nowrap;
+  }
+
+  .region-btn.active { background: var(--primary); color: white; box-shadow: 0 2px 8px rgba(37,99,235,0.3); }
+  .region-btn:not(.active):hover { background: var(--primary-soft); color: var(--primary); }
+
+  /* Mumbai notice banner */
+  .mumbai-notice {
+    display: none;
+    padding: 10px 16px;
+    background: linear-gradient(135deg, #fff7ed, #fef3c7);
+    border: 1px solid #fed7aa;
+    border-radius: 12px;
     font-size: 0.8rem;
     font-weight: 600;
-    box-shadow: var(--shadow);
-    border: 1px solid var(--border);
-    display: flex;
+    color: #92400e;
     align-items: center;
     gap: 8px;
   }
+  .mumbai-notice.visible { display: flex; }
 
   .container {
     display: grid;
@@ -90,19 +124,9 @@
     gap: 10px;
   }
 
-  .section-label::after {
-    content: "";
-    height: 1px;
-    flex: 1;
-    background: var(--border);
-  }
+  .section-label::after { content: ""; height: 1px; flex: 1; background: var(--border); }
 
-  /* OS Grid */
-  .os-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
-    gap: 15px;
-  }
+  .os-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(110px, 1fr)); gap: 15px; }
 
   .os-card {
     background: white;
@@ -119,59 +143,32 @@
   }
 
   .os-card:hover { transform: translateY(-3px); border-color: var(--primary); }
-  .os-card.active {
-    background: var(--primary-soft);
-    border-color: var(--primary);
-    box-shadow: 0 10px 15px -3px rgba(37,99,235,0.1);
-  }
-
+  .os-card.active { background: var(--primary-soft); border-color: var(--primary); box-shadow: 0 10px 15px -3px rgba(37,99,235,0.1); }
+  .os-card.hidden { display: none; }
   .os-card img { width: 32px; height: 32px; object-fit: contain; }
   .os-name { font-size: 0.75rem; font-weight: 700; color: var(--text-muted); }
   .os-card.active .os-name { color: var(--primary); }
 
   .paid-tag {
-    position: absolute;
-    top: 8px; right: 8px;
-    font-size: 0.6rem;
-    background: #fef3c7;
-    color: #92400e;
-    padding: 2px 6px;
-    border-radius: 4px;
-    font-weight: 800;
+    position: absolute; top: 8px; right: 8px;
+    font-size: 0.6rem; background: #fef3c7; color: #92400e;
+    padding: 2px 6px; border-radius: 4px; font-weight: 800;
   }
 
-  /* Hardware Tabs */
-  .hw-tabs {
-    display: flex;
-    background: #f1f5f9;
-    padding: 5px;
-    border-radius: 12px;
-    margin-bottom: 1.5rem;
-  }
+  .hw-tabs { display: flex; background: #f1f5f9; padding: 5px; border-radius: 12px; margin-bottom: 1.5rem; gap: 4px; }
 
   .hw-tab {
-    flex: 1;
-    padding: 12px;
-    border: none;
-    background: transparent;
-    border-radius: 8px;
-    font-weight: 600;
-    font-size: 0.85rem;
-    cursor: pointer;
-    color: var(--text-muted);
-    transition: 0.2s;
-    font-family: inherit;
+    flex: 1; padding: 12px; border: none; background: transparent;
+    border-radius: 8px; font-weight: 600; font-size: 0.85rem;
+    cursor: pointer; color: var(--text-muted); transition: 0.2s; font-family: inherit;
   }
 
-  .hw-tab.active {
-    background: white;
-    color: var(--primary);
-    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-  }
+  .hw-tab.active { background: white; color: var(--primary); box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
+  .hw-tab.hidden { display: none; }
 
   .plan-card {
     display: grid;
-    grid-template-columns: 1.5fr 1fr 1fr 1fr;
+    grid-template-columns: 1.5fr 1fr 1fr 1fr 1fr;
     align-items: center;
     padding: 1rem 1.5rem;
     border: 1px solid var(--border);
@@ -183,230 +180,168 @@
 
   .plan-card:hover { background: #f8fafc; }
   .plan-card.active { border-color: var(--green); background: #ecfdf5; }
-
   .plan-name { font-weight: 700; font-size: 0.95rem; }
-  .plan-badge {
-    font-size: 0.7rem;
-    padding: 4px 10px;
-    background: white;
-    border: 1px solid var(--border);
-    border-radius: 6px;
-    width: fit-content;
-  }
+  .plan-badge { font-size: 0.7rem; padding: 4px 10px; background: white; border: 1px solid var(--border); border-radius: 6px; width: fit-content; }
 
-  /* ─── Storage Section ─── */
-
-  /* Top two type cards */
-  .storage-type-row {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 16px;
-    margin-bottom: 2rem;
-  }
+  .storage-type-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 2rem; }
+  .storage-type-row.single { grid-template-columns: 1fr; }
 
   .storage-type-card {
-    padding: 1.4rem 1.6rem;
-    border: 1px solid var(--border);
-    border-radius: 16px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    background: white;
+    padding: 1.4rem 1.6rem; border: 1px solid var(--border); border-radius: 16px;
+    display: flex; justify-content: space-between; align-items: center; background: white;
   }
 
-  .stc-title  { font-weight: 700; font-size: 0.95rem; margin-bottom: 3px; }
-  .stc-sub    { font-size: 0.75rem; color: var(--text-muted); }
-  .stc-rate   { font-weight: 800; color: var(--primary); font-size: 1.05rem; font-family: 'JetBrains Mono', monospace; }
+  .stc-title { font-weight: 700; font-size: 0.95rem; margin-bottom: 3px; }
+  .stc-sub   { font-size: 0.75rem; color: var(--text-muted); }
+  .stc-rate  { font-weight: 800; color: var(--primary); font-size: 1.05rem; font-family: 'JetBrains Mono', monospace; }
 
-  /* Volume blocks */
   .vol-block { margin-bottom: 1.5rem; }
-
-  .vol-block-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 0.75rem;
-  }
-
-  .vol-block-title {
-    font-size: 0.8rem;
-    font-weight: 800;
-    color: var(--text-dark);
-    display: flex;
-    align-items: center;
-    gap: 8px;
-  }
-
+  .vol-block-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.75rem; }
+  .vol-block-title { font-size: 0.8rem; font-weight: 800; color: var(--text-dark); display: flex; align-items: center; gap: 8px; }
   .dot { width: 9px; height: 9px; border-radius: 50%; display: inline-block; }
   .dot-ssd  { background: var(--primary); }
   .dot-nvme { background: var(--orange); }
 
   .add-vol-btn {
-    background: white;
-    border: 1.5px dashed var(--border);
-    color: var(--text-muted);
-    font-family: inherit;
-    font-size: 0.75rem;
-    font-weight: 700;
-    padding: 6px 14px;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: 0.2s;
-    display: flex;
-    align-items: center;
-    gap: 5px;
+    background: white; border: 1.5px dashed var(--border); color: var(--text-muted);
+    font-family: inherit; font-size: 0.75rem; font-weight: 700; padding: 6px 14px;
+    border-radius: 8px; cursor: pointer; transition: 0.2s; display: flex; align-items: center; gap: 5px;
   }
-
   .add-vol-btn:hover { border-color: var(--primary); color: var(--primary); background: var(--primary-soft); }
 
   .vol-list { display: flex; flex-direction: column; gap: 10px; }
 
   .vol-row {
-    display: grid;
-    grid-template-columns: auto 1fr auto auto;
-    align-items: center;
-    gap: 12px;
-    padding: 12px 16px;
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    background: white;
-    transition: border-color 0.2s;
+    display: grid; grid-template-columns: auto 1fr auto auto; align-items: center;
+    gap: 12px; padding: 12px 16px; border: 1px solid var(--border);
+    border-radius: 12px; background: white; transition: border-color 0.2s;
   }
-
   .vol-row:hover { border-color: #cbd5e1; }
 
-  .vol-num {
-    font-size: 0.65rem;
-    font-weight: 800;
-    color: white;
-    background: var(--primary);
-    padding: 3px 8px;
-    border-radius: 6px;
-  }
-
+  .vol-num { font-size: 0.65rem; font-weight: 800; color: white; background: var(--primary); padding: 3px 8px; border-radius: 6px; }
   .vol-num.nvme-num { background: var(--orange); }
 
-  .vol-input-wrap {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-  }
-
+  .vol-input-wrap { display: flex; align-items: center; gap: 10px; }
   .vol-input-wrap label { font-size: 0.75rem; color: var(--text-muted); font-weight: 600; white-space: nowrap; }
 
   .vol-gb-input {
-    background: #f8fafc;
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    padding: 6px 12px;
-    color: var(--text-dark);
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 0.9rem;
-    font-weight: 700;
-    text-align: center;
-    outline: none;
-    width: 90px;
-    transition: border-color 0.2s;
+    background: #f8fafc; border: 1px solid var(--border); border-radius: 8px; padding: 6px 12px;
+    color: var(--text-dark); font-family: 'JetBrains Mono', monospace; font-size: 0.9rem;
+    font-weight: 700; text-align: center; outline: none; width: 90px; transition: border-color 0.2s;
   }
-
   .vol-gb-input:focus { border-color: var(--primary); background: var(--primary-soft); }
 
-  .vol-cost {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 0.85rem;
-    font-weight: 700;
-    color: var(--primary);
-    white-space: nowrap;
-    min-width: 80px;
-    text-align: right;
-  }
+  .vol-cost { font-family: 'JetBrains Mono', monospace; font-size: 0.85rem; font-weight: 700; color: var(--primary); white-space: nowrap; min-width: 80px; text-align: right; }
 
   .vol-del-btn {
-    width: 28px; height: 28px;
-    border: 1px solid #fecaca;
-    background: #fff5f5;
-    color: #ef4444;
-    border-radius: 7px;
-    cursor: pointer;
-    font-size: 0.8rem;
-    display: flex; align-items: center; justify-content: center;
-    transition: 0.2s;
-    flex-shrink: 0;
+    width: 28px; height: 28px; border: 1px solid #fecaca; background: #fff5f5; color: #ef4444;
+    border-radius: 7px; cursor: pointer; font-size: 0.8rem; display: flex; align-items: center;
+    justify-content: center; transition: 0.2s; flex-shrink: 0;
   }
-
   .vol-del-btn:hover { background: #fee2e2; border-color: #ef4444; }
 
-  .vol-empty {
-    font-size: 0.78rem;
-    color: var(--text-muted);
-    font-style: italic;
-    padding: 6px 0;
-  }
+  .vol-empty { font-size: 0.78rem; color: var(--text-muted); font-style: italic; padding: 6px 0; }
 
   .storage-total-strip {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 12px 16px;
-    background: #f1f5f9;
-    border-radius: 10px;
-    margin-top: 0.5rem;
-    font-size: 0.82rem;
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 12px 16px; background: #f1f5f9; border-radius: 10px; margin-top: 0.5rem; font-size: 0.82rem;
   }
-
   .storage-total-strip span:first-child { font-weight: 700; color: var(--text-muted); }
   .storage-total-strip span:last-child  { font-family: 'JetBrains Mono', monospace; font-weight: 800; color: var(--primary); font-size: 0.9rem; }
 
+  .nvme-section.hidden { display: none; }
+
+  /* ── DISCOUNT CARD ── */
+  .discount-card {
+    background: linear-gradient(135deg, #1e1b4b 0%, #312e81 50%, #1e1b4b 100%);
+    border-radius: 20px; padding: 1.8rem;
+    border: 1px solid rgba(139,92,246,0.3);
+    box-shadow: 0 10px 40px -10px rgba(139,92,246,0.4);
+    position: relative; overflow: hidden;
+  }
+  .discount-card::before {
+    content: ''; position: absolute; top: -40px; right: -40px;
+    width: 140px; height: 140px;
+    background: radial-gradient(circle, rgba(139,92,246,0.25) 0%, transparent 70%);
+    border-radius: 50%; pointer-events: none;
+  }
+
+  .discount-section-label { font-size: 0.7rem; font-weight: 800; text-transform: uppercase; color: #a78bfa; margin-bottom: 1.2rem; letter-spacing: 1.5px; display: flex; align-items: center; gap: 8px; }
+  .discount-section-label .disc-icon { background: rgba(139,92,246,0.25); width: 22px; height: 22px; border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 0.75rem; }
+
+  .month-pills { display: flex; gap: 8px; margin-bottom: 1.2rem; flex-wrap: wrap; }
+  .month-pill {
+    padding: 7px 14px; border-radius: 100px; border: 1.5px solid rgba(139,92,246,0.35);
+    background: rgba(139,92,246,0.1); color: #c4b5fd; font-size: 0.75rem; font-weight: 700;
+    cursor: pointer; transition: all 0.2s; font-family: inherit;
+  }
+  .month-pill:hover { border-color: #8b5cf6; background: rgba(139,92,246,0.25); color: white; }
+  .month-pill.active { background: #8b5cf6; border-color: #8b5cf6; color: white; box-shadow: 0 4px 12px rgba(139,92,246,0.4); }
+
+  .disc-inputs { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 1.2rem; }
+  .disc-input-group { display: flex; flex-direction: column; gap: 5px; }
+  .disc-input-label { font-size: 0.68rem; font-weight: 700; color: #a78bfa; letter-spacing: 0.5px; text-transform: uppercase; }
+
+  .disc-input-wrap {
+    display: flex; align-items: center; background: rgba(255,255,255,0.07);
+    border: 1.5px solid rgba(139,92,246,0.3); border-radius: 10px; overflow: hidden; transition: border-color 0.2s;
+  }
+  .disc-input-wrap:focus-within { border-color: #8b5cf6; background: rgba(139,92,246,0.12); }
+
+  .disc-input { flex: 1; background: transparent; border: none; outline: none; padding: 9px 12px; color: white; font-family: 'JetBrains Mono', monospace; font-size: 0.95rem; font-weight: 700; width: 0; }
+  .disc-input::placeholder { color: rgba(255,255,255,0.2); }
+  .disc-input-suffix { padding: 0 12px 0 4px; font-size: 0.8rem; font-weight: 700; color: #7c3aed; }
+
+  .disc-apply-btn {
+    width: 100%; padding: 11px; background: linear-gradient(135deg, #7c3aed, #8b5cf6);
+    color: white; border: none; border-radius: 10px; font-family: inherit; font-size: 0.85rem;
+    font-weight: 700; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; justify-content: center; gap: 6px;
+  }
+  .disc-apply-btn:hover { background: linear-gradient(135deg, #6d28d9, #7c3aed); box-shadow: 0 4px 14px rgba(139,92,246,0.45); transform: translateY(-1px); }
+  .disc-apply-btn:active { transform: translateY(0); }
+
+  .disc-result { margin-top: 1rem; padding: 1rem 1.2rem; background: rgba(16,185,129,0.1); border: 1.5px solid rgba(16,185,129,0.3); border-radius: 12px; display: none; animation: fadeSlideIn 0.3s ease; }
+  .disc-result.visible { display: block; }
+
+  @keyframes fadeSlideIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+
+  .disc-result-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; font-size: 0.78rem; }
+  .disc-result-row:last-child { margin-bottom: 0; }
+  .disc-result-label { color: #6ee7b7; font-weight: 600; }
+  .disc-result-val   { font-family: 'JetBrains Mono', monospace; font-weight: 800; color: #10b981; }
+
+  .disc-result-total { margin-top: 8px; padding-top: 8px; border-top: 1px dashed rgba(16,185,129,0.3); display: flex; justify-content: space-between; align-items: center; }
+  .disc-result-total-label { color: #a7f3d0; font-weight: 700; font-size: 0.8rem; }
+  .disc-result-total-val   { font-family: 'JetBrains Mono', monospace; font-weight: 800; color: #34d399; font-size: 1.05rem; }
+
+  .disc-savings-badge { display: inline-flex; align-items: center; gap: 4px; background: rgba(16,185,129,0.2); color: #34d399; font-size: 0.7rem; font-weight: 800; padding: 3px 8px; border-radius: 6px; margin-top: 8px; }
+  .disc-clear-btn { display: inline-flex; align-items: center; gap: 4px; background: transparent; border: none; color: rgba(196,181,253,0.6); font-size: 0.7rem; font-weight: 600; cursor: pointer; font-family: inherit; margin-top: 8px; float: right; padding: 0; transition: color 0.2s; }
+  .disc-clear-btn:hover { color: #f87171; }
+
   /* Sidebar */
-  .sidebar-inner { position: sticky; top: 100px; }
+  .sidebar-inner { position: sticky; top: 100px; display: flex; flex-direction: column; gap: 1.5rem; }
 
-  .summary-card {
-    background: #1e293b;
-    color: white;
-    border-radius: 24px;
-    padding: 2rem;
-    box-shadow: 0 20px 25px -5px rgba(0,0,0,0.2);
-  }
+  .summary-card { background: #1e293b; color: white; border-radius: 24px; padding: 2rem; box-shadow: 0 20px 25px -5px rgba(0,0,0,0.2); }
 
-  .summary-item {
-    display: flex;
-    justify-content: space-between;
-    margin-bottom: 0.8rem;
-    font-size: 0.85rem;
-    color: #94a3b8;
-    gap: 0.5rem;
-  }
-
+  .summary-item { display: flex; justify-content: space-between; margin-bottom: 0.8rem; font-size: 0.85rem; color: #94a3b8; gap: 0.5rem; }
   .summary-item span:last-child { color: white; font-weight: 600; text-align: right; }
   .summary-cost-val { color: #38bdf8 !important; font-family: 'JetBrains Mono', monospace; }
 
-  .total-box {
-    margin-top: 2rem;
-    padding-top: 2rem;
-    border-top: 1px dashed #334155;
-  }
+  .summary-region-badge { display: inline-flex; align-items: center; gap: 5px; padding: 3px 10px; border-radius: 100px; font-size: 0.72rem; font-weight: 700; background: rgba(37,99,235,0.2); color: #93c5fd; border: 1px solid rgba(37,99,235,0.3); }
 
-  .price-large {
-    font-size: 2.5rem;
-    font-weight: 800;
-    color: #38bdf8;
-    line-height: 1;
-  }
+  .total-box { margin-top: 2rem; padding-top: 2rem; border-top: 1px dashed #334155; }
+  .price-large { font-size: 2.5rem; font-weight: 800; color: #38bdf8; line-height: 1; }
 
-  .reset-btn {
-    width: 100%;
-    margin-top: 1.5rem;
-    padding: 12px;
-    background: transparent;
-    border: 1px solid #334155;
-    border-radius: 12px;
-    color: #94a3b8;
-    cursor: pointer;
-    font-family: inherit;
-    font-weight: 600;
-    transition: 0.2s;
-  }
+  .disc-sidebar-box { margin-top: 1rem; padding: 1rem; background: rgba(139,92,246,0.12); border: 1px solid rgba(139,92,246,0.3); border-radius: 12px; display: none; }
+  .disc-sidebar-box.visible { display: block; }
+  .disc-sidebar-label { font-size: 0.68rem; font-weight: 700; color: #a78bfa; text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 6px; }
+  .disc-sidebar-row { display: flex; justify-content: space-between; font-size: 0.78rem; color: #94a3b8; margin-bottom: 4px; }
+  .disc-sidebar-row span:last-child { font-family: 'JetBrains Mono', monospace; color: #c4b5fd; font-weight: 700; }
+  .disc-sidebar-final { display: flex; justify-content: space-between; align-items: baseline; margin-top: 8px; padding-top: 8px; border-top: 1px dashed rgba(139,92,246,0.3); }
+  .disc-sidebar-final-label { font-size: 0.75rem; color: #c4b5fd; font-weight: 700; }
+  .disc-sidebar-final-val   { font-family: 'JetBrains Mono', monospace; font-weight: 800; color: #a78bfa; font-size: 1.3rem; }
 
+  .reset-btn { width: 100%; margin-top: 1.5rem; padding: 12px; background: transparent; border: 1px solid #334155; border-radius: 12px; color: #94a3b8; cursor: pointer; font-family: inherit; font-weight: 600; transition: 0.2s; }
   .reset-btn:hover { border-color: #ef4444; color: #f87171; background: rgba(239,68,68,0.08); }
 
   @media (max-width: 1000px) {
@@ -422,11 +357,18 @@
     <img src="https://idr01.zata.ai/neevhello/download.png" alt="NeevCloud Logo" style="height:35px;width:auto;object-fit:contain;">
     <div class="logo-text">NEEVCLOUD</div>
   </div>
-  <div class="region-badge">🇮🇳 Central India Data Center</div>
+  <div class="region-selector">
+    <button class="region-btn active" onclick="selectRegion(this,'central')">🇮🇳 Central India</button>
+    <button class="region-btn" onclick="selectRegion(this,'mumbai')">🇮🇳 Mumbai</button>
+  </div>
 </header>
 
 <div class="container">
   <div class="main-content">
+
+    <div class="mumbai-notice" id="mumbaiNotice">
+      🏙️ <strong>Mumbai (West India)</strong> — SSD only at ₹3/GB · No NVMe · No Smart plans · Red Hat not available
+    </div>
 
     <!-- OS -->
     <div class="card">
@@ -444,7 +386,7 @@
         <button class="hw-tab active" onclick="selectTab(this,'general')">General</button>
         <button class="hw-tab" onclick="selectTab(this,'memory')">Memory</button>
         <button class="hw-tab" onclick="selectTab(this,'cpu')">Compute</button>
-        <button class="hw-tab" onclick="selectTab(this,'smart')">Smart</button>
+        <button class="hw-tab smart-tab" onclick="selectTab(this,'smart')">Smart</button>
       </div>
       <div id="planList"></div>
     </div>
@@ -453,16 +395,15 @@
     <div class="card">
       <div class="section-label">03 — Storage Volume</div>
 
-      <!-- Info cards (read-only) -->
-      <div class="storage-type-row">
+      <div class="storage-type-row" id="storageTypeRow">
         <div class="storage-type-card">
           <div>
             <div class="stc-title">💾 SSD Storage</div>
             <div class="stc-sub">Standard Speed</div>
           </div>
-          <div class="stc-rate">₹2/GB</div>
+          <div class="stc-rate" id="ssdRateDisplay">₹2/GB</div>
         </div>
-        <div class="storage-type-card">
+        <div class="storage-type-card" id="nvmeTypeCard">
           <div>
             <div class="stc-title">⚡ NVMe Ultra</div>
             <div class="stc-sub">Extreme Performance</div>
@@ -471,7 +412,6 @@
         </div>
       </div>
 
-      <!-- SSD Volumes -->
       <div class="vol-block">
         <div class="vol-block-header">
           <div class="vol-block-title"><span class="dot dot-ssd"></span> SSD Volumes</div>
@@ -480,8 +420,7 @@
         <div class="vol-list" id="ssdVolList"></div>
       </div>
 
-      <!-- NVMe Volumes -->
-      <div class="vol-block">
+      <div class="vol-block nvme-section" id="nvmeSection">
         <div class="vol-block-header">
           <div class="vol-block-title"><span class="dot dot-nvme"></span> NVMe Volumes</div>
           <button class="add-vol-btn" onclick="addVolume('nvme')">＋ Add NVMe Volume</button>
@@ -495,7 +434,6 @@
       </div>
     </div>
 
-  </div>
 
   <!-- Sidebar -->
   <div class="sidebar">
@@ -503,24 +441,35 @@
       <div class="summary-card">
         <h2 style="font-size:1.2rem;font-weight:800;margin-bottom:1.5rem;letter-spacing:-0.5px">Configuration Summary</h2>
 
-        <div class="summary-item"><span>Region</span><span>India Central</span></div>
+        <div class="summary-item">
+          <span>Region</span>
+          <span id="s-region"><span class="summary-region-badge">🇮🇳 Central India</span></span>
+        </div>
         <div class="summary-item"><span>OS</span><span id="s-os">Ubuntu</span></div>
         <div class="summary-item"><span>Instance</span><span id="s-plan">—</span></div>
         <div class="summary-item"><span>vCPU / RAM</span><span id="s-specs">—</span></div>
 
         <div style="height:1px;background:#334155;margin:1rem 0"></div>
-
         <div class="summary-item"><span>Hardware Base</span><span id="s-planprice" class="summary-cost-val">₹0</span></div>
-
         <div style="height:1px;background:#334155;margin:1rem 0"></div>
 
-        <!-- Dynamic storage lines -->
         <div id="storageSummaryList"></div>
 
         <div class="total-box">
-          <p style="font-size:0.75rem;color:#94a3b8;font-weight:700;text-transform:uppercase;margin-bottom:0.5rem">Estimated Monthly Total</p>
+          <p style="font-size:0.75rem;color:#94a3b8;font-weight:700;text-transform:uppercase;margin-bottom:0.5rem">Monthly Total</p>
           <div class="price-large" id="totalAmount">₹0</div>
           <p style="font-size:0.7rem;color:#64748b;margin-top:10px" id="annualNote"></p>
+        </div>
+
+        <div class="disc-sidebar-box" id="discSidebarBox">
+          <div class="disc-sidebar-label">🏷️ Team Discount Applied</div>
+          <div class="disc-sidebar-row"><span>Duration</span><span id="ds-months">—</span></div>
+          <div class="disc-sidebar-row"><span>Discount</span><span id="ds-pct">—</span></div>
+          <div class="disc-sidebar-row"><span>Saving / month</span><span id="ds-saving-mo">—</span></div>
+          <div class="disc-sidebar-final">
+            <span class="disc-sidebar-final-label">Total Payable</span>
+            <span class="disc-sidebar-final-val" id="ds-total">—</span>
+          </div>
         </div>
 
         <button class="reset-btn" onclick="resetAll()">↺ Reset Configuration</button>
@@ -536,7 +485,7 @@ const osData = [
   { id: 'windows',    name: 'Windows',     logo: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/windows8/windows8-original.svg', paid: true },
   { id: 'debian',     name: 'Debian',      logo: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/debian/debian-plain.svg' },
   { id: 'centos',     name: 'CentOS',      logo: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/centos/centos-plain.svg' },
-  { id: 'redhat',     name: 'Red Hat',     logo: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/redhat/redhat-plain.svg' },
+  { id: 'redhat',     name: 'Red Hat',     logo: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/redhat/redhat-plain.svg', mumbaiHidden: true },
   { id: 'fedora',     name: 'Fedora',      logo: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/fedora/fedora-plain.svg' },
   { id: 'almalinux',  name: 'AlmaLinux',   logo: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/linux/linux-plain.svg' },
   { id: 'oracle',     name: 'Oracle Linux',logo: 'https://upload.wikimedia.org/wikipedia/commons/5/50/Oracle_logo.svg' },
@@ -546,77 +495,175 @@ const osData = [
 ];
 
 // ── PLANS ──
-const standardPlans = {
+// Central India — Linux
+const centralLinux = {
   general: [
-    { name: 'Nano',           cpu: 2,  ram: '2 GB',  price: 699   },
-    { name: 'NanoBoost',      cpu: 2,  ram: '4 GB',  price: 899   },
-    { name: 'StellarSurge',   cpu: 4,  ram: '16 GB', price: 1860  },
-    { name: 'MegaFuse',       cpu: 4,  ram: '8 GB',  price: 1380  },
-    { name: 'VelocityVortex', cpu: 8,  ram: '16 GB', price: 2660  },
+    { name:'Nano',           cpu:2,  ram:'2 GB',   storage:'0 GB', price:699   },
+    { name:'NanoBoost',      cpu:2,  ram:'4 GB',   storage:'0 GB', price:899   },
+    { name:'StellarSurge',   cpu:4,  ram:'16 GB',  storage:'0 GB', price:1860  },
+    { name:'MegaFuse',       cpu:4,  ram:'8 GB',   storage:'0 GB', price:1380  },
+    { name:'VelocityVortex', cpu:8,  ram:'16 GB',  storage:'0 GB', price:2660  },
   ],
   memory: [
-    { name: 'CosmicCascade',    cpu: 2,  ram: '8 GB',   price: 1299  },
-    { name: 'TurboNebula',      cpu: 4,  ram: '32 GB',  price: 2820  },
-    { name: 'InfinityIgnition', cpu: 8,  ram: '32 GB',  price: 3620  },
-    { name: 'TitanThunder',     cpu: 16, ram: '64 GB',  price: 7140  },
-    { name: 'AetherAvalanche',  cpu: 32, ram: '128 GB', price: 14180 },
+    { name:'CosmicCascade',    cpu:2,  ram:'8 GB',   storage:'0 GB', price:1299  },
+    { name:'TurboNebula',      cpu:4,  ram:'32 GB',  storage:'0 GB', price:2820  },
+    { name:'InfinityIgnition', cpu:8,  ram:'32 GB',  storage:'0 GB', price:3620  },
+    { name:'TitanThunder',     cpu:16, ram:'64 GB',  storage:'0 GB', price:7140  },
+    { name:'AetherAvalanche',  cpu:32, ram:'128 GB', storage:'0 GB', price:14180 },
   ],
   cpu: [
-    { name: 'HyperNova',     cpu: 16, ram: '32 GB', price: 5220  },
-    { name: 'NebulaNucleus', cpu: 32, ram: '64 GB', price: 10340 },
+    { name:'HyperNova',     cpu:16, ram:'32 GB', storage:'0 GB', price:5220  },
+    { name:'NebulaNucleus', cpu:32, ram:'64 GB', storage:'0 GB', price:10340 },
   ],
   smart: [
-    { name: 'Smart-1', cpu: 12, ram: '24 GB', price: 3940 },
-    { name: 'Smart-2', cpu: 16, ram: '32 GB', price: 5220 },
-    { name: 'Smart-3', cpu: 20, ram: '48 GB', price: 6980 },
-    { name: 'Smart-4', cpu: 24, ram: '64 GB', price: 8740 },
+    { name:'Smart-1', cpu:12, ram:'24 GB', storage:'0 GB', price:3940 },
+    { name:'Smart-2', cpu:16, ram:'32 GB', storage:'0 GB', price:5220 },
+    { name:'Smart-3', cpu:20, ram:'48 GB', storage:'0 GB', price:6980 },
+    { name:'Smart-4', cpu:24, ram:'64 GB', storage:'0 GB', price:8740 },
   ],
 };
 
-const windowsPlans = {
+// Central India — Windows
+const centralWindows = {
   general: [
-    { name: 'Nano',           cpu: 2,  ram: '2 GB',  price: 1099  },
-    { name: 'NanoBoost',      cpu: 2,  ram: '4 GB',  price: 1299  },
-    { name: 'StellarSurge',   cpu: 4,  ram: '16 GB', price: 2660  },
-    { name: 'MegaFuse',       cpu: 4,  ram: '8 GB',  price: 2180  },
-    { name: 'VelocityVortex', cpu: 8,  ram: '16 GB', price: 4260  },
+    { name:'Nano',           cpu:2,  ram:'2 GB',   storage:'0 GB', price:1099  },
+    { name:'NanoBoost',      cpu:2,  ram:'4 GB',   storage:'0 GB', price:1299  },
+    { name:'StellarSurge',   cpu:4,  ram:'16 GB',  storage:'0 GB', price:2660  },
+    { name:'MegaFuse',       cpu:4,  ram:'8 GB',   storage:'0 GB', price:2180  },
+    { name:'VelocityVortex', cpu:8,  ram:'16 GB',  storage:'0 GB', price:4260  },
   ],
   memory: [
-    { name: 'CosmicCascade',    cpu: 2,  ram: '8 GB',   price: 1699  },
-    { name: 'TurboNebula',      cpu: 4,  ram: '32 GB',  price: 3620  },
-    { name: 'InfinityIgnition', cpu: 8,  ram: '32 GB',  price: 5220  },
-    { name: 'TitanThunder',     cpu: 16, ram: '64 GB',  price: 10340 },
-    { name: 'AetherAvalanche',  cpu: 32, ram: '128 GB', price: 20580 },
+    { name:'CosmicCascade',    cpu:2,  ram:'8 GB',   storage:'0 GB', price:1699  },
+    { name:'TurboNebula',      cpu:4,  ram:'32 GB',  storage:'0 GB', price:3620  },
+    { name:'InfinityIgnition', cpu:8,  ram:'32 GB',  storage:'0 GB', price:5220  },
+    { name:'TitanThunder',     cpu:16, ram:'64 GB',  storage:'0 GB', price:10340 },
+    { name:'AetherAvalanche',  cpu:32, ram:'128 GB', storage:'0 GB', price:20580 },
   ],
   cpu: [
-    { name: 'HyperNova',     cpu: 16, ram: '32 GB', price: 8420  },
-    { name: 'NebulaNucleus', cpu: 32, ram: '64 GB', price: 16740 },
+    { name:'HyperNova',     cpu:16, ram:'32 GB', storage:'0 GB', price:8420  },
+    { name:'NebulaNucleus', cpu:32, ram:'64 GB', storage:'0 GB', price:16740 },
   ],
   smart: [
-    { name: 'Smart-1', cpu: 12, ram: '24 GB', price: 6340  },
-    { name: 'Smart-2', cpu: 16, ram: '32 GB', price: 8420  },
-    { name: 'Smart-3', cpu: 20, ram: '48 GB', price: 10980 },
-    { name: 'Smart-4', cpu: 24, ram: '64 GB', price: 13540 },
+    { name:'Smart-1', cpu:12, ram:'24 GB', storage:'0 GB', price:6340  },
+    { name:'Smart-2', cpu:16, ram:'32 GB', storage:'0 GB', price:8420  },
+    { name:'Smart-3', cpu:20, ram:'48 GB', storage:'0 GB', price:10980 },
+    { name:'Smart-4', cpu:24, ram:'64 GB', storage:'0 GB', price:13540 },
+  ],
+};
+
+// Mumbai — Linux (prices from portal screenshots)
+const mumbaiLinux = {
+  general: [
+    { name:'Nano',           cpu:2,  ram:'2 GB',   storage:'0 GB', price:1399  },
+    { name:'NanoBoost',      cpu:2,  ram:'4 GB',   storage:'0 GB', price:1799  },
+    { name:'StellarSurge',   cpu:4,  ram:'16 GB',  storage:'0 GB', price:3720  },
+    { name:'MegaFuse',       cpu:4,  ram:'8 GB',   storage:'0 GB', price:2760  },
+    { name:'VelocityVortex', cpu:8,  ram:'16 GB',  storage:'0 GB', price:5320  },
+  ],
+  memory: [
+    { name:'CosmicCascade',    cpu:2,  ram:'8 GB',   storage:'0 GB', price:2599  },
+    { name:'TurboNebula',      cpu:4,  ram:'32 GB',  storage:'0 GB', price:5640  },
+    { name:'InfinityIgnition', cpu:8,  ram:'32 GB',  storage:'0 GB', price:7240  },
+    { name:'TitanThunder',     cpu:16, ram:'64 GB',  storage:'0 GB', price:14280 },
+    { name:'AetherAvalanche',  cpu:32, ram:'128 GB', storage:'0 GB', price:28360 },
+  ],
+  cpu: [
+    { name:'HyperNova',     cpu:16, ram:'32 GB', storage:'0 GB', price:9999  },
+    { name:'NebulaNucleus', cpu:32, ram:'64 GB', storage:'0 GB', price:20680 },
+  ],
+};
+
+// Mumbai — Windows
+const mumbaiWindows = {
+  general: [
+    { name:'Nano',           cpu:2,  ram:'2 GB',   storage:'0 GB', price:2199  },
+    { name:'NanoBoost',      cpu:2,  ram:'4 GB',   storage:'0 GB', price:2599  },
+    { name:'StellarSurge',   cpu:4,  ram:'16 GB',  storage:'0 GB', price:5320  },
+    { name:'MegaFuse',       cpu:4,  ram:'8 GB',   storage:'0 GB', price:4360  },
+    { name:'VelocityVortex', cpu:8,  ram:'16 GB',  storage:'0 GB', price:8520  },
+  ],
+  memory: [
+    { name:'CosmicCascade',    cpu:2,  ram:'8 GB',   storage:'0 GB', price:3399  },
+    { name:'TurboNebula',      cpu:4,  ram:'32 GB',  storage:'0 GB', price:7240  },
+    { name:'InfinityIgnition', cpu:8,  ram:'32 GB',  storage:'0 GB', price:10440 },
+    { name:'TitanThunder',     cpu:16, ram:'64 GB',  storage:'0 GB', price:20680 },
+    { name:'AetherAvalanche',  cpu:32, ram:'128 GB', storage:'0 GB', price:41160 },
+  ],
+  cpu: [
+    { name:'HyperNova',     cpu:16, ram:'32 GB', storage:'0 GB', price:16840 },
+    { name:'NebulaNucleus', cpu:32, ram:'64 GB', storage:'0 GB', price:33480 },
   ],
 };
 
 // ── STATE ──
-let state = {
-  os: 'ubuntu',
-  hwTab: 'general',
-  selectedPlan: null,
-  ssdVolumes:  [{ id: 1, gb: 20 }],
-  nvmeVolumes: [],
-};
-
+let state = { region:'central', os:'ubuntu', hwTab:'general', selectedPlan:null, ssdVolumes:[{id:1,gb:20}], nvmeVolumes:[] };
 let volIdCounter = 10;
 
-// ── OS INIT ──
+function isMumbai()  { return state.region === 'mumbai'; }
+function isWindows() { return state.os === 'windows'; }
+function ssdRate()   { return isMumbai() ? 3 : 2; }
+
+function getPlans() {
+  const src = isMumbai()
+    ? (isWindows() ? mumbaiWindows : mumbaiLinux)
+    : (isWindows() ? centralWindows : centralLinux);
+  return src[state.hwTab] || [];
+}
+
+// ── REGION ──
+function selectRegion(el, region) {
+  state.region = region;
+  document.querySelectorAll('.region-btn').forEach(b => b.classList.remove('active'));
+  el.classList.add('active');
+
+  document.getElementById('mumbaiNotice').classList.toggle('visible', isMumbai());
+  document.getElementById('s-region').innerHTML =
+    `<span class="summary-region-badge">🇮🇳 ${isMumbai() ? 'Mumbai (West India)' : 'Central India'}</span>`;
+
+  // Show/hide Red Hat
+  document.querySelectorAll('.os-card').forEach(card => {
+    const os = osData.find(o => o.id === card.dataset.os);
+    card.classList.toggle('hidden', !!(os && os.mumbaiHidden && isMumbai()));
+  });
+
+  // If Red Hat was selected, switch to Ubuntu
+  if (isMumbai() && state.os === 'redhat') {
+    state.os = 'ubuntu';
+    document.querySelectorAll('.os-card').forEach(c => c.classList.remove('active'));
+    document.querySelector('[data-os="ubuntu"]').classList.add('active');
+    document.getElementById('s-os').innerText = 'Ubuntu';
+    document.getElementById('windowsNotice').style.display = 'none';
+  }
+
+  // Smart tab
+  document.querySelector('.smart-tab').classList.toggle('hidden', isMumbai());
+  if (isMumbai() && state.hwTab === 'smart') {
+    state.hwTab = 'general';
+    document.querySelectorAll('.hw-tab').forEach((t,i) => t.classList.toggle('active', i === 0));
+  }
+
+  // NVMe
+  document.getElementById('nvmeSection').classList.toggle('hidden', isMumbai());
+  document.getElementById('nvmeTypeCard').style.display = isMumbai() ? 'none' : '';
+  document.getElementById('storageTypeRow').classList.toggle('single', isMumbai());
+  document.getElementById('ssdRateDisplay').textContent = `₹${ssdRate()}/GB`;
+
+  if (isMumbai()) state.nvmeVolumes = [];
+
+  state.selectedPlan = null;
+  renderVolumes('ssd');
+  renderVolumes('nvme');
+  renderPlans();
+  updateCalc();
+}
+
+// ── OS ──
 function initOS() {
   const grid = document.getElementById('osGrid');
   osData.forEach(os => {
     const div = document.createElement('div');
     div.className = 'os-card' + (state.os === os.id ? ' active' : '');
+    div.dataset.os = os.id;
     div.innerHTML = `
       ${os.paid ? '<span class="paid-tag">PAID</span>' : ''}
       <img src="${os.logo}" alt="${os.name}">
@@ -636,7 +683,7 @@ function initOS() {
   });
 }
 
-// ── HARDWARE TAB ──
+// ── TABS ──
 function selectTab(el, tab) {
   state.hwTab = tab;
   document.querySelectorAll('.hw-tab').forEach(t => t.classList.remove('active'));
@@ -647,9 +694,13 @@ function selectTab(el, tab) {
 }
 
 function renderPlans() {
-  const list  = document.getElementById('planList');
-  const plans = state.os === 'windows' ? windowsPlans[state.hwTab] : standardPlans[state.hwTab];
+  const list = document.getElementById('planList');
+  const plans = getPlans();
   list.innerHTML = '';
+  if (!plans || !plans.length) {
+    list.innerHTML = `<div style="padding:1rem;color:var(--text-muted);font-size:0.85rem;font-style:italic;">No plans available for this selection.</div>`;
+    return;
+  }
   plans.forEach(p => {
     const div = document.createElement('div');
     const active = state.selectedPlan && state.selectedPlan.name === p.name;
@@ -658,22 +709,20 @@ function renderPlans() {
       <div class="plan-name">${p.name}</div>
       <div class="plan-badge">${p.cpu} vCPU</div>
       <div class="plan-badge">${p.ram} RAM</div>
+      <div class="plan-badge">${p.storage}</div>
       <div style="text-align:right;font-weight:800;color:var(--primary)">₹${p.price.toLocaleString()}</div>
     `;
-    div.onclick = () => {
-      state.selectedPlan = p;
-      renderPlans();
-      updateCalc();
-    };
+    div.onclick = () => { state.selectedPlan = p; renderPlans(); updateCalc(); };
     list.appendChild(div);
   });
 }
 
 // ── VOLUMES ──
 function addVolume(type) {
+  if (type === 'nvme' && isMumbai()) return;
   const id = ++volIdCounter;
-  if (type === 'ssd') state.ssdVolumes.push({ id, gb: 20 });
-  else                state.nvmeVolumes.push({ id, gb: 20 });
+  if (type === 'ssd') state.ssdVolumes.push({id, gb:20});
+  else                state.nvmeVolumes.push({id, gb:20});
   renderVolumes(type);
   updateCalc();
 }
@@ -690,7 +739,7 @@ function onVolInput(type, id, val) {
   const arr = type === 'ssd' ? state.ssdVolumes : state.nvmeVolumes;
   const vol = arr.find(v => v.id === id);
   if (vol) vol.gb = gb;
-  const rate = type === 'ssd' ? 2 : 5;
+  const rate = type === 'ssd' ? ssdRate() : 5;
   const el = document.getElementById('volcost-' + id);
   if (el) el.textContent = '₹' + (gb * rate).toLocaleString() + '/mo';
   updateCalc();
@@ -699,12 +748,11 @@ function onVolInput(type, id, val) {
 function renderVolumes(type) {
   const listEl = document.getElementById(type === 'ssd' ? 'ssdVolList' : 'nvmeVolList');
   const arr    = type === 'ssd' ? state.ssdVolumes : state.nvmeVolumes;
-  const rate   = type === 'ssd' ? 2 : 5;
+  const rate   = type === 'ssd' ? ssdRate() : 5;
   const label  = type === 'ssd' ? 'SSD' : 'NVMe';
   const numCls = type === 'ssd' ? 'vol-num' : 'vol-num nvme-num';
 
   listEl.innerHTML = '';
-
   if (arr.length === 0) {
     listEl.innerHTML = `<div class="vol-empty">No ${label} volumes added yet.</div>`;
     return;
@@ -714,7 +762,7 @@ function renderVolumes(type) {
     const row = document.createElement('div');
     row.className = 'vol-row';
     row.innerHTML = `
-      <span class="${numCls}">${label} ${idx + 1}</span>
+      <span class="${numCls}">${label} ${idx+1}</span>
       <div class="vol-input-wrap">
         <label>Size (GB)</label>
         <input class="vol-gb-input" type="number" min="1" max="10000" value="${vol.gb}"
@@ -729,43 +777,35 @@ function renderVolumes(type) {
 
 // ── CALC ──
 function updateCalc() {
-  const ssdTotal  = state.ssdVolumes.reduce((s, v)  => s + v.gb * 2, 0);
-  const nvmeTotal = state.nvmeVolumes.reduce((s, v) => s + v.gb * 5, 0);
+  const r         = ssdRate();
+  const ssdTotal  = state.ssdVolumes.reduce((s,v) => s + v.gb * r, 0);
+  const nvmeTotal = isMumbai() ? 0 : state.nvmeVolumes.reduce((s,v) => s + v.gb * 5, 0);
   const storageCost = ssdTotal + nvmeTotal;
   const planCost    = state.selectedPlan ? state.selectedPlan.price : 0;
   const total       = planCost + storageCost;
 
-  // Plan
   document.getElementById('s-plan').innerText  = state.selectedPlan ? state.selectedPlan.name : '—';
   document.getElementById('s-specs').innerText = state.selectedPlan ? `${state.selectedPlan.cpu} vCPU / ${state.selectedPlan.ram}` : '—';
   document.getElementById('s-planprice').innerText = '₹' + planCost.toLocaleString();
 
-  // Storage sidebar lines
-  const sBox = document.getElementById('storageSummaryList');
   let html = '';
-
   if (state.ssdVolumes.length === 0 && state.nvmeVolumes.length === 0) {
     html = `<div class="summary-item"><span>Storage</span><span>No volumes</span></div>`;
   }
-
-  state.ssdVolumes.forEach((v, i) => {
-    html += `<div class="summary-item"><span>💾 SSD Vol ${i+1} (${v.gb} GB × ₹2)</span><span class="summary-cost-val">₹${(v.gb * 2).toLocaleString()}</span></div>`;
+  state.ssdVolumes.forEach((v,i) => {
+    html += `<div class="summary-item"><span>💾 SSD Vol ${i+1} (${v.gb} GB × ₹${r})</span><span class="summary-cost-val">₹${(v.gb*r).toLocaleString()}</span></div>`;
   });
-
-  state.nvmeVolumes.forEach((v, i) => {
-    html += `<div class="summary-item"><span>⚡ NVMe Vol ${i+1} (${v.gb} GB × ₹5)</span><span class="summary-cost-val">₹${(v.gb * 5).toLocaleString()}</span></div>`;
-  });
-
+  if (!isMumbai()) {
+    state.nvmeVolumes.forEach((v,i) => {
+      html += `<div class="summary-item"><span>⚡ NVMe Vol ${i+1} (${v.gb} GB × ₹5)</span><span class="summary-cost-val">₹${(v.gb*5).toLocaleString()}</span></div>`;
+    });
+  }
   if (state.ssdVolumes.length + state.nvmeVolumes.length > 0) {
     html += `<div class="summary-item" style="border-top:1px solid #334155;padding-top:0.6rem;margin-top:0.2rem"><span>Total Storage</span><span class="summary-cost-val">₹${storageCost.toLocaleString()}</span></div>`;
   }
+  document.getElementById('storageSummaryList').innerHTML = html;
 
-  sBox.innerHTML = html;
-
-  // Storage strip
   document.getElementById('storageTotalDisplay').textContent = '₹' + storageCost.toLocaleString() + ' / month';
-
-  // Grand total
   document.getElementById('totalAmount').innerText = '₹' + total.toLocaleString();
 
   const annual = total * 12 * 0.85;
@@ -773,23 +813,102 @@ function updateCalc() {
     `<span style="color:#10b981;font-weight:800;">15% Annual Discount:</span> ` +
     `<span style="color:#ffffff;background:rgba(255,255,255,0.1);padding:2px 6px;border-radius:4px;font-weight:700;">₹${annual.toLocaleString(undefined,{maximumFractionDigits:0})}</span> ` +
     `<span style="color:#ffffff;">/ year (+ 18% GST)</span>`;
+
+  // Refresh discount if active
+  const resultEl = document.getElementById('discResult');
+  if (resultEl.classList.contains('visible')) {
+    const months = parseInt(document.getElementById('discMonths').value) || 0;
+    const pct    = parseFloat(document.getElementById('discPercent').value) || 0;
+    if (months > 0 && pct >= 0) renderDiscountResult(total, months, pct);
+  }
+}
+
+// ── DISCOUNT ──
+function selectMonthPill(el, months) {
+  document.querySelectorAll('.month-pill').forEach(p => p.classList.remove('active'));
+  el.classList.add('active');
+  document.getElementById('discMonths').value = months;
+}
+
+function applyDiscount() {
+  const total  = getCurrentTotal();
+  const months = parseInt(document.getElementById('discMonths').value);
+  const pct    = parseFloat(document.getElementById('discPercent').value);
+  if (!months || months < 1) { shakeInput('discMonths'); return; }
+  if (isNaN(pct) || pct < 0 || pct > 100) { shakeInput('discPercent'); return; }
+  if (total === 0) { alert('Please select a plan or add storage first.'); return; }
+  renderDiscountResult(total, months, pct);
+}
+
+function renderDiscountResult(base, months, pct) {
+  const undiscounted = base * months;
+  const saving       = undiscounted * (pct / 100);
+  const finalPay     = undiscounted - saving;
+
+  document.getElementById('dr-monthly').textContent  = '₹' + base.toLocaleString();
+  document.getElementById('dr-months').textContent   = months + ' month' + (months > 1 ? 's' : '');
+  document.getElementById('dr-discount').textContent = pct + '%';
+  document.getElementById('dr-original').textContent = '₹' + undiscounted.toLocaleString();
+  document.getElementById('dr-final').textContent    = '₹' + Math.round(finalPay).toLocaleString();
+  document.getElementById('dr-savings-badge').textContent = '💰 You save ₹' + Math.round(saving).toLocaleString();
+
+  const el = document.getElementById('discResult');
+  el.classList.remove('visible');
+  void el.offsetWidth;
+  el.classList.add('visible');
+
+  const savingPerMo = base * (pct / 100);
+  document.getElementById('ds-months').textContent    = months + ' month' + (months > 1 ? 's' : '');
+  document.getElementById('ds-pct').textContent       = pct + '%';
+  document.getElementById('ds-saving-mo').textContent = '₹' + Math.round(savingPerMo).toLocaleString();
+  document.getElementById('ds-total').textContent     = '₹' + Math.round(finalPay).toLocaleString();
+  document.getElementById('discSidebarBox').classList.add('visible');
+}
+
+function clearDiscount() {
+  document.getElementById('discResult').classList.remove('visible');
+  document.getElementById('discSidebarBox').classList.remove('visible');
+  document.getElementById('discMonths').value  = '';
+  document.getElementById('discPercent').value = '';
+  document.querySelectorAll('.month-pill').forEach(p => p.classList.remove('active'));
+}
+
+function getCurrentTotal() {
+  const r = ssdRate();
+  const ssdTotal  = state.ssdVolumes.reduce((s,v) => s + v.gb * r, 0);
+  const nvmeTotal = isMumbai() ? 0 : state.nvmeVolumes.reduce((s,v) => s + v.gb * 5, 0);
+  return (state.selectedPlan ? state.selectedPlan.price : 0) + ssdTotal + nvmeTotal;
+}
+
+function shakeInput(id) {
+  const el = document.getElementById(id);
+  el.parentElement.style.borderColor = '#ef4444';
+  setTimeout(() => { el.parentElement.style.borderColor = ''; }, 1200);
+  el.focus();
 }
 
 // ── RESET ──
 function resetAll() {
-  state = {
-    os: 'ubuntu', hwTab: 'general', selectedPlan: null,
-    ssdVolumes:  [{ id: 1, gb: 20 }],
-    nvmeVolumes: [],
-  };
+  state = { region:'central', os:'ubuntu', hwTab:'general', selectedPlan:null, ssdVolumes:[{id:1,gb:20}], nvmeVolumes:[] };
   volIdCounter = 10;
 
-  document.querySelectorAll('.os-card').forEach(c => c.classList.remove('active'));
-  document.getElementById('osGrid').querySelectorAll('.os-card')[0].classList.add('active');
-  document.querySelectorAll('.hw-tab').forEach((t, i) => t.classList.toggle('active', i === 0));
-  document.getElementById('windowsNotice').style.display = 'none';
-  document.getElementById('s-os').innerText = 'Ubuntu';
+  document.querySelectorAll('.region-btn').forEach((b,i) => b.classList.toggle('active', i===0));
+  document.getElementById('mumbaiNotice').classList.remove('visible');
+  document.getElementById('s-region').innerHTML = `<span class="summary-region-badge">🇮🇳 Central India</span>`;
 
+  document.querySelectorAll('.os-card').forEach(c => { c.classList.remove('active','hidden'); });
+  document.querySelector('[data-os="ubuntu"]').classList.add('active');
+  document.getElementById('s-os').innerText = 'Ubuntu';
+  document.getElementById('windowsNotice').style.display = 'none';
+
+  document.querySelectorAll('.hw-tab').forEach((t,i) => { t.classList.toggle('active', i===0); t.classList.remove('hidden'); });
+
+  document.getElementById('nvmeSection').classList.remove('hidden');
+  document.getElementById('nvmeTypeCard').style.display = '';
+  document.getElementById('storageTypeRow').classList.remove('single');
+  document.getElementById('ssdRateDisplay').textContent = '₹2/GB';
+
+  clearDiscount();
   renderVolumes('ssd');
   renderVolumes('nvme');
   renderPlans();
