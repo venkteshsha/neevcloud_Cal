@@ -434,6 +434,59 @@
       </div>
     </div>
 
+    <!-- Discount -->
+    <div class="discount-card">
+      <div class="discount-section-label">
+        <span class="disc-icon">🏷️</span>
+        04 — Team Discount
+      </div>
+
+      <div style="margin-bottom:0.5rem;">
+        <div style="font-size:0.7rem;font-weight:700;color:#a78bfa;text-transform:uppercase;letter-spacing:0.8px;margin-bottom:0.6rem;">Quick Select Duration</div>
+        <div class="month-pills">
+          <button class="month-pill" onclick="selectMonthPill(this, 3)">3 Months</button>
+          <button class="month-pill" onclick="selectMonthPill(this, 6)">6 Months</button>
+          <button class="month-pill" onclick="selectMonthPill(this, 12)">12 Months</button>
+          <button class="month-pill" onclick="selectMonthPill(this, 24)">24 Months</button>
+        </div>
+      </div>
+
+      <div class="disc-inputs">
+        <div class="disc-input-group">
+          <div class="disc-input-label">Duration (Months)</div>
+          <div class="disc-input-wrap">
+            <input class="disc-input" type="number" id="discMonths" min="1" max="60" placeholder="e.g. 6">
+            <span class="disc-input-suffix">mo</span>
+          </div>
+        </div>
+        <div class="disc-input-group">
+          <div class="disc-input-label">Discount (%)</div>
+          <div class="disc-input-wrap">
+            <input class="disc-input" type="number" id="discPercent" min="0" max="100" placeholder="e.g. 15">
+            <span class="disc-input-suffix">%</span>
+          </div>
+        </div>
+      </div>
+
+      <button class="disc-apply-btn" onclick="applyDiscount()">✦ Calculate Discounted Price</button>
+
+      <div class="disc-result" id="discResult">
+        <div class="disc-result-row"><span class="disc-result-label">Monthly Base</span><span class="disc-result-val" id="dr-monthly">—</span></div>
+        <div class="disc-result-row"><span class="disc-result-label">Duration</span><span class="disc-result-val" id="dr-months">—</span></div>
+        <div class="disc-result-row"><span class="disc-result-label">Discount Applied</span><span class="disc-result-val" id="dr-discount">—</span></div>
+        <div class="disc-result-row"><span class="disc-result-label">Undiscounted Total</span><span class="disc-result-val" id="dr-original">—</span></div>
+        <div class="disc-result-total">
+          <span class="disc-result-total-label">🎉 You Pay</span>
+          <span class="disc-result-total-val" id="dr-final">—</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-top:8px;">
+          <span class="disc-savings-badge" id="dr-savings-badge">💰 You save ₹0</span>
+          <button class="disc-clear-btn" onclick="clearDiscount()">✕ Clear</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
 
   <!-- Sidebar -->
   <div class="sidebar">
