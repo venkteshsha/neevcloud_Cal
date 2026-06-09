@@ -47,6 +47,34 @@
   .logo-container { display: flex; align-items: center; gap: 12px; }
   .logo-text { font-size: 1.5rem; font-weight: 800; color: var(--primary); letter-spacing: -1px; }
 
+  .header-right { display: flex; align-items: center; gap: 1rem; }
+
+  /* ── CALCULATOR MODE SWITCH ── */
+  .mode-switch {
+    display: flex;
+    background: #eef2f9;
+    border: 1px solid var(--border);
+    border-radius: 100px;
+    padding: 4px;
+    gap: 4px;
+  }
+  .mode-btn {
+    padding: 8px 20px;
+    border-radius: 100px;
+    border: none;
+    background: transparent;
+    font-family: inherit;
+    font-size: 0.82rem;
+    font-weight: 700;
+    cursor: pointer;
+    color: var(--text-muted);
+    transition: all 0.2s;
+    display: flex; align-items: center; gap: 7px;
+    white-space: nowrap;
+  }
+  .mode-btn.active { background: var(--primary); color: white; box-shadow: 0 2px 8px rgba(37,99,235,0.3); }
+  .mode-btn:not(.active):hover { background: var(--primary-soft); color: var(--primary); }
+
   /* ── REGION SELECTOR ── */
   .region-selector {
     display: flex;
@@ -348,6 +376,152 @@
     .container { grid-template-columns: 1fr; }
     .sidebar-inner { position: static; }
   }
+
+/* ===== GPU CALCULATOR STYLES (scoped under #gpuView) ===== */
+  #gpuView{
+    --bg:#eef2fb;
+    --card:#ffffff;
+    --ink:#0f172a;
+    --muted:#64748b;
+    --line:#e6eaf2;
+    --blue:#2563eb;
+    --blue-soft:#dbe6ff;
+    --panel:#0e1726;
+    --panel-2:#16223a;
+    --accent:#3b82f6;
+    --green:#16a34a;
+    --teal:#14b8a6;
+    --radius:18px;
+  }
+  #gpuView * {box-sizing:border-box;margin:0;padding:0}
+  #gpuView body {
+    font-family:'Segoe UI',system-ui,-apple-system,sans-serif;
+    background:linear-gradient(180deg,#f4f7ff,#eef2fb);
+    color:var(--ink);
+    min-height:100vh;
+    padding:0;
+  }
+
+  /* top bar */
+  #gpuView .topbar {
+    display:flex;align-items:center;justify-content:space-between;
+    padding:18px 32px;background:#fff;border-bottom:1px solid var(--line);
+    position:sticky;top:0;z-index:20;
+  }
+  #gpuView .brand {display:flex;align-items:center;gap:14px}
+  #gpuView .logo {
+    width:42px;height:42px;border-radius:11px;background:var(--panel);
+    display:grid;place-items:center;color:#fff;font-weight:800;font-size:20px;
+  }
+  #gpuView .brand h1 {font-size:24px;font-weight:800;color:var(--blue);letter-spacing:.5px}
+  #gpuView .header-tag {font-size:14px;font-weight:600;color:var(--muted);background:#f1f5fb;border:1px solid var(--line);padding:9px 18px;border-radius:24px}
+
+  /* layout */
+  #gpuView .wrap {
+    display:grid;grid-template-columns:1fr 380px;gap:26px;
+    max-width:1480px;margin:0 auto;padding:30px 32px 60px;
+  }
+  @media(max-width:1050px){.wrap{grid-template-columns:1fr}}
+
+  #gpuView .section-head {
+    display:flex;align-items:center;gap:12px;font-size:14px;font-weight:800;
+    letter-spacing:1.5px;color:var(--blue);text-transform:uppercase;margin:6px 0 18px;
+  }
+  #gpuView .section-head .bar {flex:1;height:1px;background:var(--line)}
+
+  #gpuView .block {background:var(--card);border-radius:var(--radius);padding:26px;border:1px solid var(--line);box-shadow:0 1px 3px rgba(15,23,42,.04);margin-bottom:26px}
+
+  /* gpu grid */
+  #gpuView .gpu-grid {display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:16px}
+  #gpuView .gpu-card {
+    border:1.5px solid var(--line);border-radius:14px;padding:18px;cursor:pointer;
+    transition:.16s;position:relative;background:#fff;
+  }
+  #gpuView .gpu-card:hover {border-color:#b9c8ee;transform:translateY(-2px);box-shadow:0 8px 22px rgba(37,99,235,.10)}
+  #gpuView .gpu-card.selected {border-color:var(--blue);background:linear-gradient(180deg,#f5f8ff,#eef3ff);box-shadow:0 8px 24px rgba(37,99,235,.18)}
+  #gpuView .gpu-card.disabled {opacity:.55;cursor:not-allowed;background:#f8fafc}
+  #gpuView .gpu-card.disabled:hover {transform:none;box-shadow:none;border-color:var(--line)}
+  #gpuView .gpu-top {display:flex;justify-content:space-between;align-items:flex-start;gap:10px;margin-bottom:14px}
+  #gpuView .gpu-name {display:flex;align-items:center;gap:8px;font-weight:700;font-size:15px;line-height:1.3}
+  #gpuView .nv {width:20px;height:20px;border-radius:5px;background:#76b900;display:grid;place-items:center;flex-shrink:0}
+  #gpuView .nv::after {content:"";width:8px;height:8px;border-radius:50%;background:#fff}
+  #gpuView .gpu-price {font-weight:800;font-size:15px;color:var(--ink);white-space:nowrap}
+  #gpuView .gpu-price small {color:var(--muted);font-weight:600;font-size:11px}
+  #gpuView .spec {display:flex;align-items:center;gap:8px;font-size:13px;color:var(--muted);margin:7px 0}
+  #gpuView .spec svg {width:15px;height:15px;opacity:.6;flex-shrink:0}
+  #gpuView .gpu-foot {display:flex;justify-content:space-between;align-items:center;margin-top:14px;font-size:12px;color:var(--muted)}
+  #gpuView .badge {font-size:11px;font-weight:700;padding:3px 9px;border-radius:20px}
+  #gpuView .badge.avail {background:#dcfce7;color:#15803d}
+  #gpuView .badge.out {background:#fee2e2;color:#b91c1c}
+  #gpuView .check {position:absolute;top:12px;right:12px;width:22px;height:22px;border-radius:50%;background:var(--blue);display:none;place-items:center;color:#fff;font-size:13px}
+  #gpuView .gpu-card.selected .check {display:grid}
+
+  /* qty + sliders */
+  #gpuView .ctrl-row {display:flex;align-items:center;justify-content:space-between;padding:14px 0;border-bottom:1px solid var(--line)}
+  #gpuView .ctrl-row:last-child {border-bottom:0}
+  #gpuView .ctrl-label {font-weight:600;font-size:14px}
+  #gpuView .ctrl-label small {display:block;color:var(--muted);font-weight:400;font-size:12px;margin-top:2px}
+  #gpuView .stepper {display:flex;align-items:center;gap:0;border:1px solid var(--line);border-radius:10px;overflow:hidden}
+  #gpuView .stepper button {width:38px;height:38px;border:0;background:#f8fafc;font-size:18px;cursor:pointer;color:var(--ink);transition:.15s}
+  #gpuView .stepper button:hover:not(:disabled) {background:var(--blue);color:#fff}
+  #gpuView .stepper button:disabled {opacity:.4;cursor:not-allowed}
+  #gpuView .stepper .val {width:46px;text-align:center;font-weight:700;font-size:15px}
+
+  #gpuView .slider-block {margin:18px 0}
+  #gpuView .slider-top {display:flex;justify-content:space-between;align-items:baseline;margin-bottom:10px}
+  #gpuView .slider-top .lab {font-weight:600;font-size:14px}
+  #gpuView .slider-top .num {font-weight:800;font-size:16px;color:var(--blue)}
+  #gpuView input[type=range] {
+    -webkit-appearance:none;width:100%;height:7px;border-radius:6px;
+    background:linear-gradient(90deg,var(--blue) var(--fill,30%),#e2e8f0 var(--fill,30%));
+    outline:none;cursor:pointer;
+  }
+  #gpuView input[type=range]::-webkit-slider-thumb {-webkit-appearance:none;width:22px;height:22px;border-radius:50%;background:#fff;border:3px solid var(--blue);box-shadow:0 2px 6px rgba(37,99,235,.4);cursor:pointer}
+  #gpuView input[type=range]::-moz-range-thumb {width:18px;height:18px;border-radius:50%;background:#fff;border:3px solid var(--blue);cursor:pointer}
+  #gpuView .slider-meta {display:flex;justify-content:space-between;font-size:12px;color:var(--muted);margin-top:8px}
+
+  /* options */
+  #gpuView .opt-grid {display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  @media(max-width:560px){.opt-grid{grid-template-columns:1fr}}
+  #gpuView .opt {border:1.5px solid var(--line);border-radius:12px;padding:16px;cursor:pointer;transition:.15s}
+  #gpuView .opt:hover {border-color:#b9c8ee}
+  #gpuView .opt.active {border-color:var(--blue);background:#f5f8ff}
+  #gpuView .opt .ohead {display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}
+  #gpuView .opt .otitle {font-weight:700;font-size:14px}
+  #gpuView .opt .ofree {font-size:11px;font-weight:700;color:var(--green);background:#dcfce7;padding:2px 8px;border-radius:12px}
+  #gpuView .opt p {font-size:12.5px;color:var(--muted);line-height:1.5}
+  #gpuView .dot {width:18px;height:18px;border-radius:50%;border:2px solid #cbd5e1}
+  #gpuView .opt.active .dot {border-color:var(--blue);background:radial-gradient(circle,var(--blue) 40%,transparent 42%)}
+
+  /* dark summary panel */
+  #gpuView .summary {
+    background:var(--panel);color:#fff;border-radius:22px;padding:30px;
+    position:sticky;top:96px;align-self:start;
+    box-shadow:0 20px 50px rgba(14,23,38,.35);
+  }
+  #gpuView .summary h2 {font-size:24px;font-weight:800;margin-bottom:26px;letter-spacing:.3px}
+  #gpuView .srow {display:flex;justify-content:space-between;align-items:center;padding:13px 0;font-size:14px;color:#cbd5e1}
+  #gpuView .srow .k {color:#94a3b8}
+  #gpuView .srow .v {font-weight:700;color:#fff}
+  #gpuView .srow .v.blue {color:#60a5fa}
+  #gpuView .divider {height:1px;background:#243149;margin:8px 0}
+  #gpuView .sregion {display:inline-flex;align-items:center;gap:5px;background:var(--blue);color:#fff;padding:5px 11px;border-radius:18px;font-size:12px;font-weight:700}
+  #gpuView .sregion .in {background:rgba(255,255,255,.25);font-size:9px;padding:2px 5px;border-radius:5px}
+
+  #gpuView .total-box {margin-top:24px;padding-top:22px;border-top:1px dashed #2c3a55}
+  #gpuView .total-box .tlabel {font-size:13px;font-weight:700;letter-spacing:2px;color:#94a3b8;text-transform:uppercase}
+  #gpuView .total-box .thr {font-size:14px;color:#94a3b8;margin-top:14px;display:flex;justify-content:space-between}
+  #gpuView .total-box .thr b {color:#34d399}
+  #gpuView .total-box .big {font-size:46px;font-weight:800;color:#60a5fa;margin-top:6px;line-height:1}
+  #gpuView .total-box .sub {font-size:12px;color:#64748b;margin-top:8px}
+
+  #gpuView .deploy {
+    width:100%;margin-top:22px;padding:16px;border:0;border-radius:14px;
+    background:linear-gradient(90deg,var(--teal),#22c1ab);color:#fff;font-size:16px;font-weight:700;
+    cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;transition:.18s;
+  }
+  #gpuView .deploy:hover {transform:translateY(-1px);box-shadow:0 10px 26px rgba(20,184,166,.4)}
+
 </style>
 </head>
 <body>
@@ -357,12 +531,20 @@
     <img src="https://idr01.zata.ai/neevhello/download.png" alt="NeevCloud Logo" style="height:35px;width:auto;object-fit:contain;">
     <div class="logo-text">NEEVCLOUD</div>
   </div>
-  <div class="region-selector">
-    <button class="region-btn active" onclick="selectRegion(this,'central')">🇮🇳 Central India</button>
-    <button class="region-btn" onclick="selectRegion(this,'mumbai')">🇮🇳 Mumbai</button>
+  <div class="header-right">
+    <div class="mode-switch">
+      <button class="mode-btn active" id="modeCpuBtn" onclick="switchMode('cpu')">🖥️ CPU Pricing</button>
+      <button class="mode-btn" id="modeGpuBtn" onclick="switchMode('gpu')">⚡ GPU Pricing</button>
+    </div>
+    <div class="region-selector" id="regionSelector">
+      <button class="region-btn active" onclick="selectRegion(this,'central')">🇮🇳 Central India</button>
+      <button class="region-btn" onclick="selectRegion(this,'mumbai')">🇮🇳 Mumbai</button>
+    </div>
   </div>
 </header>
 
+<!-- ===================== CPU VIEW ===================== -->
+<div id="cpuView">
 <div class="container">
   <div class="main-content">
 
@@ -530,25 +712,141 @@
     </div>
   </div>
 </div>
+</div><!-- /cpuView -->
+
+<!-- ===================== GPU VIEW ===================== -->
+<div id="gpuView" style="display:none;">
+<div class="wrap">
+  <!-- LEFT -->
+  <div>
+    <!-- STEP 1 GPU -->
+    <div class="section-head"><span>01 — Select GPU</span><span class="bar"></span></div>
+    <div class="block">
+      <div class="gpu-grid" id="gpuGrid"></div>
+    </div>
+
+    <!-- STEP 2 RESOURCES -->
+    <div class="section-head"><span>02 — Resources</span><span class="bar"></span></div>
+    <div class="block">
+      <div class="ctrl-row">
+        <div class="ctrl-label">GPU Count <small>Number of GPUs in this pod</small></div>
+        <div class="stepper">
+          <button id="qtyMinus">−</button>
+          <span class="val" id="qtyVal">1</span>
+          <button id="qtyPlus">+</button>
+        </div>
+      </div>
+
+      <div class="slider-block">
+        <div class="slider-top"><span class="lab">Disk Storage</span><span class="num" id="diskNum">100 GB</span></div>
+        <input type="range" id="diskSlider" min="10" max="1024" value="100" step="10">
+        <div class="slider-meta"><span id="diskNote" style="color:var(--green);font-weight:600">100 GB free · 0 GB billable</span><span>Max 1024 GB</span></div>
+      </div>
+
+      <div class="slider-block">
+        <div class="slider-top"><span class="lab">Usage Hours / month</span><span class="num" id="hrNum">730 hrs</span></div>
+        <input type="range" id="hrSlider" min="1" max="730" value="730" step="1">
+        <div class="slider-meta"><span>1 hr</span><span>730 hrs (full month)</span></div>
+      </div>
+    </div>
+
+    <!-- STEP 3 STORAGE -->
+    <div class="section-head"><span>03 — Storage Type</span><span class="bar"></span></div>
+    <div class="block">
+      <div class="opt-grid">
+        <div class="opt active" data-storage="persistent" data-rate="2">
+          <div class="ohead"><span class="otitle">Persistent Storage</span><span class="dot"></span></div>
+          <p>Network storage persists. First 100 GB free, then ₹2.19/GB/mo. Billed monthly, cancel anytime.</p>
+        </div>
+        <div class="opt" data-storage="ephemeral" data-rate="0">
+          <div class="ohead"><span class="otitle">Ephemeral <span class="ofree">Free</span></span><span class="dot"></span></div>
+          <p>Temporary storage that is deleted when the instance is deleted. No disk cost.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- RIGHT SUMMARY -->
+  <div class="summary">
+    <h2>Configuration Summary</h2>
+
+    <div class="srow"><span class="k">GPU</span><span class="v" id="sumGpu">—</span></div>
+    <div class="srow"><span class="k">Count</span><span class="v" id="sumCount">1 × GPU</span></div>
+    <div class="srow"><span class="k">VRAM</span><span class="v" id="sumVram">—</span></div>
+    <div class="srow"><span class="k">vCPU</span><span class="v" id="sumCpu">—</span></div>
+    <div class="srow"><span class="k">RAM</span><span class="v" id="sumRam">—</span></div>
+    <div class="srow"><span class="k">Disk</span><span class="v" id="sumDisk">100 GB</span></div>
+    <div class="divider"></div>
+    <div class="srow"><span class="k">GPU Cost</span><span class="v blue" id="sumGpuCost">₹0/hr</span></div>
+    <div class="srow"><span class="k">Disk Cost</span><span class="v" id="sumDiskCost">₹0/mo</span></div>
+    <div class="srow"><span class="k">Instance Pricing</span><span class="v">On-Demand</span></div>
+
+    <div class="total-box">
+      <div class="tlabel">Estimated Monthly Total</div>
+      <div class="big" id="monthTotal">₹0</div>
+      <div class="thr"><span>Total Hourly Cost</span><b id="hrTotal">₹0/hr</b></div>
+      <div class="sub">Estimates assume selected usage hours; costs may vary.</div>
+    </div>
+
+    <button class="deploy" id="deployBtn">🚀 Deploy GPU</button>
+  </div>
+</div>
+
+</div><!-- /gpuView -->
 
 <script>
+// ========================= CPU CALCULATOR SCRIPT =========================
 // ── OS DATA ──
+// Logos are inline SVGs (no external requests) so they always render offline/anywhere.
+// Each `color`+`name` also powers a letter-tile fallback if an svg ever fails.
+function svg(inner){ return 'data:image/svg+xml;utf8,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">' + inner + '</svg>'); }
+
 const osData = [
-  { id: 'ubuntu',     name: 'Ubuntu',      logo: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/ubuntu/ubuntu-plain.svg' },
-  { id: 'windows',    name: 'Windows',     logo: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/windows8/windows8-original.svg', paid: true },
-  { id: 'debian',     name: 'Debian',      logo: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/debian/debian-plain.svg' },
-  { id: 'centos',     name: 'CentOS',      logo: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/centos/centos-plain.svg' },
-  { id: 'redhat',     name: 'Red Hat',     logo: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/redhat/redhat-plain.svg', mumbaiHidden: true },
-  { id: 'fedora',     name: 'Fedora',      logo: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/fedora/fedora-plain.svg' },
-  { id: 'almalinux',  name: 'AlmaLinux',   logo: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/linux/linux-plain.svg' },
-  { id: 'oracle',     name: 'Oracle Linux',logo: 'https://upload.wikimedia.org/wikipedia/commons/5/50/Oracle_logo.svg' },
-  { id: 'cloudlinux', name: 'Cloud Linux', logo: 'https://www.svgrepo.com/show/354881/cloudlinux.svg' },
-  { id: 'rocky',      name: 'Rocky Linux', logo: 'https://raw.githubusercontent.com/devicons/devicon/master/icons/rockylinux/rockylinux-original.svg' },
-  { id: 'opensuse',   name: 'Open SUSE',   logo: 'https://static.opensuse.org/favicon.ico' }
+  { id:'ubuntu', name:'Ubuntu', color:'#E95420', logo: svg(
+    '<circle cx="16" cy="16" r="15" fill="#E95420"/>'+
+    '<g fill="#fff"><circle cx="8" cy="16" r="2.4"/><circle cx="21" cy="9" r="2.4"/><circle cx="21" cy="23" r="2.4"/>'+
+    '<path d="M16 8.5a7.5 7.5 0 0 0-6.4 3.6l1.9 1.1A5.3 5.3 0 0 1 16 10.7zM9.6 19.9A7.5 7.5 0 0 0 16 23.5v-2.2a5.3 5.3 0 0 1-4.5-2.5zM23.3 16a7.3 7.3 0 0 0-3.6-6.3l-1.1 1.9a5.1 5.1 0 0 1 0 8.8l1.1 1.9A7.3 7.3 0 0 0 23.3 16z"/></g>') },
+
+  { id:'windows', name:'Windows', color:'#0078D4', paid:true, logo: svg(
+    '<path fill="#0078D4" d="M3 5.5 14.5 4v11H3zM16 3.8 29 2v13H16zM3 17h11.5v11L3 26.5zM16 17h13v13l-13-1.8z"/>') },
+
+  { id:'debian', name:'Debian', color:'#A80030', logo: svg(
+    '<circle cx="16" cy="16" r="13" fill="none" stroke="#A80030" stroke-width="2.4"/>'+
+    '<path fill="#A80030" d="M19.7 11.2c-2.6-2.3-6-1.5-7.3.6-1.4 2.2-.6 5.6 2.3 6.6 2.7.9 5.3-.8 5.4-3.3-1 2-3.3 2.8-5.1 1.9-1.9-.9-2.3-3.4-1-4.9 1.2-1.4 3.4-1.5 4.7-.2z"/>') },
+
+  { id:'centos', name:'CentOS', color:'#262577', logo: svg(
+    '<g fill="#262577"><path d="M16 2 22 8h-4v6h6V10l6 6-6 6v-4h-6v6h4l-6 6-6-6h4v-6H8v4l-6-6 6-6v4h6V8H10z"/></g>'+
+    '<circle cx="16" cy="16" r="3" fill="#9CCD2A"/>') },
+
+  { id:'redhat', name:'Red Hat', color:'#EE0000', mumbaiHidden:true, logo: svg(
+    '<path fill="#EE0000" d="M21 16c2.5 0 4.5.6 4.5 1.7 0 .4-.3.8-.7 1.1l.1-.6c0-1-2.7-1.6-6-1.6-4.6 0-9.2-1.5-9.2-3.6 0-.6.4-1.1 1-1.6-.9 1.9 4 3.9 8.5 4l1.8.2z"/>'+
+    '<path fill="#000" d="M21 16.6c.6 0 .9.1.9.3 0 .5-1.6.9-3.6.9-3.4 0-6.4-1.2-6.4-2.4 0-.4.3-.7.9-1 .2 1 2.6 1.9 5.4 1.9.9 0 1.9.1 2.8.3z"/>') },
+
+  { id:'fedora', name:'Fedora', color:'#51A2DA', logo: svg(
+    '<circle cx="16" cy="16" r="14" fill="#51A2DA"/>'+
+    '<path fill="#fff" d="M19 8.5a4.4 4.4 0 0 0-4.4 4.4v2.2h-2v3h2v6.4h3v-6.4h2.6v-3H17.6v-2c0-.9.6-1.5 1.5-1.5H22v-3z"/>') },
+
+  { id:'almalinux', name:'AlmaLinux', color:'#0B7FAB', logo: svg(
+    '<circle cx="16" cy="16" r="14" fill="#0B7FAB"/>'+
+    '<path fill="#fff" d="M16 7l2.6 5.6L24 13l-4 4 1 6-5-3-5 3 1-6-4-4 5.4-.4z"/>') },
+
+  { id:'oracle', name:'Oracle Linux', color:'#C74634', logo: svg(
+    '<rect width="32" height="32" rx="6" fill="#fff"/>'+
+    '<rect x="6" y="12.5" width="20" height="7" rx="3.5" fill="none" stroke="#C74634" stroke-width="2.4"/>') },
+
+  { id:'cloudlinux', name:'Cloud Linux', color:'#2A6EBB', logo: svg(
+    '<path fill="#2A6EBB" d="M23 22H10a5 5 0 0 1-.6-9.96A6.5 6.5 0 0 1 22 12.5a4.75 4.75 0 0 1 1 9.5z"/>') },
+
+  { id:'rocky', name:'Rocky Linux', color:'#10B981', logo: svg(
+    '<circle cx="16" cy="16" r="14" fill="#10B981"/>'+
+    '<path fill="#fff" d="M22.5 9.5 12 20l-3.2-3.2-2.1 2.1 1.5 6.1c1.9 1.6 4.5 2.5 7.3 2.5 6 0 11-4.5 11-11 0-2.5-.8-4.7-2.2-6.5z" opacity=".95"/>') },
+
+  { id:'opensuse', name:'Open SUSE', color:'#73BA25', logo: svg(
+    '<circle cx="16" cy="16" r="14" fill="#73BA25"/>'+
+    '<path fill="#fff" d="M11 12.5a7 7 0 0 1 12 4.9c0 2-1.3 3.1-3 3.1-1.5 0-2.6-.9-2.6-2.2 0-1.1.8-1.9 1.9-1.9.6 0 1 .2 1.3.5a3.9 3.9 0 0 0-7.4-1.1z"/>'+
+    '<circle cx="11.5" cy="11" r="1.5" fill="#fff"/>') },
 ];
 
-// ── PLANS ──
-// Central India — Linux
 const centralLinux = {
   general: [
     { name:'Nano',           cpu:2,  ram:'2 GB',   storage:'0 GB', price:699   },
@@ -576,7 +874,6 @@ const centralLinux = {
   ],
 };
 
-// Central India — Windows
 const centralWindows = {
   general: [
     { name:'Nano',           cpu:2,  ram:'2 GB',   storage:'0 GB', price:1099  },
@@ -604,7 +901,6 @@ const centralWindows = {
   ],
 };
 
-// Mumbai — Linux (prices from portal screenshots)
 const mumbaiLinux = {
   general: [
     { name:'Nano',           cpu:2,  ram:'2 GB',   storage:'0 GB', price:1399  },
@@ -615,15 +911,12 @@ const mumbaiLinux = {
   ],
   memory: [
     { name:'CosmicCascade',    cpu:2,  ram:'8 GB',   storage:'0 GB', price:2599  },
-  
   ],
   cpu: [
     { name:'HyperNova',     cpu:16, ram:'32 GB', storage:'0 GB', price:9999  },
-    
   ],
 };
 
-// Mumbai — Windows
 const mumbaiWindows = {
   general: [
     { name:'Nano',           cpu:2,  ram:'2 GB',   storage:'0 GB', price:1399  },
@@ -634,15 +927,12 @@ const mumbaiWindows = {
   ],
   memory: [
     { name:'CosmicCascade',    cpu:2,  ram:'8 GB',   storage:'0 GB', price:2599  },
-  
   ],
   cpu: [
     { name:'HyperNova',     cpu:16, ram:'32 GB', storage:'0 GB', price:9999  },
-    
   ],
 };
 
-// ── STATE ──
 let state = { region:'central', os:'ubuntu', hwTab:'general', selectedPlan:null, ssdVolumes:[{id:1,gb:20}], nvmeVolumes:[] };
 let volIdCounter = 10;
 
@@ -657,7 +947,6 @@ function getPlans() {
   return src[state.hwTab] || [];
 }
 
-// ── REGION ──
 function selectRegion(el, region) {
   state.region = region;
   document.querySelectorAll('.region-btn').forEach(b => b.classList.remove('active'));
@@ -667,13 +956,11 @@ function selectRegion(el, region) {
   document.getElementById('s-region').innerHTML =
     `<span class="summary-region-badge">🇮🇳 ${isMumbai() ? 'Mumbai (West India)' : 'Central India'}</span>`;
 
-  // Show/hide Red Hat
   document.querySelectorAll('.os-card').forEach(card => {
     const os = osData.find(o => o.id === card.dataset.os);
     card.classList.toggle('hidden', !!(os && os.mumbaiHidden && isMumbai()));
   });
 
-  // If Red Hat was selected, switch to Ubuntu
   if (isMumbai() && state.os === 'redhat') {
     state.os = 'ubuntu';
     document.querySelectorAll('.os-card').forEach(c => c.classList.remove('active'));
@@ -682,14 +969,12 @@ function selectRegion(el, region) {
     document.getElementById('windowsNotice').style.display = 'none';
   }
 
-  // Smart tab
   document.querySelector('.smart-tab').classList.toggle('hidden', isMumbai());
   if (isMumbai() && state.hwTab === 'smart') {
     state.hwTab = 'general';
     document.querySelectorAll('.hw-tab').forEach((t,i) => t.classList.toggle('active', i === 0));
   }
 
-  // NVMe
   document.getElementById('nvmeSection').classList.toggle('hidden', isMumbai());
   document.getElementById('nvmeTypeCard').style.display = isMumbai() ? 'none' : '';
   document.getElementById('storageTypeRow').classList.toggle('single', isMumbai());
@@ -704,7 +989,6 @@ function selectRegion(el, region) {
   updateCalc();
 }
 
-// ── OS ──
 function initOS() {
   const grid = document.getElementById('osGrid');
   osData.forEach(os => {
@@ -713,7 +997,8 @@ function initOS() {
     div.dataset.os = os.id;
     div.innerHTML = `
       ${os.paid ? '<span class="paid-tag">PAID</span>' : ''}
-      <img src="${os.logo}" alt="${os.name}">
+      <img src="${os.logo}" alt="${os.name}" loading="lazy"
+        onerror="this.onerror=null;this.replaceWith(Object.assign(document.createElement('div'),{className:'os-fallback',textContent:'${os.name.charAt(0)}',style:'width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-weight:800;color:#fff;font-size:1rem;background:${os.color||'#64748b'}'}))">
       <span class="os-name">${os.name}</span>
     `;
     div.onclick = () => {
@@ -730,7 +1015,6 @@ function initOS() {
   });
 }
 
-// ── TABS ──
 function selectTab(el, tab) {
   state.hwTab = tab;
   document.querySelectorAll('.hw-tab').forEach(t => t.classList.remove('active'));
@@ -764,7 +1048,6 @@ function renderPlans() {
   });
 }
 
-// ── VOLUMES ──
 function addVolume(type) {
   if (type === 'nvme' && isMumbai()) return;
   const id = ++volIdCounter;
@@ -822,7 +1105,6 @@ function renderVolumes(type) {
   });
 }
 
-// ── CALC ──
 function updateCalc() {
   const r         = ssdRate();
   const ssdTotal  = state.ssdVolumes.reduce((s,v) => s + v.gb * r, 0);
@@ -855,9 +1137,6 @@ function updateCalc() {
   document.getElementById('storageTotalDisplay').textContent = '₹' + storageCost.toLocaleString() + ' / month';
   document.getElementById('totalAmount').innerText = '₹' + total.toLocaleString();
 
-
-
-  // Refresh discount if active
   const resultEl = document.getElementById('discResult');
   if (resultEl.classList.contains('visible')) {
     const months = parseInt(document.getElementById('discMonths').value) || 0;
@@ -866,7 +1145,6 @@ function updateCalc() {
   }
 }
 
-// ── DISCOUNT ──
 function selectMonthPill(el, months) {
   document.querySelectorAll('.month-pill').forEach(p => p.classList.remove('active'));
   el.classList.add('active');
@@ -930,7 +1208,6 @@ function shakeInput(id) {
   el.focus();
 }
 
-// ── RESET ──
 function resetAll() {
   state = { region:'central', os:'ubuntu', hwTab:'general', selectedPlan:null, ssdVolumes:[{id:1,gb:20}], nvmeVolumes:[] };
   volIdCounter = 10;
@@ -958,12 +1235,133 @@ function resetAll() {
   updateCalc();
 }
 
-// ── INIT ──
+// ── MODE SWITCH (CPU <-> GPU) ──
+function switchMode(mode) {
+  const isGpu = mode === 'gpu';
+  document.getElementById('cpuView').style.display = isGpu ? 'none' : '';
+  document.getElementById('gpuView').style.display = isGpu ? '' : 'none';
+  document.getElementById('modeCpuBtn').classList.toggle('active', !isGpu);
+  document.getElementById('modeGpuBtn').classList.toggle('active', isGpu);
+  // Region selector only applies to CPU view
+  document.getElementById('regionSelector').style.display = isGpu ? 'none' : '';
+}
+
+// ── INIT CPU ──
 initOS();
 renderVolumes('ssd');
 renderVolumes('nvme');
 renderPlans();
 updateCalc();
+
+// ========================= GPU CALCULATOR SCRIPT (isolated scope) =========================
+(function(){
+/* ---- GPU catalogue (from NeevCloud listings) ---- */
+const GPUS = [
+  {id:'a30',     name:'NVIDIA A30',                          price:76.14,  vram:24,  cpu:24, ram:192, avail:true},
+  {id:'rtx5090', name:'NVIDIA GeForce RTX 5090',             price:93.27,  vram:32,  cpu:16, ram:96,  avail:true},
+  {id:'rtx6000', name:'NVIDIA RTX PRO 6000 Blackwell',       price:146.57, vram:96,  cpu:24, ram:112, avail:true},
+  {id:'rtx6000s',name:'NVIDIA RTX PRO 6000 Blackwell Server',price:114.21, vram:96,  cpu:14, ram:56,  avail:true},
+  {id:'a100',    name:'NVIDIA A100',                         price:125.63, vram:80,  cpu:12, ram:125, avail:true},
+  {id:'rtx3090', name:'NVIDIA GeForce RTX 3090',             price:51.39,  vram:24,  cpu:24, ram:112, avail:true},
+  {id:'h100',    name:'NVIDIA H100',                         price:189.40, vram:80,  cpu:20, ram:125, avail:true},
+  {id:'h200',    name:'NVIDIA H200',                         price:227.47, vram:141, cpu:20, ram:192, avail:true},
+  {id:'a6000',   name:'NVIDIA RTX A6000',                    price:79.95,  vram:48,  cpu:48, ram:128, avail:true},
+  {id:'t4',      name:'Tesla T4',                            price:27.60,  vram:16,  cpu:12, ram:64,  avail:true},
+];
+
+const ICON_VRAM = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="7" width="18" height="10" rx="2"/><path d="M7 17v3M17 17v3"/></svg>';
+const ICON_CPU  = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="6" y="6" width="12" height="12" rx="1"/><path d="M9 2v3M15 2v3M9 19v3M15 19v3M2 9h3M2 15h3M19 9h3M19 15h3"/></svg>';
+const ICON_RAM  = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="8" width="20" height="8" rx="1"/><path d="M6 16v2M10 16v2M14 16v2M18 16v2"/></svg>';
+
+const fmt = n => '₹' + n.toLocaleString('en-IN',{maximumFractionDigits:2});
+
+const state = { gpu:GPUS[0], qty:1, disk:100, hours:730, diskRate:2, region:'Central India' };
+
+/* build cards */
+const grid = document.getElementById('gpuGrid');
+GPUS.forEach(g=>{
+  const c = document.createElement('div');
+  c.className = 'gpu-card' + (g.id===state.gpu.id?' selected':'');
+  c.dataset.id = g.id;
+  c.innerHTML = `
+    <div class="check">✓</div>
+    <div class="gpu-top">
+      <div class="gpu-name"><span class="nv"></span>${g.name}</div>
+      <div class="gpu-price">${fmt(g.price)}<small>/hr</small></div>
+    </div>
+    <div class="spec">${ICON_VRAM}${g.vram} GB VRAM</div>
+    <div class="spec">${ICON_CPU}${g.cpu} vCPU</div>
+    <div class="spec">${ICON_RAM}${g.ram} GB RAM</div>`;
+  c.addEventListener('click',()=>{
+    state.gpu = g; state.qty = 1;
+    document.querySelectorAll('.gpu-card').forEach(x=>x.classList.remove('selected'));
+    c.classList.add('selected');
+    document.getElementById('qtyVal').textContent = 1;
+    render();
+  });
+  grid.appendChild(c);
+});
+
+/* qty */
+document.getElementById('qtyPlus').onclick = ()=>{ if(state.qty<8){state.qty++; document.getElementById('qtyVal').textContent=state.qty; render();} };
+document.getElementById('qtyMinus').onclick = ()=>{ if(state.qty>1){state.qty--; document.getElementById('qtyVal').textContent=state.qty; render();} };
+
+/* sliders */
+const diskS = document.getElementById('diskSlider');
+diskS.oninput = e=>{
+  state.disk=+e.target.value;
+  document.getElementById('diskNum').textContent=state.disk+' GB';
+  const billable = Math.max(0, state.disk - 100);
+  document.getElementById('diskNote').textContent = `100 GB free · ${billable} GB billable`;
+  setFill(diskS,10,1024);
+  render();
+};
+const hrS = document.getElementById('hrSlider');
+hrS.oninput = e=>{ state.hours=+e.target.value; document.getElementById('hrNum').textContent=state.hours+' hrs'; setFill(hrS,1,730); render(); };
+function setFill(el,min,max){ el.style.setProperty('--fill', ((el.value-min)/(max-min)*100)+'%'); }
+
+/* storage */
+document.querySelectorAll('.opt').forEach(o=>{
+  o.onclick = ()=>{
+    document.querySelectorAll('.opt').forEach(x=>x.classList.remove('active'));
+    o.classList.add('active');
+    state.diskRate = +o.dataset.rate;
+    render();
+  };
+});
+
+/* deploy */
+document.getElementById('deployBtn').onclick = ()=>{
+  const m = document.getElementById('monthTotal').textContent;
+  alert(`Deploying ${state.qty} × ${state.gpu.name}\nEstimated monthly: ${m}`);
+};
+
+/* render */
+function render(){
+  const g = state.gpu;
+  const gpuHr   = g.price * state.qty;
+  const billableDisk = Math.max(0, state.disk - 100);     // first 100 GB free
+  const diskMo  = state.diskRate === 0 ? 0 : billableDisk * 2.19;  // ₹2.19/GB/mo above 100
+  const gpuMo   = gpuHr * state.hours;
+  const monthly = gpuMo + diskMo;
+
+  document.getElementById('sumGpu').textContent   = g.name;
+  document.getElementById('sumCount').textContent = `${state.qty} × ${g.name.split(' ').slice(-1)[0]}`;
+  document.getElementById('sumVram').textContent  = (g.vram*state.qty)+' GB';
+  document.getElementById('sumCpu').textContent   = (g.cpu*state.qty)+' cores';
+  document.getElementById('sumRam').textContent   = (g.ram*state.qty)+' GB';
+  document.getElementById('sumDisk').textContent  = state.disk+' GB';
+  document.getElementById('sumGpuCost').textContent = fmt(gpuHr)+'/hr';
+  document.getElementById('sumDiskCost').textContent= diskMo===0 ? 'Free' : fmt(diskMo)+'/mo';
+
+  document.getElementById('hrTotal').textContent  = fmt(gpuHr)+'/hr';
+  document.getElementById('monthTotal').textContent = fmt(Math.round(monthly));
+}
+
+setFill(diskS,10,1024); setFill(hrS,1,730);
+render();
+})(); // end GPU IIFE
+
 </script>
 </body>
 </html>
