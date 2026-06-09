@@ -355,10 +355,17 @@
   .summary-item span:last-child { color: white; font-weight: 600; text-align: right; }
   .summary-cost-val { color: #38bdf8 !important; font-family: 'JetBrains Mono', monospace; }
 
+  .srv-stepper { display:inline-flex; align-items:center; border:1px solid #334155; border-radius:9px; overflow:hidden; }
+  .srv-stepper button { width:30px; height:30px; border:0; background:#334155; color:#fff; font-size:1rem; cursor:pointer; transition:.15s; font-family:inherit; }
+  .srv-stepper button:hover { background:var(--primary); }
+  .srv-stepper .srv-qv { width:34px; text-align:center; font-weight:800; color:#fff; font-size:0.9rem; }
+
   .summary-region-badge { display: inline-flex; align-items: center; gap: 5px; padding: 3px 10px; border-radius: 100px; font-size: 0.72rem; font-weight: 700; background: rgba(37,99,235,0.2); color: #93c5fd; border: 1px solid rgba(37,99,235,0.3); }
 
   .total-box { margin-top: 2rem; padding-top: 2rem; border-top: 1px dashed #334155; }
   .price-large { font-size: 2.5rem; font-weight: 800; color: #38bdf8; line-height: 1; }
+  .gst-line { display:flex; justify-content:space-between; align-items:center; margin-top:12px; padding:10px 14px; background:rgba(56,189,248,0.08); border:1px solid rgba(56,189,248,0.2); border-radius:10px; font-size:0.82rem; color:#94a3b8; }
+  .gst-line span:last-child { font-family:'JetBrains Mono', monospace; font-weight:800; color:#34d399; font-size:0.95rem; }
 
   .disc-sidebar-box { margin-top: 1rem; padding: 1rem; background: rgba(139,92,246,0.12); border: 1px solid rgba(139,92,246,0.3); border-radius: 12px; display: none; }
   .disc-sidebar-box.visible { display: block; }
@@ -376,6 +383,74 @@
     .container { grid-template-columns: 1fr; }
     .sidebar-inner { position: static; }
   }
+
+/* ===== ZATA S3 STORAGE CALCULATOR STYLES ===== */
+  #zataView .container { display:grid; grid-template-columns:1fr 380px; max-width:1400px; margin:2rem auto; padding:0 2rem; gap:2rem; }
+  @media (max-width:1000px){ #zataView .container{ grid-template-columns:1fr; } }
+  #zataView .main-content { display:flex; flex-direction:column; gap:2rem; }
+
+  /* plan cards grid (like image 2) */
+  #zataView .zata-plan-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(220px,1fr)); gap:16px; }
+  #zataView .zplan {
+    border:1.5px solid var(--border); border-radius:18px; background:#fff; cursor:pointer;
+    overflow:hidden; transition:.18s; position:relative; display:flex; flex-direction:column;
+  }
+  #zataView .zplan:hover { transform:translateY(-3px); border-color:var(--primary); box-shadow:0 12px 24px -8px rgba(37,99,235,.18); }
+  #zataView .zplan.active { border-color:var(--primary); box-shadow:0 12px 28px -6px rgba(37,99,235,.28); }
+  #zataView .zplan-head { padding:1.1rem 1.2rem .9rem; display:flex; justify-content:space-between; align-items:flex-start; gap:8px; }
+  #zataView .zplan-head.tier0 { background:linear-gradient(135deg,#eff6ff,#f8fafc); }
+  #zataView .zplan-head.tier1 { background:linear-gradient(135deg,#fef9ec,#fff7ed); }
+  #zataView .zplan-head.tier2 { background:linear-gradient(135deg,#fdf2f8,#fef2f2); }
+  #zataView .zplan-head.tier3 { background:linear-gradient(135deg,#eef2ff,#f5f3ff); }
+  #zataView .zplan-name { font-weight:800; font-size:1.05rem; color:var(--text-dark); }
+  #zataView .zplan-sub  { font-size:.72rem; color:var(--text-muted); margin-top:2px; }
+  #zataView .zplan-ico { width:34px; height:34px; border-radius:10px; display:flex; align-items:center; justify-content:center; font-size:1rem; flex-shrink:0; background:rgba(37,99,235,.12); }
+  #zataView .zplan-body { padding:1rem 1.2rem 1.3rem; display:flex; flex-direction:column; gap:.8rem; flex:1; }
+  #zataView .zplan-price { font-size:1.7rem; font-weight:800; color:var(--text-dark); line-height:1; }
+  #zataView .zplan-price small { font-size:.8rem; font-weight:600; color:var(--text-muted); }
+  #zataView .zplan-price.custom { font-size:1.15rem; color:var(--primary); }
+  #zataView .zplan-storage { background:#f1f5f9; border-radius:10px; padding:9px 12px; font-weight:700; font-size:.9rem; color:var(--text-dark); display:flex; align-items:center; gap:8px; }
+  #zataView .zplan-storage .db { color:var(--purple); }
+  #zataView .zplan-meta { font-size:.72rem; color:var(--text-muted); }
+  #zataView .zplan-check { width:22px; height:22px; border-radius:50%; background:var(--primary); color:#fff; display:none; align-items:center; justify-content:center; font-size:.75rem; position:absolute; top:12px; right:12px; }
+  #zataView .zplan.active .zplan-check { display:flex; }
+
+  /* qty stepper (shared style) */
+  #zataView .qty-stepper, #cpuView .qty-stepper { display:inline-flex; align-items:center; border:1px solid var(--border); border-radius:10px; overflow:hidden; }
+  #zataView .qty-stepper button, #cpuView .qty-stepper button { width:34px; height:34px; border:0; background:#f1f5f9; font-size:1.1rem; cursor:pointer; color:var(--text-dark); transition:.15s; font-family:inherit; }
+  #zataView .qty-stepper button:hover, #cpuView .qty-stepper button:hover { background:var(--primary); color:#fff; }
+  #zataView .qty-stepper .qv, #cpuView .qty-stepper .qv { width:40px; text-align:center; font-weight:800; font-size:.95rem; }
+
+  /* GST toggle */
+  #zataView .gst-row { display:flex; align-items:center; justify-content:space-between; padding:14px 16px; background:#f1f5f9; border-radius:12px; }
+  #zataView .gst-label { font-weight:700; font-size:.88rem; }
+  #zataView .gst-label small { display:block; color:var(--text-muted); font-weight:400; font-size:.74rem; }
+  #zataView .switch { position:relative; width:46px; height:26px; }
+  #zataView .switch input { opacity:0; width:0; height:0; }
+  #zataView .slider-tog { position:absolute; inset:0; background:#cbd5e1; border-radius:26px; cursor:pointer; transition:.2s; }
+  #zataView .slider-tog::before { content:""; position:absolute; height:20px; width:20px; left:3px; top:3px; background:#fff; border-radius:50%; transition:.2s; }
+  #zataView .switch input:checked + .slider-tog { background:var(--primary); }
+  #zataView .switch input:checked + .slider-tog::before { transform:translateX(20px); }
+
+  /* custom storage input */
+  #zataView .custom-wrap { display:none; margin-top:14px; padding:14px 16px; border:1.5px dashed var(--primary); border-radius:12px; background:var(--primary-soft); }
+  #zataView .custom-wrap.show { display:block; }
+  #zataView .custom-wrap label { font-size:.78rem; font-weight:700; color:var(--primary); display:block; margin-bottom:8px; }
+  #zataView .custom-wrap .crow { display:flex; align-items:center; gap:10px; }
+  #zataView .custom-input { width:120px; padding:9px 12px; border:1px solid var(--border); border-radius:8px; font-family:'JetBrains Mono',monospace; font-weight:700; font-size:.95rem; text-align:center; outline:none; }
+  #zataView .custom-input:focus { border-color:var(--primary); }
+  #zataView .custom-note { font-size:.74rem; color:var(--text-muted); margin-top:8px; }
+
+  /* feature points */
+  #zataView .zfeat { display:flex; gap:12px; align-items:flex-start; padding:12px 0; border-bottom:1px solid var(--border); }
+  #zataView .zfeat:last-child { border-bottom:0; }
+  #zataView .zfeat-ico { width:32px; height:32px; border-radius:9px; background:#ecfdf5; color:var(--green); display:flex; align-items:center; justify-content:center; flex-shrink:0; font-size:1rem; }
+  #zataView .zfeat-txt b { font-size:.9rem; }
+  #zataView .zfeat-txt p { font-size:.8rem; color:var(--text-muted); margin-top:2px; }
+
+  /* contact-sales button */
+  #zataView .contact-btn { width:100%; margin-top:1.5rem; padding:14px; border:0; border-radius:12px; background:#0f172a; color:#fff; font-family:inherit; font-weight:700; font-size:.95rem; cursor:pointer; transition:.18s; }
+  #zataView .contact-btn:hover { background:#1e293b; transform:translateY(-1px); }
 
 /* ===== GPU CALCULATOR STYLES (scoped under #gpuView) ===== */
   #gpuView{
@@ -535,6 +610,7 @@
     <div class="mode-switch">
       <button class="mode-btn active" id="modeCpuBtn" onclick="switchMode('cpu')">🖥️ CPU Pricing</button>
       <button class="mode-btn" id="modeGpuBtn" onclick="switchMode('gpu')">⚡ GPU Pricing</button>
+      <button class="mode-btn" id="modeZataBtn" onclick="switchMode('zata')">🗄️ Zata S3 Storage</button>
     </div>
     <div class="region-selector" id="regionSelector">
       <button class="region-btn active" onclick="selectRegion(this,'central')">🇮🇳 Central India</button>
@@ -683,6 +759,14 @@
         <div class="summary-item"><span>OS</span><span id="s-os">Ubuntu</span></div>
         <div class="summary-item"><span>Instance</span><span id="s-plan">—</span></div>
         <div class="summary-item"><span>vCPU / RAM</span><span id="s-specs">—</span></div>
+        <div class="summary-item" id="s-qty-row" style="align-items:center;">
+          <span>Servers (qty)</span>
+          <span class="srv-stepper">
+            <button onclick="changeServerQty(-1)">−</button>
+            <span class="srv-qv" id="s-serverqty">1</span>
+            <button onclick="changeServerQty(1)">+</button>
+          </span>
+        </div>
 
         <div style="height:1px;background:#334155;margin:1rem 0"></div>
         <div class="summary-item"><span>Hardware Base</span><span id="s-planprice" class="summary-cost-val">₹0</span></div>
@@ -691,8 +775,9 @@
         <div id="storageSummaryList"></div>
 
         <div class="total-box">
-          <p style="font-size:0.75rem;color:#94a3b8;font-weight:700;text-transform:uppercase;margin-bottom:0.5rem">Monthly Total</p>
+          <p style="font-size:0.75rem;color:#94a3b8;font-weight:700;text-transform:uppercase;margin-bottom:0.5rem">Monthly Amount</p>
           <div class="price-large" id="totalAmount">₹0</div>
+          <div class="gst-line"><span>Incl. 18% GST</span><span id="totalAmountGst">₹0</span></div>
           <p style="font-size:0.7rem;color:#64748b;margin-top:10px" id="annualNote"></p>
         </div>
 
@@ -782,8 +867,9 @@
     <div class="srow"><span class="k">Instance Pricing</span><span class="v">On-Demand</span></div>
 
     <div class="total-box">
-      <div class="tlabel">Estimated Monthly Total</div>
+      <div class="tlabel">Estimated Monthly Amount</div>
       <div class="big" id="monthTotal">₹0</div>
+      <div class="thr" style="margin-top:10px;"><span>Incl. 18% GST</span><b id="monthTotalGst" style="color:#34d399">₹0</b></div>
       <div class="thr"><span>Total Hourly Cost</span><b id="hrTotal">₹0/hr</b></div>
       <div class="sub">Estimates assume selected usage hours; costs may vary.</div>
     </div>
@@ -793,6 +879,76 @@
 </div>
 
 </div><!-- /gpuView -->
+
+<!-- ===================== ZATA S3 STORAGE VIEW ===================== -->
+<div id="zataView" style="display:none;">
+<div class="container">
+  <div class="main-content">
+
+    <!-- Plans -->
+    <div class="card">
+      <div class="section-label">01 — Select Storage Plan</div>
+      <div style="margin-bottom:1.2rem;color:var(--text-muted);font-size:0.85rem;">
+        Choose a Zata S3 object-storage plan. Prepaid, billed monthly. Select a plan to see your price.
+      </div>
+      <div class="zata-plan-grid" id="zataPlanGrid"></div>
+
+      <!-- custom storage input, shown when Custom selected -->
+      <div class="custom-wrap" id="zataCustomWrap">
+        <label>Custom Storage Requirement (TB)</label>
+        <div class="crow">
+          <input class="custom-input" type="number" id="zataCustomTB" min="100" step="10" value="150" oninput="zataRender()">
+          <span style="font-size:.85rem;color:var(--text-muted);font-weight:600;">TB &nbsp;·&nbsp; pricing scales with the plan rate</span>
+        </div>
+        <div class="custom-note">For 100 TB+ our team tailors a quote. Estimate below uses the Enterprise+ per-TB rate as a guide.</div>
+      </div>
+    </div>
+
+    <!-- Why Zata -->
+    <div class="card">
+      <div class="section-label">02 — Why Zata S3</div>
+      <div class="zfeat">
+        <div class="zfeat-ico">↕️</div>
+        <div class="zfeat-txt"><b>Rescale anytime</b><p>Scale your storage plan up or down at any point of time, directly from the panel.</p></div>
+      </div>
+      <div class="zfeat">
+        <div class="zfeat-ico">🚫</div>
+        <div class="zfeat-txt"><b>No hidden ingress &amp; egress charges</b><p>Data transfer in and out is free of surprise fees — there are no hidden ingress or egress charges.</p></div>
+      </div>
+      <div class="zfeat">
+        <div class="zfeat-ico">⚖️</div>
+        <div class="zfeat-txt"><b>Transfer equals your plan storage</b><p>Ingress and egress allowance is equivalent to your plan's storage capacity.</p></div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Sidebar -->
+  <div class="sidebar">
+    <div class="sidebar-inner">
+      <div class="summary-card">
+        <h2 style="font-size:1.2rem;font-weight:800;margin-bottom:1.5rem;letter-spacing:-0.5px">Zata S3 Summary</h2>
+
+        <div class="summary-item"><span>Plan</span><span id="z-plan">—</span></div>
+        <div class="summary-item"><span>Storage</span><span id="z-storage">—</span></div>
+        <div class="summary-item"><span>Transfer (in/out)</span><span id="z-transfer">—</span></div>
+
+        <div style="height:1px;background:#334155;margin:1rem 0"></div>
+
+        <div class="total-box" style="margin-top:0;padding-top:0;border-top:0;">
+          <p style="font-size:0.75rem;color:#94a3b8;font-weight:700;text-transform:uppercase;margin-bottom:0.5rem">Monthly Amount</p>
+          <div class="price-large" id="z-total">₹0</div>
+          <div class="gst-line"><span>Incl. 18% GST</span><span id="z-total-gst">₹0</span></div>
+          <p style="font-size:0.7rem;color:#64748b;margin-top:10px" id="z-note">Select a plan to see pricing.</p>
+        </div>
+
+        <button class="contact-btn" id="zataActionBtn" onclick="zataAction()">Select a plan</button>
+      </div>
+    </div>
+  </div>
+</div>
+</div><!-- /zataView -->
+
 
 <script>
 // ========================= CPU CALCULATOR SCRIPT =========================
@@ -933,7 +1089,7 @@ const mumbaiWindows = {
   ],
 };
 
-let state = { region:'central', os:'ubuntu', hwTab:'general', selectedPlan:null, ssdVolumes:[{id:1,gb:20}], nvmeVolumes:[] };
+let state = { region:'central', os:'ubuntu', hwTab:'general', selectedPlan:null, serverQty:1, ssdVolumes:[{id:1,gb:20}], nvmeVolumes:[] };
 let volIdCounter = 10;
 
 function isMumbai()  { return state.region === 'mumbai'; }
@@ -1111,11 +1267,14 @@ function updateCalc() {
   const nvmeTotal = isMumbai() ? 0 : state.nvmeVolumes.reduce((s,v) => s + v.gb * 5, 0);
   const storageCost = ssdTotal + nvmeTotal;
   const planCost    = state.selectedPlan ? state.selectedPlan.price : 0;
-  const total       = planCost + storageCost;
+  const qty         = state.serverQty || 1;
+  const perServer   = planCost + storageCost;     // cost of one server (hardware + its storage)
+  const total       = perServer * qty;            // multiplied across identical servers
 
+  document.getElementById('s-serverqty').innerText = qty;
   document.getElementById('s-plan').innerText  = state.selectedPlan ? state.selectedPlan.name : '—';
   document.getElementById('s-specs').innerText = state.selectedPlan ? `${state.selectedPlan.cpu} vCPU / ${state.selectedPlan.ram}` : '—';
-  document.getElementById('s-planprice').innerText = '₹' + planCost.toLocaleString();
+  document.getElementById('s-planprice').innerText = '₹' + (planCost * qty).toLocaleString() + (qty > 1 ? ` (₹${planCost.toLocaleString()} × ${qty})` : '');
 
   let html = '';
   if (state.ssdVolumes.length === 0 && state.nvmeVolumes.length === 0) {
@@ -1132,10 +1291,15 @@ function updateCalc() {
   if (state.ssdVolumes.length + state.nvmeVolumes.length > 0) {
     html += `<div class="summary-item" style="border-top:1px solid #334155;padding-top:0.6rem;margin-top:0.2rem"><span>Total Storage</span><span class="summary-cost-val">₹${storageCost.toLocaleString()}</span></div>`;
   }
+  if (qty > 1) {
+    html += `<div class="summary-item"><span>Per-server cost</span><span class="summary-cost-val">₹${perServer.toLocaleString()}</span></div>`;
+    html += `<div class="summary-item"><span>× ${qty} servers</span><span class="summary-cost-val">₹${total.toLocaleString()}</span></div>`;
+  }
   document.getElementById('storageSummaryList').innerHTML = html;
 
   document.getElementById('storageTotalDisplay').textContent = '₹' + storageCost.toLocaleString() + ' / month';
   document.getElementById('totalAmount').innerText = '₹' + total.toLocaleString();
+  document.getElementById('totalAmountGst').innerText = '₹' + Math.round(total * 1.18).toLocaleString('en-IN');
 
   const resultEl = document.getElementById('discResult');
   if (resultEl.classList.contains('visible')) {
@@ -1143,6 +1307,11 @@ function updateCalc() {
     const pct    = parseFloat(document.getElementById('discPercent').value) || 0;
     if (months > 0 && pct >= 0) renderDiscountResult(total, months, pct);
   }
+}
+
+function changeServerQty(d) {
+  state.serverQty = Math.max(1, Math.min(99, (state.serverQty || 1) + d));
+  updateCalc();
 }
 
 function selectMonthPill(el, months) {
@@ -1198,7 +1367,8 @@ function getCurrentTotal() {
   const r = ssdRate();
   const ssdTotal  = state.ssdVolumes.reduce((s,v) => s + v.gb * r, 0);
   const nvmeTotal = isMumbai() ? 0 : state.nvmeVolumes.reduce((s,v) => s + v.gb * 5, 0);
-  return (state.selectedPlan ? state.selectedPlan.price : 0) + ssdTotal + nvmeTotal;
+  const perServer = (state.selectedPlan ? state.selectedPlan.price : 0) + ssdTotal + nvmeTotal;
+  return perServer * (state.serverQty || 1);
 }
 
 function shakeInput(id) {
@@ -1209,7 +1379,7 @@ function shakeInput(id) {
 }
 
 function resetAll() {
-  state = { region:'central', os:'ubuntu', hwTab:'general', selectedPlan:null, ssdVolumes:[{id:1,gb:20}], nvmeVolumes:[] };
+  state = { region:'central', os:'ubuntu', hwTab:'general', selectedPlan:null, serverQty:1, ssdVolumes:[{id:1,gb:20}], nvmeVolumes:[] };
   volIdCounter = 10;
 
   document.querySelectorAll('.region-btn').forEach((b,i) => b.classList.toggle('active', i===0));
@@ -1237,13 +1407,15 @@ function resetAll() {
 
 // ── MODE SWITCH (CPU <-> GPU) ──
 function switchMode(mode) {
-  const isGpu = mode === 'gpu';
-  document.getElementById('cpuView').style.display = isGpu ? 'none' : '';
-  document.getElementById('gpuView').style.display = isGpu ? '' : 'none';
-  document.getElementById('modeCpuBtn').classList.toggle('active', !isGpu);
-  document.getElementById('modeGpuBtn').classList.toggle('active', isGpu);
+  const views = { cpu:'cpuView', gpu:'gpuView', zata:'zataView' };
+  Object.entries(views).forEach(([m,id]) => {
+    document.getElementById(id).style.display = (m === mode) ? '' : 'none';
+  });
+  document.getElementById('modeCpuBtn').classList.toggle('active', mode === 'cpu');
+  document.getElementById('modeGpuBtn').classList.toggle('active', mode === 'gpu');
+  document.getElementById('modeZataBtn').classList.toggle('active', mode === 'zata');
   // Region selector only applies to CPU view
-  document.getElementById('regionSelector').style.display = isGpu ? 'none' : '';
+  document.getElementById('regionSelector').style.display = (mode === 'cpu') ? '' : 'none';
 }
 
 // ── INIT CPU ──
@@ -1252,6 +1424,112 @@ renderVolumes('ssd');
 renderVolumes('nvme');
 renderPlans();
 updateCalc();
+
+// ========================= ZATA S3 STORAGE SCRIPT (isolated scope) =========================
+(function(){
+  // Pricing from Zata plan sheet (₹/month, exclusive of GST)
+  const ZPLANS = [
+    { id:'basic',      name:'Basic',       sub:'Get started',            tb:1,   price:599,   ico:'📦', tier:0 },
+    { id:'standard',   name:'Standard',    sub:'Growing teams',          tb:5,   price:2970,  ico:'📈', tier:0 },
+    { id:'pro',        name:'Pro',         sub:'Production workloads',   tb:10,  price:5880,  ico:'🚀', tier:1 },
+    { id:'business',   name:'Business',    sub:'Scaling business',       tb:25,  price:14550, ico:'🏢', tier:1 },
+    { id:'enterprise', name:'Enterprise',  sub:'For Large Organizations',tb:50,  price:28800, ico:'🛡️', tier:2 },
+    { id:'enterprise_plus', name:'Enterprise +', sub:'Ultimate enterprise solution', tb:100, price:57000, ico:'👑', tier:2 },
+    { id:'custom',     name:'Custom Plan', sub:'Tailored to your needs', tb:null, price:null, ico:'🎧', tier:3, custom:true },
+  ];
+  // per-TB guide rate from Enterprise+ (₹57,000 / 100 TB = ₹570/TB)
+  const CUSTOM_RATE = 57000 / 100;
+
+  let zState = { plan:null };
+  const fmtINR = n => '₹' + Math.round(n).toLocaleString('en-IN');
+
+  // build cards
+  const grid = document.getElementById('zataPlanGrid');
+  ZPLANS.forEach(p => {
+    const c = document.createElement('div');
+    c.className = 'zplan';
+    c.dataset.id = p.id;
+    const priceHtml = p.custom
+      ? `<div class="zplan-price custom">Custom Pricing</div>`
+      : `<div class="zplan-price">${fmtINR(p.price)} <small>/ month</small></div>`;
+    const storageHtml = p.custom
+      ? `<div class="zplan-storage"><span class="db">🗄️</span> Custom Storage</div>`
+      : `<div class="zplan-storage"><span class="db">🗄️</span> ${p.tb} TB <span style="font-weight:400;color:var(--text-muted)">Storage</span></div>`;
+    c.innerHTML = `
+      <div class="zplan-check">✓</div>
+      <div class="zplan-head tier${p.tier}">
+        <div><div class="zplan-name">${p.name}</div><div class="zplan-sub">${p.sub}</div></div>
+        <div class="zplan-ico">${p.ico}</div>
+      </div>
+      <div class="zplan-body">
+        ${priceHtml}
+        ${storageHtml}
+        <div class="zplan-meta">${p.custom ? 'Get a quote tailored to your requirements' : 'Billed monthly · Prepaid plan'}</div>
+      </div>`;
+    c.addEventListener('click', () => {
+      zState.plan = p;
+      document.querySelectorAll('#zataPlanGrid .zplan').forEach(x => x.classList.remove('active'));
+      c.classList.add('active');
+      document.getElementById('zataCustomWrap').classList.toggle('show', !!p.custom);
+      zataRender();
+    });
+    grid.appendChild(c);
+  });
+
+  function currentPlanCost(p) {
+    if (!p) return { unit:0, tb:0, isCustom:false };
+    if (p.custom) {
+      const tb = Math.max(100, parseInt(document.getElementById('zataCustomTB').value) || 100);
+      return { unit: tb * CUSTOM_RATE, tb, isCustom:true };
+    }
+    return { unit: p.price, tb: p.tb, isCustom:false };
+  }
+
+  window.zataRender = function() {
+    const p = zState.plan;
+    const planEl = document.getElementById('z-plan');
+    const actionBtn = document.getElementById('zataActionBtn');
+
+    if (!p) {
+      planEl.textContent = '—';
+      document.getElementById('z-storage').textContent = '—';
+      document.getElementById('z-transfer').textContent = '—';
+      document.getElementById('z-total').textContent = '₹0';
+      document.getElementById('z-total-gst').textContent = '₹0';
+      document.getElementById('z-note').textContent = 'Select a plan to see pricing.';
+      actionBtn.textContent = 'Select a plan';
+      return;
+    }
+
+    const { unit, tb } = currentPlanCost(p);
+    const monthly    = unit;                 // base monthly amount (exclusive of GST)
+    const withGst    = monthly * 1.18;       // amount + 18% GST
+
+    planEl.textContent = p.name;
+    document.getElementById('z-storage').textContent = tb ? tb + ' TB' : '—';
+    document.getElementById('z-transfer').textContent = tb ? `${tb} TB in / ${tb} TB out` : 'Equivalent to plan';
+    document.getElementById('z-total').textContent = fmtINR(monthly);
+    document.getElementById('z-total-gst').textContent = fmtINR(withGst);
+    document.getElementById('z-note').textContent = p.custom
+      ? 'Estimate only — final custom pricing is set by our sales team.'
+      : 'Base amount is exclusive of GST.';
+
+    actionBtn.textContent = p.custom ? 'Contact Sales →' : `Upgrade to ${p.name} Plan →`;
+  };
+
+  window.zataAction = function() {
+    if (!zState.plan) { alert('Please select a storage plan first.'); return; }
+    const monthly = document.getElementById('z-total').textContent;
+    const withGst = document.getElementById('z-total-gst').textContent;
+    if (zState.plan.custom) {
+      alert('Our sales team will tailor a quote to your requirements.\nEstimated: ' + monthly + '/month (' + withGst + ' incl. GST)');
+    } else {
+      alert(`Upgrade to ${zState.plan.name}\nMonthly: ${monthly}\nIncl. 18% GST: ${withGst}`);
+    }
+  };
+
+  zataRender();
+})(); // end Zata IIFE
 
 // ========================= GPU CALCULATOR SCRIPT (isolated scope) =========================
 (function(){
@@ -1356,6 +1634,7 @@ function render(){
 
   document.getElementById('hrTotal').textContent  = fmt(gpuHr)+'/hr';
   document.getElementById('monthTotal').textContent = fmt(Math.round(monthly));
+  document.getElementById('monthTotalGst').textContent = fmt(Math.round(monthly * 1.18));
 }
 
 setFill(diskS,10,1024); setFill(hrS,1,730);
