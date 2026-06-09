@@ -893,14 +893,13 @@
       </div>
       <div class="zata-plan-grid" id="zataPlanGrid"></div>
 
-      <!-- custom storage input, shown when Custom selected -->
+      <!-- custom plan message, shown when Custom selected -->
       <div class="custom-wrap" id="zataCustomWrap">
-        <label>Custom Storage Requirement (TB)</label>
-        <div class="crow">
-          <input class="custom-input" type="number" id="zataCustomTB" min="100" step="10" value="150" oninput="zataRender()">
-          <span style="font-size:.85rem;color:var(--text-muted);font-weight:600;">TB &nbsp;·&nbsp; pricing scales with the plan rate</span>
+        <label>Custom Plan</label>
+        <div style="font-size:.92rem;color:var(--text-dark);font-weight:600;">
+          🎧 Connect with the Zata team for a tailored quote.
         </div>
-        <div class="custom-note">For 100 TB+ our team tailors a quote. Estimate below uses the Enterprise+ per-TB rate as a guide.</div>
+        <div class="custom-note">For 100 TB+ requirements, pricing is customised to your needs. Our team will work out the best plan for you — no standard cost applies.</div>
       </div>
     </div>
 
@@ -909,7 +908,7 @@
       <div class="section-label">02 — Why Zata S3</div>
       <div class="zfeat">
         <div class="zfeat-ico">↕️</div>
-        <div class="zfeat-txt"><b>Rescale anytime</b><p>Scale your storage plan up at any point of time, directly from the panel.</p></div>
+        <div class="zfeat-txt"><b>Rescale anytime</b><p>Scale your storage plan up or down at any point of time, directly from the panel.</p></div>
       </div>
       <div class="zfeat">
         <div class="zfeat-ico">🚫</div>
@@ -1478,10 +1477,7 @@ updateCalc();
 
   function currentPlanCost(p) {
     if (!p) return { unit:0, tb:0, isCustom:false };
-    if (p.custom) {
-      const tb = Math.max(100, parseInt(document.getElementById('zataCustomTB').value) || 100);
-      return { unit: tb * CUSTOM_RATE, tb, isCustom:true };
-    }
+    if (p.custom) return { unit:null, tb:null, isCustom:true };
     return { unit: p.price, tb: p.tb, isCustom:false };
   }
 
@@ -1501,29 +1497,40 @@ updateCalc();
       return;
     }
 
-    const { unit, tb } = currentPlanCost(p);
-    const monthly    = unit;                 // base monthly amount (exclusive of GST)
-    const withGst    = monthly * 1.18;       // amount + 18% GST
+    const { unit, tb, isCustom } = currentPlanCost(p);
 
     planEl.textContent = p.name;
+
+    if (isCustom) {
+      // Custom plan: no cost shown — connect with the Zata team
+      document.getElementById('z-storage').textContent = 'Custom';
+      document.getElementById('z-transfer').textContent = 'Equivalent to plan';
+      document.getElementById('z-total').textContent = 'Custom';
+      document.getElementById('z-total-gst').textContent = '—';
+      document.getElementById('z-note').textContent = 'Connect with the Zata team for a tailored quote — no standard cost applies.';
+      actionBtn.textContent = 'Connect with Zata Team →';
+      return;
+    }
+
+    const monthly = unit;                 // base monthly amount (exclusive of GST)
+    const withGst = monthly * 1.18;       // amount + 18% GST
+
     document.getElementById('z-storage').textContent = tb ? tb + ' TB' : '—';
     document.getElementById('z-transfer').textContent = tb ? `${tb} TB in / ${tb} TB out` : 'Equivalent to plan';
     document.getElementById('z-total').textContent = fmtINR(monthly);
     document.getElementById('z-total-gst').textContent = fmtINR(withGst);
-    document.getElementById('z-note').textContent = p.custom
-      ? 'Estimate only — final custom pricing is set by our sales team.'
-      : 'Base amount is exclusive of GST.';
+    document.getElementById('z-note').textContent = 'Base amount is exclusive of GST.';
 
-    actionBtn.textContent = p.custom ? 'Contact Sales →' : `Upgrade to ${p.name} Plan →`;
+    actionBtn.textContent = `Upgrade to ${p.name} Plan →`;
   };
 
   window.zataAction = function() {
     if (!zState.plan) { alert('Please select a storage plan first.'); return; }
-    const monthly = document.getElementById('z-total').textContent;
-    const withGst = document.getElementById('z-total-gst').textContent;
     if (zState.plan.custom) {
-      alert('Our sales team will tailor a quote to your requirements.\nEstimated: ' + monthly + '/month (' + withGst + ' incl. GST)');
+      alert('Please connect with the Zata team for a tailored quote.\nYour requirements will be customised — no standard cost applies.');
     } else {
+      const monthly = document.getElementById('z-total').textContent;
+      const withGst = document.getElementById('z-total-gst').textContent;
       alert(`Upgrade to ${zState.plan.name}\nMonthly: ${monthly}\nIncl. 18% GST: ${withGst}`);
     }
   };
