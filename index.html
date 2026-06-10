@@ -360,6 +360,31 @@
   .srv-stepper button:hover { background:var(--primary); }
   .srv-stepper .srv-qv { width:34px; text-align:center; font-weight:800; color:#fff; font-size:0.9rem; }
 
+  /* Add-to-estimate button + cart */
+  .add-est-btn { width:100%; margin-top:1rem; padding:12px; border:1px dashed #475569; border-radius:12px; background:rgba(56,189,248,0.08); color:#7dd3fc; font-family:inherit; font-weight:700; font-size:0.85rem; cursor:pointer; transition:0.2s; display:flex; align-items:center; justify-content:center; gap:6px; }
+  .add-est-btn:hover { border-color:#38bdf8; background:rgba(56,189,248,0.16); color:#bae6fd; }
+  .add-est-btn:disabled { opacity:0.4; cursor:not-allowed; }
+
+  .cart-card { background:#0f172a; border:1px solid #334155; border-radius:20px; padding:1.5rem; }
+  .cart-card h3 { font-size:1rem; font-weight:800; color:#fff; margin-bottom:0.3rem; display:flex; align-items:center; gap:8px; }
+  .cart-card .cart-sub { font-size:0.74rem; color:#64748b; margin-bottom:1rem; }
+  .cart-empty { font-size:0.8rem; color:#64748b; font-style:italic; padding:0.6rem 0; }
+  .cart-item { background:#1e293b; border:1px solid #334155; border-radius:12px; padding:12px 14px; margin-bottom:10px; }
+  .cart-item-top { display:flex; justify-content:space-between; align-items:flex-start; gap:8px; }
+  .cart-item-name { font-size:0.84rem; font-weight:700; color:#fff; }
+  .cart-item-meta { font-size:0.72rem; color:#94a3b8; margin-top:2px; line-height:1.5; }
+  .cart-item-cost { font-family:'JetBrains Mono', monospace; font-weight:800; color:#38bdf8; font-size:0.9rem; white-space:nowrap; }
+  .cart-del { background:transparent; border:0; color:#64748b; cursor:pointer; font-size:0.85rem; padding:0 0 0 8px; transition:0.2s; }
+  .cart-del:hover { color:#f87171; }
+  .cart-grand { margin-top:0.8rem; padding-top:1rem; border-top:1px dashed #334155; }
+  .cart-grand-row { display:flex; justify-content:space-between; align-items:baseline; }
+  .cart-grand-label { font-size:0.75rem; font-weight:700; color:#94a3b8; text-transform:uppercase; }
+  .cart-grand-val { font-family:'JetBrains Mono', monospace; font-weight:800; color:#38bdf8; font-size:1.6rem; }
+  .cart-gst-line { display:flex; justify-content:space-between; align-items:center; margin-top:10px; padding:9px 12px; background:rgba(56,189,248,0.08); border:1px solid rgba(56,189,248,0.2); border-radius:10px; font-size:0.78rem; color:#94a3b8; }
+  .cart-gst-line span:last-child { font-family:'JetBrains Mono', monospace; font-weight:800; color:#34d399; }
+  .cart-clear-btn { width:100%; margin-top:0.9rem; padding:9px; background:transparent; border:1px solid #334155; border-radius:10px; color:#94a3b8; cursor:pointer; font-family:inherit; font-weight:600; font-size:0.78rem; transition:0.2s; }
+  .cart-clear-btn:hover { border-color:#ef4444; color:#f87171; background:rgba(239,68,68,0.08); }
+
   .summary-region-badge { display: inline-flex; align-items: center; gap: 5px; padding: 3px 10px; border-radius: 100px; font-size: 0.72rem; font-weight: 700; background: rgba(37,99,235,0.2); color: #93c5fd; border: 1px solid rgba(37,99,235,0.3); }
 
   .total-box { margin-top: 2rem; padding-top: 2rem; border-top: 1px dashed #334155; }
@@ -415,30 +440,10 @@
   #zataView .zplan-check { width:22px; height:22px; border-radius:50%; background:var(--primary); color:#fff; display:none; align-items:center; justify-content:center; font-size:.75rem; position:absolute; top:12px; right:12px; }
   #zataView .zplan.active .zplan-check { display:flex; }
 
-  /* qty stepper (shared style) */
-  #zataView .qty-stepper, #cpuView .qty-stepper { display:inline-flex; align-items:center; border:1px solid var(--border); border-radius:10px; overflow:hidden; }
-  #zataView .qty-stepper button, #cpuView .qty-stepper button { width:34px; height:34px; border:0; background:#f1f5f9; font-size:1.1rem; cursor:pointer; color:var(--text-dark); transition:.15s; font-family:inherit; }
-  #zataView .qty-stepper button:hover, #cpuView .qty-stepper button:hover { background:var(--primary); color:#fff; }
-  #zataView .qty-stepper .qv, #cpuView .qty-stepper .qv { width:40px; text-align:center; font-weight:800; font-size:.95rem; }
-
-  /* GST toggle */
-  #zataView .gst-row { display:flex; align-items:center; justify-content:space-between; padding:14px 16px; background:#f1f5f9; border-radius:12px; }
-  #zataView .gst-label { font-weight:700; font-size:.88rem; }
-  #zataView .gst-label small { display:block; color:var(--text-muted); font-weight:400; font-size:.74rem; }
-  #zataView .switch { position:relative; width:46px; height:26px; }
-  #zataView .switch input { opacity:0; width:0; height:0; }
-  #zataView .slider-tog { position:absolute; inset:0; background:#cbd5e1; border-radius:26px; cursor:pointer; transition:.2s; }
-  #zataView .slider-tog::before { content:""; position:absolute; height:20px; width:20px; left:3px; top:3px; background:#fff; border-radius:50%; transition:.2s; }
-  #zataView .switch input:checked + .slider-tog { background:var(--primary); }
-  #zataView .switch input:checked + .slider-tog::before { transform:translateX(20px); }
-
   /* custom storage input */
   #zataView .custom-wrap { display:none; margin-top:14px; padding:14px 16px; border:1.5px dashed var(--primary); border-radius:12px; background:var(--primary-soft); }
   #zataView .custom-wrap.show { display:block; }
   #zataView .custom-wrap label { font-size:.78rem; font-weight:700; color:var(--primary); display:block; margin-bottom:8px; }
-  #zataView .custom-wrap .crow { display:flex; align-items:center; gap:10px; }
-  #zataView .custom-input { width:120px; padding:9px 12px; border:1px solid var(--border); border-radius:8px; font-family:'JetBrains Mono',monospace; font-weight:700; font-size:.95rem; text-align:center; outline:none; }
-  #zataView .custom-input:focus { border-color:var(--primary); }
   #zataView .custom-note { font-size:.74rem; color:var(--text-muted); margin-top:8px; }
 
   /* feature points */
@@ -580,8 +585,6 @@
   #gpuView .srow .v {font-weight:700;color:#fff}
   #gpuView .srow .v.blue {color:#60a5fa}
   #gpuView .divider {height:1px;background:#243149;margin:8px 0}
-  #gpuView .sregion {display:inline-flex;align-items:center;gap:5px;background:var(--blue);color:#fff;padding:5px 11px;border-radius:18px;font-size:12px;font-weight:700}
-  #gpuView .sregion .in {background:rgba(255,255,255,.25);font-size:9px;padding:2px 5px;border-radius:5px}
 
   #gpuView .total-box {margin-top:24px;padding-top:22px;border-top:1px dashed #2c3a55}
   #gpuView .total-box .tlabel {font-size:13px;font-weight:700;letter-spacing:2px;color:#94a3b8;text-transform:uppercase}
@@ -781,6 +784,8 @@
           <p style="font-size:0.7rem;color:#64748b;margin-top:10px" id="annualNote"></p>
         </div>
 
+        <button class="add-est-btn" id="addEstBtn" onclick="addToEstimate()">➕ Add this server to estimate</button>
+
         <div class="disc-sidebar-box" id="discSidebarBox">
           <div class="disc-sidebar-label">🏷️ Team Discount Applied</div>
           <div class="disc-sidebar-row"><span>Duration</span><span id="ds-months">—</span></div>
@@ -793,6 +798,21 @@
         </div>
 
         <button class="reset-btn" onclick="resetAll()">↺ Reset Configuration</button>
+      </div>
+
+      <!-- Multi-server estimate cart -->
+      <div class="cart-card" id="cartCard">
+        <h3>🧾 Multi-Server Estimate</h3>
+        <div class="cart-sub">Add different server configs to build a combined monthly estimate.</div>
+        <div id="cartList"></div>
+        <div class="cart-grand" id="cartGrand" style="display:none;">
+          <div class="cart-grand-row">
+            <span class="cart-grand-label">Grand Total / mo</span>
+            <span class="cart-grand-val" id="cartGrandVal">₹0</span>
+          </div>
+          <div class="cart-gst-line"><span>Incl. 18% GST</span><span id="cartGrandGst">₹0</span></div>
+          <button class="cart-clear-btn" onclick="clearEstimate()">Clear estimate</button>
+        </div>
       </div>
     </div>
   </div>
@@ -951,9 +971,6 @@
 
 <script>
 // ========================= CPU CALCULATOR SCRIPT =========================
-// ── OS DATA ──
-// Logos are inline SVGs (no external requests) so they always render offline/anywhere.
-// Each `color`+`name` also powers a letter-tile fallback if an svg ever fails.
 function svg(inner){ return 'data:image/svg+xml;utf8,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">' + inner + '</svg>'); }
 
 const osData = [
@@ -961,41 +978,31 @@ const osData = [
     '<circle cx="16" cy="16" r="15" fill="#E95420"/>'+
     '<g fill="#fff"><circle cx="8" cy="16" r="2.4"/><circle cx="21" cy="9" r="2.4"/><circle cx="21" cy="23" r="2.4"/>'+
     '<path d="M16 8.5a7.5 7.5 0 0 0-6.4 3.6l1.9 1.1A5.3 5.3 0 0 1 16 10.7zM9.6 19.9A7.5 7.5 0 0 0 16 23.5v-2.2a5.3 5.3 0 0 1-4.5-2.5zM23.3 16a7.3 7.3 0 0 0-3.6-6.3l-1.1 1.9a5.1 5.1 0 0 1 0 8.8l1.1 1.9A7.3 7.3 0 0 0 23.3 16z"/></g>') },
-
   { id:'windows', name:'Windows', color:'#0078D4', paid:true, logo: svg(
     '<path fill="#0078D4" d="M3 5.5 14.5 4v11H3zM16 3.8 29 2v13H16zM3 17h11.5v11L3 26.5zM16 17h13v13l-13-1.8z"/>') },
-
   { id:'debian', name:'Debian', color:'#A80030', logo: svg(
     '<circle cx="16" cy="16" r="13" fill="none" stroke="#A80030" stroke-width="2.4"/>'+
     '<path fill="#A80030" d="M19.7 11.2c-2.6-2.3-6-1.5-7.3.6-1.4 2.2-.6 5.6 2.3 6.6 2.7.9 5.3-.8 5.4-3.3-1 2-3.3 2.8-5.1 1.9-1.9-.9-2.3-3.4-1-4.9 1.2-1.4 3.4-1.5 4.7-.2z"/>') },
-
   { id:'centos', name:'CentOS', color:'#262577', logo: svg(
     '<g fill="#262577"><path d="M16 2 22 8h-4v6h6V10l6 6-6 6v-4h-6v6h4l-6 6-6-6h4v-6H8v4l-6-6 6-6v4h6V8H10z"/></g>'+
     '<circle cx="16" cy="16" r="3" fill="#9CCD2A"/>') },
-
   { id:'redhat', name:'Red Hat', color:'#EE0000', mumbaiHidden:true, logo: svg(
     '<path fill="#EE0000" d="M21 16c2.5 0 4.5.6 4.5 1.7 0 .4-.3.8-.7 1.1l.1-.6c0-1-2.7-1.6-6-1.6-4.6 0-9.2-1.5-9.2-3.6 0-.6.4-1.1 1-1.6-.9 1.9 4 3.9 8.5 4l1.8.2z"/>'+
     '<path fill="#000" d="M21 16.6c.6 0 .9.1.9.3 0 .5-1.6.9-3.6.9-3.4 0-6.4-1.2-6.4-2.4 0-.4.3-.7.9-1 .2 1 2.6 1.9 5.4 1.9.9 0 1.9.1 2.8.3z"/>') },
-
   { id:'fedora', name:'Fedora', color:'#51A2DA', logo: svg(
     '<circle cx="16" cy="16" r="14" fill="#51A2DA"/>'+
     '<path fill="#fff" d="M19 8.5a4.4 4.4 0 0 0-4.4 4.4v2.2h-2v3h2v6.4h3v-6.4h2.6v-3H17.6v-2c0-.9.6-1.5 1.5-1.5H22v-3z"/>') },
-
   { id:'almalinux', name:'AlmaLinux', color:'#0B7FAB', logo: svg(
     '<circle cx="16" cy="16" r="14" fill="#0B7FAB"/>'+
     '<path fill="#fff" d="M16 7l2.6 5.6L24 13l-4 4 1 6-5-3-5 3 1-6-4-4 5.4-.4z"/>') },
-
   { id:'oracle', name:'Oracle Linux', color:'#C74634', logo: svg(
     '<rect width="32" height="32" rx="6" fill="#fff"/>'+
     '<rect x="6" y="12.5" width="20" height="7" rx="3.5" fill="none" stroke="#C74634" stroke-width="2.4"/>') },
-
   { id:'cloudlinux', name:'Cloud Linux', color:'#2A6EBB', logo: svg(
     '<path fill="#2A6EBB" d="M23 22H10a5 5 0 0 1-.6-9.96A6.5 6.5 0 0 1 22 12.5a4.75 4.75 0 0 1 1 9.5z"/>') },
-
   { id:'rocky', name:'Rocky Linux', color:'#10B981', logo: svg(
     '<circle cx="16" cy="16" r="14" fill="#10B981"/>'+
     '<path fill="#fff" d="M22.5 9.5 12 20l-3.2-3.2-2.1 2.1 1.5 6.1c1.9 1.6 4.5 2.5 7.3 2.5 6 0 11-4.5 11-11 0-2.5-.8-4.7-2.2-6.5z" opacity=".95"/>') },
-
   { id:'opensuse', name:'Open SUSE', color:'#73BA25', logo: svg(
     '<circle cx="16" cy="16" r="14" fill="#73BA25"/>'+
     '<path fill="#fff" d="M11 12.5a7 7 0 0 1 12 4.9c0 2-1.3 3.1-3 3.1-1.5 0-2.6-.9-2.6-2.2 0-1.1.8-1.9 1.9-1.9.6 0 1 .2 1.3.5a3.9 3.9 0 0 0-7.4-1.1z"/>'+
@@ -1090,6 +1097,8 @@ const mumbaiWindows = {
 
 let state = { region:'central', os:'ubuntu', hwTab:'general', selectedPlan:null, serverQty:1, ssdVolumes:[{id:1,gb:20}], nvmeVolumes:[] };
 let volIdCounter = 10;
+let estimate = [];        // cart of different server configs
+let estIdCounter = 0;
 
 function isMumbai()  { return state.region === 'mumbai'; }
 function isWindows() { return state.os === 'windows'; }
@@ -1260,6 +1269,14 @@ function renderVolumes(type) {
   });
 }
 
+function currentPerServer() {
+  const r = ssdRate();
+  const ssdTotal  = state.ssdVolumes.reduce((s,v) => s + v.gb * r, 0);
+  const nvmeTotal = isMumbai() ? 0 : state.nvmeVolumes.reduce((s,v) => s + v.gb * 5, 0);
+  const planCost  = state.selectedPlan ? state.selectedPlan.price : 0;
+  return planCost + ssdTotal + nvmeTotal;
+}
+
 function updateCalc() {
   const r         = ssdRate();
   const ssdTotal  = state.ssdVolumes.reduce((s,v) => s + v.gb * r, 0);
@@ -1267,8 +1284,8 @@ function updateCalc() {
   const storageCost = ssdTotal + nvmeTotal;
   const planCost    = state.selectedPlan ? state.selectedPlan.price : 0;
   const qty         = state.serverQty || 1;
-  const perServer   = planCost + storageCost;     // cost of one server (hardware + its storage)
-  const total       = perServer * qty;            // multiplied across identical servers
+  const perServer   = planCost + storageCost;
+  const total       = perServer * qty;
 
   document.getElementById('s-serverqty').innerText = qty;
   document.getElementById('s-plan').innerText  = state.selectedPlan ? state.selectedPlan.name : '—';
@@ -1300,6 +1317,8 @@ function updateCalc() {
   document.getElementById('totalAmount').innerText = '₹' + total.toLocaleString();
   document.getElementById('totalAmountGst').innerText = '₹' + Math.round(total * 1.18).toLocaleString('en-IN');
 
+  document.getElementById('addEstBtn').disabled = !state.selectedPlan;
+
   const resultEl = document.getElementById('discResult');
   if (resultEl.classList.contains('visible')) {
     const months = parseInt(document.getElementById('discMonths').value) || 0;
@@ -1311,6 +1330,77 @@ function updateCalc() {
 function changeServerQty(d) {
   state.serverQty = Math.max(1, Math.min(99, (state.serverQty || 1) + d));
   updateCalc();
+}
+
+// ── MULTI-SERVER ESTIMATE (CART) ──
+function addToEstimate() {
+  if (!state.selectedPlan) { alert('Select an instance plan first.'); return; }
+  const r = ssdRate();
+  const ssdGb  = state.ssdVolumes.reduce((s,v) => s + v.gb, 0);
+  const nvmeGb = isMumbai() ? 0 : state.nvmeVolumes.reduce((s,v) => s + v.gb, 0);
+  const perServer = currentPerServer();
+  const qty = state.serverQty || 1;
+
+  estimate.push({
+    id: ++estIdCounter,
+    region: isMumbai() ? 'Mumbai' : 'Central India',
+    os: osData.find(o => o.id === state.os).name,
+    plan: state.selectedPlan.name,
+    specs: `${state.selectedPlan.cpu} vCPU / ${state.selectedPlan.ram}`,
+    ssdGb, nvmeGb,
+    qty,
+    perServer,
+    lineTotal: perServer * qty,
+  });
+  renderEstimate();
+}
+
+function removeEstimate(id) {
+  estimate = estimate.filter(e => e.id !== id);
+  renderEstimate();
+}
+
+function clearEstimate() {
+  estimate = [];
+  renderEstimate();
+}
+
+function renderEstimate() {
+  const listEl  = document.getElementById('cartList');
+  const grandEl = document.getElementById('cartGrand');
+
+  if (estimate.length === 0) {
+    listEl.innerHTML = `<div class="cart-empty">No servers added yet. Configure a server above and click “Add this server to estimate”.</div>`;
+    grandEl.style.display = 'none';
+    return;
+  }
+
+  let html = '';
+  estimate.forEach((e, i) => {
+    const storageBits = [];
+    if (e.ssdGb)  storageBits.push(`${e.ssdGb} GB SSD`);
+    if (e.nvmeGb) storageBits.push(`${e.nvmeGb} GB NVMe`);
+    const storageTxt = storageBits.length ? storageBits.join(' + ') : 'No storage';
+    html += `
+      <div class="cart-item">
+        <div class="cart-item-top">
+          <div>
+            <div class="cart-item-name">${i+1}. ${e.plan} ${e.qty > 1 ? `× ${e.qty}` : ''}</div>
+            <div class="cart-item-meta">${e.os} · ${e.region}<br>${e.specs} · ${storageTxt}</div>
+          </div>
+          <div style="display:flex;align-items:flex-start;">
+            <span class="cart-item-cost">₹${e.lineTotal.toLocaleString()}</span>
+            <button class="cart-del" onclick="removeEstimate(${e.id})" title="Remove">✕</button>
+          </div>
+        </div>
+      </div>`;
+  });
+  listEl.innerHTML = html;
+
+  const grand = estimate.reduce((s,e) => s + e.lineTotal, 0);
+  document.getElementById('cartGrandVal').textContent = '₹' + grand.toLocaleString();
+  document.getElementById('cartGrandGst').textContent = '₹' + Math.round(grand * 1.18).toLocaleString('en-IN');
+  grandEl.style.display = '';
 }
 
 function selectMonthPill(el, months) {
@@ -1363,11 +1453,9 @@ function clearDiscount() {
 }
 
 function getCurrentTotal() {
-  const r = ssdRate();
-  const ssdTotal  = state.ssdVolumes.reduce((s,v) => s + v.gb * r, 0);
-  const nvmeTotal = isMumbai() ? 0 : state.nvmeVolumes.reduce((s,v) => s + v.gb * 5, 0);
-  const perServer = (state.selectedPlan ? state.selectedPlan.price : 0) + ssdTotal + nvmeTotal;
-  return perServer * (state.serverQty || 1);
+  // If the estimate cart has items, discount applies to the grand total; otherwise the single config.
+  if (estimate.length > 0) return estimate.reduce((s,e) => s + e.lineTotal, 0);
+  return currentPerServer() * (state.serverQty || 1);
 }
 
 function shakeInput(id) {
@@ -1404,7 +1492,7 @@ function resetAll() {
   updateCalc();
 }
 
-// ── MODE SWITCH (CPU <-> GPU) ──
+// ── MODE SWITCH ──
 function switchMode(mode) {
   const views = { cpu:'cpuView', gpu:'gpuView', zata:'zataView' };
   Object.entries(views).forEach(([m,id]) => {
@@ -1413,7 +1501,6 @@ function switchMode(mode) {
   document.getElementById('modeCpuBtn').classList.toggle('active', mode === 'cpu');
   document.getElementById('modeGpuBtn').classList.toggle('active', mode === 'gpu');
   document.getElementById('modeZataBtn').classList.toggle('active', mode === 'zata');
-  // Region selector only applies to CPU view
   document.getElementById('regionSelector').style.display = (mode === 'cpu') ? '' : 'none';
 }
 
@@ -1423,10 +1510,10 @@ renderVolumes('ssd');
 renderVolumes('nvme');
 renderPlans();
 updateCalc();
+renderEstimate();
 
 // ========================= ZATA S3 STORAGE SCRIPT (isolated scope) =========================
 (function(){
-  // Pricing from Zata plan sheet (₹/month, exclusive of GST)
   const ZPLANS = [
     { id:'basic',      name:'Basic',       sub:'Get started',            tb:1,   price:599,   ico:'📦', tier:0 },
     { id:'standard',   name:'Standard',    sub:'Growing teams',          tb:5,   price:2970,  ico:'📈', tier:0 },
@@ -1436,13 +1523,10 @@ updateCalc();
     { id:'enterprise_plus', name:'Enterprise +', sub:'Ultimate enterprise solution', tb:100, price:57000, ico:'👑', tier:2 },
     { id:'custom',     name:'Custom Plan', sub:'Tailored to your needs', tb:null, price:null, ico:'🎧', tier:3, custom:true },
   ];
-  // per-TB guide rate from Enterprise+ (₹57,000 / 100 TB = ₹570/TB)
-  const CUSTOM_RATE = 57000 / 100;
 
   let zState = { plan:null };
   const fmtINR = n => '₹' + Math.round(n).toLocaleString('en-IN');
 
-  // build cards
   const grid = document.getElementById('zataPlanGrid');
   ZPLANS.forEach(p => {
     const c = document.createElement('div');
@@ -1498,11 +1582,9 @@ updateCalc();
     }
 
     const { unit, tb, isCustom } = currentPlanCost(p);
-
     planEl.textContent = p.name;
 
     if (isCustom) {
-      // Custom plan: no cost shown — connect with the Zata team
       document.getElementById('z-storage').textContent = 'Custom';
       document.getElementById('z-transfer').textContent = 'Equivalent to plan';
       document.getElementById('z-total').textContent = 'Custom';
@@ -1512,8 +1594,8 @@ updateCalc();
       return;
     }
 
-    const monthly = unit;                 // base monthly amount (exclusive of GST)
-    const withGst = monthly * 1.18;       // amount + 18% GST
+    const monthly = unit;
+    const withGst = monthly * 1.18;
 
     document.getElementById('z-storage').textContent = tb ? tb + ' TB' : '—';
     document.getElementById('z-transfer').textContent = tb ? `${tb} TB in / ${tb} TB out` : 'Equivalent to plan';
@@ -1536,11 +1618,10 @@ updateCalc();
   };
 
   zataRender();
-})(); // end Zata IIFE
+})();
 
 // ========================= GPU CALCULATOR SCRIPT (isolated scope) =========================
 (function(){
-/* ---- GPU catalogue (from NeevCloud listings) ---- */
 const GPUS = [
   {id:'a30',     name:'NVIDIA A30',                          price:76.59,  vram:24,  cpu:24, ram:192, avail:true},
   {id:'rtx5090', name:'NVIDIA GeForce RTX 5090',             price:93.82,  vram:32,  cpu:16, ram:96,  avail:true},
@@ -1562,7 +1643,6 @@ const fmt = n => '₹' + n.toLocaleString('en-IN',{maximumFractionDigits:2});
 
 const state = { gpu:GPUS[0], qty:1, disk:100, hours:730, diskRate:2, region:'Central India' };
 
-/* build cards */
 const grid = document.getElementById('gpuGrid');
 GPUS.forEach(g=>{
   const c = document.createElement('div');
@@ -1587,11 +1667,9 @@ GPUS.forEach(g=>{
   grid.appendChild(c);
 });
 
-/* qty */
 document.getElementById('qtyPlus').onclick = ()=>{ if(state.qty<8){state.qty++; document.getElementById('qtyVal').textContent=state.qty; render();} };
 document.getElementById('qtyMinus').onclick = ()=>{ if(state.qty>1){state.qty--; document.getElementById('qtyVal').textContent=state.qty; render();} };
 
-/* sliders */
 const diskS = document.getElementById('diskSlider');
 diskS.oninput = e=>{
   state.disk=+e.target.value;
@@ -1605,7 +1683,6 @@ const hrS = document.getElementById('hrSlider');
 hrS.oninput = e=>{ state.hours=+e.target.value; document.getElementById('hrNum').textContent=state.hours+' hrs'; setFill(hrS,1,730); render(); };
 function setFill(el,min,max){ el.style.setProperty('--fill', ((el.value-min)/(max-min)*100)+'%'); }
 
-/* storage */
 document.querySelectorAll('.opt').forEach(o=>{
   o.onclick = ()=>{
     document.querySelectorAll('.opt').forEach(x=>x.classList.remove('active'));
@@ -1615,18 +1692,16 @@ document.querySelectorAll('.opt').forEach(o=>{
   };
 });
 
-/* deploy */
 document.getElementById('deployBtn').onclick = ()=>{
   const m = document.getElementById('monthTotal').textContent;
   alert(`Deploying ${state.qty} × ${state.gpu.name}\nEstimated monthly: ${m}`);
 };
 
-/* render */
 function render(){
   const g = state.gpu;
   const gpuHr   = g.price * state.qty;
-  const billableDisk = Math.max(0, state.disk - 100);     // first 100 GB free
-  const diskMo  = state.diskRate === 0 ? 0 : billableDisk * 2.19;  // ₹2.19/GB/mo above 100
+  const billableDisk = Math.max(0, state.disk - 100);
+  const diskMo  = state.diskRate === 0 ? 0 : billableDisk * 2.19;
   const gpuMo   = gpuHr * state.hours;
   const monthly = gpuMo + diskMo;
 
@@ -1646,7 +1721,7 @@ function render(){
 
 setFill(diskS,10,1024); setFill(hrS,1,730);
 render();
-})(); // end GPU IIFE
+})();
 
 </script>
 </body>
