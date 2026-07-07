@@ -1105,6 +1105,11 @@ let volIdCounter = 10;
 let estimate = [];        // cart of different server configs
 let estIdCounter = 0;
 
+// Tracks the currently-applied Discounts-card selection (months + %) so the
+// PDF quote generator can pull it in automatically instead of defaulting to 0.
+let appliedDiscountPct = null;
+let appliedDiscountMonths = null;
+
 function isMumbai()  { return state.region === 'mumbai'; }
 function isWindows() { return state.os === 'windows'; }
 function ssdRate()   { return isMumbai() ? 3 : 2; }
@@ -1421,6 +1426,8 @@ function applyDiscount() {
   if (!months || months < 1) { shakeInput('discMonths'); return; }
   if (isNaN(pct) || pct < 0 || pct > 100) { shakeInput('discPercent'); return; }
   if (total === 0) { alert('Please select a plan or add storage first.'); return; }
+  appliedDiscountMonths = months;
+  appliedDiscountPct = pct;
   renderDiscountResult(total, months, pct);
 }
 
@@ -1455,6 +1462,8 @@ function clearDiscount() {
   document.getElementById('discMonths').value  = '';
   document.getElementById('discPercent').value = '';
   document.querySelectorAll('.month-pill').forEach(p => p.classList.remove('active'));
+  appliedDiscountMonths = null;
+  appliedDiscountPct = null;
 }
 
 function getCurrentTotal() {
@@ -1805,6 +1814,13 @@ window.getGpuQuoteData = function(){
   .qg-source-btn.active { background:#fff; color:var(--primary); box-shadow:0 2px 6px rgba(0,0,0,0.08); }
   .qg-source-btn:disabled { opacity:0.4; cursor:not-allowed; }
 
+  .qg-discount-note {
+    display:none; align-items:center; gap:6px; font-size:0.72rem; font-weight:700;
+    color:#7c3aed; background:#f5f3ff; border:1px solid #ddd6fe; border-radius:8px;
+    padding:6px 10px; margin:-6px 0 12px;
+  }
+  .qg-discount-note.visible { display:flex; }
+
   .qg-grid { display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-bottom:14px; }
   .qg-field { display:flex; flex-direction:column; gap:5px; }
   .qg-field.full { grid-column:1 / -1; }
@@ -1880,6 +1896,8 @@ window.getGpuQuoteData = function(){
       <button class="qg-source-btn active" id="qgSrcCurrent" onclick="setQuoteSource('current')">Current Configuration</button>
       <button class="qg-source-btn" id="qgSrcCart" onclick="setQuoteSource('cart')">Cost Estimate (Multiple VMs)</button>
     </div>
+
+    <div class="qg-discount-note" id="qgDiscountNote">✓ Auto-filled from your applied Discounts selection</div>
 
     <div class="qg-grid">
       <div class="qg-field full">
@@ -1969,6 +1987,28 @@ function currentActiveMode(){
   return 'cpu';
 }
 
+// Pulls the discount % (and, when it lines up with a billing-cycle option,
+// the matching duration) from whatever the user already applied in the
+// Discounts card, so the quote isn't stuck defaulting to 0.
+function applyAutoDiscountToModal(){
+  const noteEl = document.getElementById('qgDiscountNote');
+  const discField = document.getElementById('qgDiscount');
+  const cycleField = document.getElementById('qgBillingCycle');
+  const validCycles = ['1','3','6','12'];
+
+  if (appliedDiscountPct !== null && appliedDiscountPct !== undefined) {
+    discField.value = appliedDiscountPct;
+    const monthsStr = String(appliedDiscountMonths);
+    if (validCycles.includes(monthsStr)) {
+      cycleField.value = monthsStr;
+    }
+    noteEl.classList.add('visible');
+  } else {
+    discField.value = 0;
+    noteEl.classList.remove('visible');
+  }
+}
+
 function openQuoteModal(){
   const mode = currentActiveMode();
   const toggle = document.getElementById('qgSourceToggle');
@@ -1988,9 +2028,18 @@ function openQuoteModal(){
   document.getElementById('qgDateCreated').value = todayIso;
   document.getElementById('qgValidUntil').value = addOneMonth(todayIso);
   document.getElementById('qgQuoteNo').value = qgQuoteCounter;
-  document.getElementById('qgDiscount').value = 0;
   document.getElementById('qgGst').value = 18;
+
+  // Billing cycle default resolved first, then possibly overridden by the
+  // auto-discount sync below (which also drives the subject line refresh).
   onBillingCycleChange();
+  if (mode === 'cpu') {
+    applyAutoDiscountToModal();
+    onBillingCycleChange();
+  } else {
+    document.getElementById('qgDiscount').value = 0;
+    document.getElementById('qgDiscountNote').classList.remove('visible');
+  }
 
   document.getElementById('qgOverlay').classList.add('open');
 }
