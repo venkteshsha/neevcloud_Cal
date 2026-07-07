@@ -5,6 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>NeevCloud | Premium Pricing Calculator</title>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <style>
   :root {
     --primary: #2563eb;
@@ -797,6 +799,7 @@
           </div>
         </div>
 
+        <button class="qg-trigger-btn" onclick="openQuoteModal()">🧾 Generate PDF Quote for Client</button>
         <button class="reset-btn" onclick="resetAll()">↺ Reset Configuration</button>
       </div>
 
@@ -895,6 +898,7 @@
     </div>
 
     <button class="deploy" id="deployBtn">🚀 Deploy GPU</button>
+    <button class="qg-trigger-btn" onclick="openQuoteModal()">🧾 Generate PDF Quote for Client</button>
   </div>
 </div>
 
@@ -962,6 +966,7 @@
         </div>
 
         <button class="contact-btn" id="zataActionBtn" onclick="zataAction()">Select a plan</button>
+        <button class="qg-trigger-btn" onclick="openQuoteModal()">🧾 Generate PDF Quote for Client</button>
       </div>
     </div>
   </div>
@@ -1617,6 +1622,25 @@ renderEstimate();
     }
   };
 
+  window.getZataQuoteData = function(){
+    const p = zState.plan;
+    if (!p || p.custom) return null;
+    return {
+      subjectDefault: 'Zata S3 Storage | NeevCloud',
+      lineItems: [{
+        qty: 1,
+        unitMonthly: p.price,
+        descLines: [
+          `Zata S3 Object Storage - ${p.name} Plan`,
+          `Storage - ${p.tb} TB`,
+          `Transfer - ${p.tb} TB in / ${p.tb} TB out`,
+          `Rescale anytime, no hidden ingress/egress charges`,
+          `Billed monthly · Prepaid plan`,
+        ],
+      }],
+    };
+  };
+
   zataRender();
 })();
 
@@ -1721,8 +1745,538 @@ function render(){
 
 setFill(diskS,10,1024); setFill(hrS,1,730);
 render();
+
+window.getGpuQuoteData = function(){
+  const g = state.gpu;
+  const gpuHr = g.price * state.qty;
+  const billableDisk = Math.max(0, state.disk - 100);
+  const diskMo = state.diskRate === 0 ? 0 : billableDisk * 2.19;
+  const monthly = (gpuHr * state.hours) + diskMo;
+  return {
+    subjectDefault: 'GPU Server | NeevCloud',
+    lineItems: [{
+      qty: 1,
+      unitMonthly: monthly,
+      descLines: [
+        `GPU Server - ${g.name}`,
+        `GPU Count - ${state.qty}`,
+        `VRAM - ${g.vram * state.qty} GB`,
+        `vCPU - ${g.cpu * state.qty}`,
+        `RAM - ${g.ram * state.qty} GB`,
+        `Disk - ${state.disk} GB (${state.diskRate === 0 ? 'Ephemeral' : 'Persistent'})`,
+        `Usage - ${state.hours} hrs/month`,
+        `Support - Ticket/Whatsapp and Call support 24/7`,
+      ],
+    }],
+  };
+};
 })();
 
+</script>
+
+<!-- ===================== QUOTE GENERATOR (MODAL + PDF) ===================== -->
+<style>
+  .qg-trigger-btn {
+    width:100%; margin-top:0.8rem; padding:12px; border:0; border-radius:12px;
+    background:linear-gradient(135deg,#0ea5e9,#2563eb); color:#fff; font-family:inherit;
+    font-weight:700; font-size:0.88rem; cursor:pointer; display:flex; align-items:center;
+    justify-content:center; gap:8px; transition:0.2s; box-shadow:0 6px 18px rgba(37,99,235,0.35);
+  }
+  .qg-trigger-btn:hover { transform:translateY(-1px); box-shadow:0 10px 24px rgba(37,99,235,0.45); }
+
+  .qg-overlay {
+    display:none; position:fixed; inset:0; background:rgba(15,23,42,0.6);
+    z-index:1000; align-items:flex-start; justify-content:center; padding:3vh 16px; overflow-y:auto;
+    backdrop-filter: blur(2px);
+  }
+  .qg-overlay.open { display:flex; }
+  .qg-modal {
+    background:#fff; border-radius:20px; width:100%; max-width:640px; padding:1.8rem 2rem 2rem;
+    box-shadow:0 30px 60px rgba(0,0,0,0.3); font-family:'Plus Jakarta Sans',sans-serif; color:var(--text-dark);
+    margin:2vh 0;
+  }
+  .qg-modal-head { display:flex; justify-content:space-between; align-items:center; margin-bottom:1.4rem; }
+  .qg-modal-head h3 { font-size:1.15rem; font-weight:800; }
+  .qg-close-btn { width:32px; height:32px; border-radius:9px; border:1px solid var(--border); background:#f8fafc; cursor:pointer; font-size:1rem; color:var(--text-muted); }
+  .qg-close-btn:hover { background:#fee2e2; border-color:#ef4444; color:#ef4444; }
+
+  .qg-source-toggle { display:flex; gap:8px; background:#f1f5f9; padding:5px; border-radius:12px; margin-bottom:1.2rem; }
+  .qg-source-btn { flex:1; padding:10px; border:0; background:transparent; border-radius:8px; font-weight:700; font-size:0.82rem; cursor:pointer; color:var(--text-muted); font-family:inherit; transition:0.2s; }
+  .qg-source-btn.active { background:#fff; color:var(--primary); box-shadow:0 2px 6px rgba(0,0,0,0.08); }
+  .qg-source-btn:disabled { opacity:0.4; cursor:not-allowed; }
+
+  .qg-grid { display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-bottom:14px; }
+  .qg-field { display:flex; flex-direction:column; gap:5px; }
+  .qg-field.full { grid-column:1 / -1; }
+  .qg-field label { font-size:0.72rem; font-weight:700; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.4px; }
+  .qg-field input, .qg-field select, .qg-field textarea {
+    border:1.5px solid var(--border); border-radius:10px; padding:9px 12px; font-family:inherit;
+    font-size:0.88rem; outline:none; background:#f8fafc; color:var(--text-dark); transition:border-color 0.2s;
+  }
+  .qg-field input:focus, .qg-field select:focus, .qg-field textarea:focus { border-color:var(--primary); background:#fff; }
+  .qg-field textarea { resize:vertical; min-height:54px; }
+
+  .qg-generate-btn {
+    width:100%; margin-top:0.6rem; padding:13px; border:0; border-radius:12px;
+    background:#0f172a; color:#fff; font-family:inherit; font-weight:700; font-size:0.92rem;
+    cursor:pointer; display:flex; align-items:center; justify-content:center; gap:8px; transition:0.2s;
+  }
+  .qg-generate-btn:hover { background:#1e293b; }
+  .qg-generate-btn:disabled { opacity:0.5; cursor:not-allowed; }
+  .qg-hint { font-size:0.72rem; color:var(--text-muted); margin-top:8px; text-align:center; }
+
+  /* Offscreen printable quote sheet used for PDF rendering */
+  #quoteSheetWrap { display:none; }
+  @media print {
+    body > *:not(#quoteSheetWrap) { display:none !important; }
+    #quoteSheetWrap { display:block !important; position:static; }
+    #quoteSheet { width:100%; padding:20px 30px; box-shadow:none; }
+  }
+  #quoteSheet {
+    width:794px; background:#fff; padding:40px 48px; font-family:Arial,Helvetica,sans-serif; color:#1f2937;
+  }
+  #quoteSheet .qs-head { display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:26px; }
+  #quoteSheet .qs-logo { display:flex; align-items:center; gap:10px; }
+  #quoteSheet .qs-logo-mark { width:42px; height:42px; border-radius:10px; background:#0f172a; color:#fff; display:flex; align-items:center; justify-content:center; font-weight:800; font-size:18px; }
+  #quoteSheet .qs-logo-text { font-size:1.3rem; font-weight:800; color:#0f172a; letter-spacing:-0.5px; }
+  #quoteSheet .qs-company { text-align:right; font-size:11px; line-height:1.6; color:#334155; }
+  #quoteSheet .qs-company b { font-size:13px; color:#0f172a; display:block; margin-bottom:2px; }
+
+  #quoteSheet .qs-meta-table { width:100%; border-collapse:collapse; margin-bottom:22px; font-size:12px; }
+  #quoteSheet .qs-meta-table th { background:#e5e7eb; text-align:left; padding:8px 12px; font-weight:700; border:1px solid #d1d5db; }
+  #quoteSheet .qs-meta-table td { padding:8px 12px; border:1px solid #d1d5db; }
+
+  #quoteSheet .qs-recipient { font-size:12px; margin-bottom:22px; line-height:1.7; }
+  #quoteSheet .qs-recipient b { display:block; margin-bottom:4px; }
+
+  #quoteSheet .qs-intro { font-size:11.5px; color:#334155; margin-bottom:18px; line-height:1.6; }
+
+  #quoteSheet .qs-items-table { width:100%; border-collapse:collapse; font-size:11.5px; margin-bottom:0; }
+  #quoteSheet .qs-items-table th { background:#e5e7eb; padding:8px 10px; text-align:left; font-weight:700; border:1px solid #d1d5db; }
+  #quoteSheet .qs-items-table td { padding:9px 10px; border:1px solid #d1d5db; vertical-align:top; }
+  #quoteSheet .qs-items-table .qs-num { text-align:right; }
+  #quoteSheet .qs-items-table .qs-desc-title { font-weight:700; margin-bottom:3px; }
+  #quoteSheet .qs-items-table .qs-desc-line { color:#334155; }
+
+  #quoteSheet .qs-totals { width:100%; margin-top:0; font-size:12px; }
+  #quoteSheet .qs-totals td { padding:8px 10px; border:1px solid #d1d5db; }
+  #quoteSheet .qs-totals .qs-total-label { text-align:right; font-weight:700; background:#f3f4f6; }
+  #quoteSheet .qs-totals .qs-total-val { text-align:right; font-weight:700; width:160px; }
+  #quoteSheet .qs-totals .qs-grand td { font-weight:800; background:#e5e7eb; }
+
+  #quoteSheet .qs-notes { margin-top:24px; font-size:10.5px; color:#334155; line-height:1.7; }
+  #quoteSheet .qs-notes b { display:block; margin-bottom:4px; color:#0f172a; font-size:11.5px; }
+  #quoteSheet .qs-notes ul { margin:4px 0 12px 16px; padding:0; }
+</style>
+
+<div class="qg-overlay" id="qgOverlay">
+  <div class="qg-modal">
+    <div class="qg-modal-head">
+      <h3>🧾 Generate Client Quote (PDF)</h3>
+      <button class="qg-close-btn" onclick="closeQuoteModal()">✕</button>
+    </div>
+
+    <div class="qg-source-toggle" id="qgSourceToggle">
+      <button class="qg-source-btn active" id="qgSrcCurrent" onclick="setQuoteSource('current')">Current Configuration</button>
+      <button class="qg-source-btn" id="qgSrcCart" onclick="setQuoteSource('cart')">Cost Estimate (Multiple VMs)</button>
+    </div>
+
+    <div class="qg-grid">
+      <div class="qg-field full">
+        <label>Quote Subject</label>
+        <input type="text" id="qgSubject" placeholder="e.g. Cloud Server | NeevCloud | Annual">
+      </div>
+
+      <div class="qg-field">
+        <label>Recipient / Company Name</label>
+        <input type="text" id="qgRecipientName" placeholder="e.g. ABC SOLUTIONS">
+      </div>
+      <div class="qg-field">
+        <label>Attention</label>
+        <input type="text" id="qgRecipientAttn" placeholder="e.g. ABC SOLUTIONS">
+      </div>
+
+      <div class="qg-field full">
+        <label>Recipient Address (optional)</label>
+        <textarea id="qgRecipientAddress" placeholder="City, State, Country"></textarea>
+      </div>
+
+      <div class="qg-field">
+        <label>Billing Cycle</label>
+        <select id="qgBillingCycle" onchange="onBillingCycleChange()">
+          <option value="1">Monthly</option>
+          <option value="3">Quarterly</option>
+          <option value="6">Semi Annual</option>
+          <option value="12" selected>Annual</option>
+        </select>
+      </div>
+      <div class="qg-field">
+        <label>Discount (%)</label>
+        <input type="number" id="qgDiscount" min="0" max="100" value="0">
+      </div>
+
+      <div class="qg-field">
+        <label>GST (%)</label>
+        <input type="number" id="qgGst" min="0" max="100" value="18">
+      </div>
+      <div class="qg-field">
+        <label>Quote #</label>
+        <input type="text" id="qgQuoteNo" placeholder="350">
+      </div>
+
+      <div class="qg-field">
+        <label>Date Created</label>
+        <input type="date" id="qgDateCreated" onchange="updateValidUntil()">
+      </div>
+      <div class="qg-field">
+        <label>Valid Until (auto: +1 month)</label>
+        <input type="date" id="qgValidUntil">
+      </div>
+    </div>
+
+    <button class="qg-generate-btn" id="qgGenerateBtn" onclick="generateQuotePDF()">⬇️ Generate &amp; Download PDF Quote</button>
+    <div class="qg-hint">If a direct download doesn't start, a print dialog will open — choose "Save as PDF" as the destination.</div>
+  </div>
+</div>
+
+<div id="quoteSheetWrap"><div id="quoteSheet"></div></div>
+
+<script>
+// ========================= QUOTE GENERATOR =========================
+let qgQuoteCounter = 350;
+let qgSource = 'current';
+
+function pad2(n){ return n < 10 ? '0'+n : ''+n; }
+function toInputDate(d){ return d.getFullYear()+'-'+pad2(d.getMonth()+1)+'-'+pad2(d.getDate()); }
+function fmtDisplayDate(iso){
+  const [y,m,d] = iso.split('-').map(Number);
+  const dt = new Date(y, m-1, d);
+  return pad2(dt.getDate())+'/'+pad2(dt.getMonth()+1)+'/'+dt.getFullYear();
+}
+function addOneMonth(iso){
+  const [y,m,d] = iso.split('-').map(Number);
+  const dt = new Date(y, m-1, d);
+  dt.setMonth(dt.getMonth()+1);
+  return toInputDate(dt);
+}
+function cycleLabel(months){
+  return { '1':'Monthly', '3':'Quarterly', '6':'Semi Annual', '12':'Annual' }[String(months)] || (months+' Months');
+}
+
+function currentActiveMode(){
+  if (document.getElementById('gpuView').style.display !== 'none') return 'gpu';
+  if (document.getElementById('zataView').style.display !== 'none') return 'zata';
+  return 'cpu';
+}
+
+function openQuoteModal(){
+  const mode = currentActiveMode();
+  const toggle = document.getElementById('qgSourceToggle');
+  const cartBtn = document.getElementById('qgSrcCart');
+
+  if (mode === 'cpu') {
+    toggle.style.display = '';
+    cartBtn.disabled = estimate.length === 0;
+    setQuoteSource(estimate.length > 0 && !state.selectedPlan ? 'cart' : 'current');
+  } else {
+    toggle.style.display = 'none';
+    qgSource = 'current';
+  }
+
+  const today = new Date();
+  const todayIso = toInputDate(today);
+  document.getElementById('qgDateCreated').value = todayIso;
+  document.getElementById('qgValidUntil').value = addOneMonth(todayIso);
+  document.getElementById('qgQuoteNo').value = qgQuoteCounter;
+  document.getElementById('qgDiscount').value = 0;
+  document.getElementById('qgGst').value = 18;
+  onBillingCycleChange();
+
+  document.getElementById('qgOverlay').classList.add('open');
+}
+
+function closeQuoteModal(){
+  document.getElementById('qgOverlay').classList.remove('open');
+}
+
+function setQuoteSource(src){
+  qgSource = src;
+  document.getElementById('qgSrcCurrent').classList.toggle('active', src==='current');
+  document.getElementById('qgSrcCart').classList.toggle('active', src==='cart');
+  onBillingCycleChange();
+}
+
+function onBillingCycleChange(){
+  const months = document.getElementById('qgBillingCycle').value;
+  const mode = currentActiveMode();
+  let defaultSubject = 'Cloud Server | NeevCloud | ' + cycleLabel(months);
+  if (mode === 'gpu') defaultSubject = 'GPU Server | NeevCloud | ' + cycleLabel(months);
+  if (mode === 'zata') defaultSubject = 'Zata S3 Storage | NeevCloud | ' + cycleLabel(months);
+  if (qgSource === 'cart') defaultSubject = 'Cloud Server Estimate | NeevCloud | ' + cycleLabel(months);
+  document.getElementById('qgSubject').value = defaultSubject;
+}
+
+function updateValidUntil(){
+  const dc = document.getElementById('qgDateCreated').value;
+  if (dc) document.getElementById('qgValidUntil').value = addOneMonth(dc);
+}
+
+// Build line items depending on active mode + source
+function buildQuoteLineItems(){
+  const mode = currentActiveMode();
+
+  if (mode === 'gpu') {
+    const d = window.getGpuQuoteData();
+    return d.lineItems.map(li => ({
+      qty: li.qty,
+      unitMonthly: li.unitMonthly,
+      descLines: li.descLines,
+    }));
+  }
+
+  if (mode === 'zata') {
+    const d = window.getZataQuoteData();
+    if (!d) return [];
+    return d.lineItems.map(li => ({
+      qty: li.qty,
+      unitMonthly: li.unitMonthly,
+      descLines: li.descLines,
+    }));
+  }
+
+  // CPU mode
+  if (qgSource === 'cart') {
+    return estimate.map(e => {
+      const storageBits = [];
+      if (e.ssdGb)  storageBits.push(`SSD - ${e.ssdGb}GB`);
+      if (e.nvmeGb) storageBits.push(`NVMe - ${e.nvmeGb}GB`);
+      return {
+        qty: e.qty,
+        unitMonthly: e.perServer,
+        descLines: [
+          `Cloud Server - ${e.plan}`,
+          `CPU/RAM - ${e.specs}`,
+          ...storageBits,
+          `IP Address - 1 IP Address`,
+          `Operating System - ${e.os}`,
+          `Region - ${e.region}`,
+          `Support - Ticket/Whatsapp and Call support 24/7`,
+          `Uptime - 99.98%`,
+          `Setup fee - None`,
+        ],
+      };
+    });
+  }
+
+  // CPU mode, current single configuration
+  if (!state.selectedPlan) return [];
+  const r = ssdRate();
+  const ssdGb  = state.ssdVolumes.reduce((s,v) => s + v.gb, 0);
+  const nvmeGb = isMumbai() ? 0 : state.nvmeVolumes.reduce((s,v) => s + v.gb, 0);
+  const storageBits = [];
+  if (ssdGb)  storageBits.push(`SSD - ${ssdGb}GB`);
+  if (nvmeGb) storageBits.push(`NVMe - ${nvmeGb}GB`);
+  const osName = osData.find(o => o.id === state.os).name;
+  return [{
+    qty: state.serverQty || 1,
+    unitMonthly: currentPerServer(),
+    descLines: [
+      `Cloud Server - ${state.selectedPlan.name}`,
+      `CPU - ${state.selectedPlan.cpu}vCPU`,
+      `RAM - ${state.selectedPlan.ram} RAM`,
+      ...storageBits,
+      `IP Address - 1 IP Address`,
+      `Operating System - ${osName}`,
+      `Region - ${isMumbai() ? 'Mumbai (West India)' : 'Central India'}`,
+      `Support - Ticket/Whatsapp and Call support 24/7`,
+      `Uptime - 99.98%`,
+      `Setup fee - None`,
+    ],
+  }];
+}
+
+function inr(n){ return 'Rs. ' + n.toLocaleString('en-IN', {minimumFractionDigits:2, maximumFractionDigits:2}) + ' INR'; }
+
+function generateQuotePDF(){
+  const lineItems = buildQuoteLineItems();
+  if (!lineItems.length) {
+    alert('Please select a plan / configuration (or add items to the cost estimate) before generating a quote.');
+    return;
+  }
+
+  const months = parseInt(document.getElementById('qgBillingCycle').value);
+  const discount = Math.max(0, Math.min(100, parseFloat(document.getElementById('qgDiscount').value) || 0));
+  const gstPct = Math.max(0, parseFloat(document.getElementById('qgGst').value) || 0);
+  const quoteNo = document.getElementById('qgQuoteNo').value || qgQuoteCounter;
+  const subject = document.getElementById('qgSubject').value || 'Cloud Server | NeevCloud';
+  const dateCreated = document.getElementById('qgDateCreated').value;
+  const validUntil = document.getElementById('qgValidUntil').value;
+  const recipientName = document.getElementById('qgRecipientName').value || '—';
+  const recipientAttn = document.getElementById('qgRecipientAttn').value || recipientName;
+  const recipientAddress = document.getElementById('qgRecipientAddress').value;
+
+  let rows = '';
+  let subTotal = 0;
+  lineItems.forEach(li => {
+    const unitPrice = li.unitMonthly * months;
+    const lineTotalPreQty = unitPrice * (1 - discount/100);
+    const lineTotal = lineTotalPreQty * li.qty;
+    subTotal += lineTotal;
+    const descHtml = `<div class="qs-desc-title">${li.descLines[0]}</div>` +
+      li.descLines.slice(1).map(l => `<div class="qs-desc-line">${l}</div>`).join('') +
+      `<div class="qs-desc-line" style="margin-top:4px;font-style:italic;">(${cycleLabel(months)} · ${months} Month${months>1?'s':''})</div>`;
+    rows += `<tr>
+      <td>${li.qty}</td>
+      <td>${descHtml}</td>
+      <td class="qs-num">${unitPrice.toFixed(2)}</td>
+      <td class="qs-num">${discount.toFixed(2)}</td>
+      <td class="qs-num">${inr(lineTotal)}</td>
+    </tr>`;
+  });
+
+  const gstAmt = subTotal * (gstPct/100);
+  const grandTotal = subTotal + gstAmt;
+
+  const sheet = document.getElementById('quoteSheet');
+  sheet.innerHTML = `
+    <div class="qs-head">
+      <div class="qs-logo">
+        <div class="qs-logo-mark">N</div>
+        <div class="qs-logo-text">NEEVCLOUD</div>
+      </div>
+      <div class="qs-company">
+        <b>NEEVAI SUPERCLOUD PRIVATE LIMITED</b>
+        401, VISHAL ASTRA, 12, A/A, A.B. ROAD,<br>
+        SCHEME NO. 54, PU-4, Indore, Madhya Pradesh<br>
+        India - 452010<br>
+        CIN : U72900MP2020PTC051801<br>
+        GSTN : 23AAHCN0240P1ZH<br>
+        SAC CODE : 998315
+      </div>
+    </div>
+
+    <table class="qs-meta-table">
+      <tr><th>Quote #</th><th>Subject</th><th>Date Created</th><th>Valid Until</th></tr>
+      <tr>
+        <td>${quoteNo}</td>
+        <td>${subject}</td>
+        <td>${fmtDisplayDate(dateCreated)}</td>
+        <td>${fmtDisplayDate(validUntil)}</td>
+      </tr>
+    </table>
+
+    <div class="qs-recipient">
+      <b>Recipient</b>
+      ${recipientName}<br>
+      ATTN: ${recipientAttn}<br>
+      ${recipientAddress ? recipientAddress.replace(/\n/g,'<br>') + '<br>' : ''}
+    </div>
+
+    <div class="qs-intro">
+      We are pleased to present the following quotation for cloud infrastructure services from NeevCloud.<br>
+      This quote includes service specifications, pricing, and key terms tailored to your current requirements.
+    </div>
+
+    <table class="qs-items-table">
+      <tr>
+        <th style="width:6%">Qty</th>
+        <th>Description</th>
+        <th style="width:14%">Unit Price</th>
+        <th style="width:11%">Discount %</th>
+        <th style="width:20%">Total</th>
+      </tr>
+      ${rows}
+    </table>
+
+    <table class="qs-totals">
+      <tr><td class="qs-total-label" style="border-right:0;">Sub Total</td><td class="qs-total-val" style="border-left:0;">${inr(subTotal)}</td></tr>
+      <tr><td class="qs-total-label" style="border-right:0;">IGST @ ${gstPct.toFixed(2)}%</td><td class="qs-total-val" style="border-left:0;">${inr(gstAmt)}</td></tr>
+      <tr class="qs-grand"><td class="qs-total-label" style="border-right:0;">Total</td><td class="qs-total-val" style="border-left:0;">${inr(grandTotal)}</td></tr>
+    </table>
+
+    <div class="qs-notes">
+      <b>Notes:</b>
+      <ul>
+        <li>Payment terms are in advance.</li>
+        <li>Additional DataTransfer per TB @ Rs. 1500 INR Monthly.</li>
+        <li>Additional Backup Service, Cyber Agent for VM/Cloud @Rs. 1000 + GST Monthly.</li>
+        <li>Additional S3 Storage Rs. 1 per GB Monthly.</li>
+        <li>Load Balancer cost Rs.936/Monthly.</li>
+        <li>GST Taxes 18% applicable.</li>
+      </ul>
+      <b>Terms &amp; Conditions:</b>
+      1. The proposed commercials have been worked out based on information provided by the Customer during the presales stage and as per the technical scope/assumptions as mentioned in the technical proposal/ commercial offer.
+      The customer should check with NeevAI for explicit clarifications for any queries arising out of this offer, as Prices / Terms shall be adjusted accordingly in the event of any changes/deviation to the technical scope/assumptions.<br><br>
+      2. Validity of the Quote: This commercial offer is valid for 30 days from the date of this proposal.<br>
+      Taxes: Taxes extra, as applicable, to the above-mentioned charges. Any revision of taxes by the Government at a later date will be charged as applicable.
+    </div>
+  `;
+
+  const btn = document.getElementById('qgGenerateBtn');
+  const originalLabel = btn.innerHTML;
+
+  const librariesReady = (typeof html2canvas === 'function') &&
+                         (window.jspdf && typeof window.jspdf.jsPDF === 'function');
+
+  if (!librariesReady) {
+    // Fallback: no external PDF library available (e.g. blocked in this preview) —
+    // use the browser's native print dialog, where the person can choose "Save as PDF".
+    qgQuoteCounter = (parseInt(quoteNo) || qgQuoteCounter) + 1;
+    closeQuoteModal();
+    setTimeout(() => {
+      window.print();
+    }, 50);
+    return;
+  }
+
+  btn.disabled = true;
+  btn.innerHTML = '⏳ Rendering PDF…';
+
+  try {
+    html2canvas(sheet, { scale: 2, useCORS: true, backgroundColor: '#ffffff' }).then(canvas => {
+      const { jsPDF } = window.jspdf;
+      const pdf = new jsPDF('p', 'pt', 'a4');
+      const pageWidth = pdf.internal.pageSize.getWidth();
+      const pageHeight = pdf.internal.pageSize.getHeight();
+      const imgW = pageWidth;
+      const imgH = (canvas.height * imgW) / canvas.width;
+
+      let heightLeft = imgH;
+      let position = 0;
+      const imgData = canvas.toDataURL('image/png');
+
+      pdf.addImage(imgData, 'PNG', 0, position, imgW, imgH);
+      heightLeft -= pageHeight;
+
+      while (heightLeft > 0) {
+        position = heightLeft - imgH;
+        pdf.addPage();
+        pdf.addImage(imgData, 'PNG', 0, position, imgW, imgH);
+        heightLeft -= pageHeight;
+      }
+
+      pdf.save(`NeevCloud-Quote-${quoteNo}.pdf`);
+      qgQuoteCounter = (parseInt(quoteNo) || qgQuoteCounter) + 1;
+      btn.disabled = false;
+      btn.innerHTML = originalLabel;
+      closeQuoteModal();
+    }).catch(err => {
+      console.error(err);
+      btn.disabled = false;
+      btn.innerHTML = originalLabel;
+      qgQuoteCounter = (parseInt(quoteNo) || qgQuoteCounter) + 1;
+      closeQuoteModal();
+      setTimeout(() => { window.print(); }, 50);
+    });
+  } catch (err) {
+    console.error(err);
+    btn.disabled = false;
+    btn.innerHTML = originalLabel;
+    qgQuoteCounter = (parseInt(quoteNo) || qgQuoteCounter) + 1;
+    closeQuoteModal();
+    setTimeout(() => { window.print(); }, 50);
+  }
+}
 </script>
 </body>
 </html>
