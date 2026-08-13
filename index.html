@@ -1968,7 +1968,7 @@ let qgSource = 'current';
 // Logo used on the printable quote sheet — same NeevCloud mark shown in the header.
 // html2canvas needs the crossOrigin attribute set (and useCORS:true, already passed
 // below) so the raster export doesn't taint the canvas.
-const QUOTE_LOGO_URL = 'https://idr01.zata.ai/neevhello/download.png';
+const QUOTE_LOGO_URL = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAFcAAABhCAYAAACj6z3cAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAAEnQAABJ0Ad5mH3gAAANiSURBVHhe7do9S+tQAMbxJ9poCSiK2qlorS0O6qZQBMWlH8FufgU3NwcXXfwSiuB3cXNUJEFKJ9PBF5TSxpy7eMXmVgtXn9sk9/nDWc5pCv2R5o1Y7cAY/MdZ0YkfbCg6oX4u4RITLjHhEhMuMeESEy4x4RITLjHhEhMuMeESEy4x4RITLjHhEhMuMeESEy4x4RITLjHhEhMuMeESswb5UshIhvlKBr9O8DWd9lxiwiUmXGLCJSZcYsIlJlxiwiUmXGLCJZaK29+xsTEsLi4im81Gl7pqtVq4vr7G09NTdOmv6nf7i3ZgzKAGgB8ZlUrFuK5r+uW6rqlUKn9s/7ejE5gvRyoOC7Ztw7L6/wssy4Jt29FpWqnA/W6WZWF0dBQjIyPRpW/1X+JmMhlMTk5iYWEBq6urqFarqNVqWFlZiX70W6XihLaxsYHT01PMz89Hl2CMwevrKx4eHuC6Ls7Pz3F3d4dCoYByuYxSqYRSqYTp6WkcHBzg6Ogo+hWf1u+Elhrck5MTFItFGGPw8vKCZrOJZrMJ3/fh+z48z8Pz8zNqtRqWlpZ6Xlns7+8L92OO42Brawu7u7uwbRu+76PRaMB1XbiuC8/zUK/X0W63USwWcXZ2hvX19ejXAG+4h4eH0elPSxWubduYmJhALpd7H/l8HrlcDpeXl7i6usLt7S3u7+9h3n7W76sIY4xwP2t5eRmbm5uYm5tDoVB4H1NTU7i4uMDOzg48z4tu1tW/xk3M1UK1WsXx8TH29vawvb2NtbU1zMzMYHh4OPrR2JQYXMdx4DgOLMvqGnEuMbhJTLjEhEtMuMSES0y4xIRLTLjEhEtMuMSES0y4xBKDG4bh+zPaj/Wa61evbYwxCMMwOv2tEoUbBEFPmE6n03M+mjEGnU4nOg1jDIIg+HHcxDwsz+fzmJ2dxdBQ9/5gjMHj4yNubm7QarW61qJls1mUy2WMj4//8bgyDEPU63U0Go2u+a/q97A8MbhxrB9uYg4LSUy4xIRLTLjEhEtMuMSES0y4xIRLTLjEBnr7+y8a5A229lxiwiWWatxBHhKQZtxBwyKtuHGARRpx4wKLNOLGKeESEy4x4RJLFW6cTmZIE27cYJEW3DjCIg24cYVFGnDjnHCJCZeYcIkJl5hwiQmXmHCJ/QJ4if8/ydKf3AAAAABJRU5ErkJggg==';
 
 function pad2(n){ return n < 10 ? '0'+n : ''+n; }
 function toInputDate(d){ return d.getFullYear()+'-'+pad2(d.getMonth()+1)+'-'+pad2(d.getDate()); }
@@ -2196,7 +2196,7 @@ function generateQuotePDF(){
   sheet.innerHTML = `
     <div class="qs-head">
       <div class="qs-logo">
-        <div class="qs-logo-mark"><img src="${QUOTE_LOGO_URL}" alt="NeevCloud" crossorigin="anonymous"></div>
+        <div class="qs-logo-mark"><img src="${QUOTE_LOGO_URL}" alt="NeevCloud"></div>
         <div class="qs-logo-text">NEEVCLOUD</div>
       </div>
       <div class="qs-company">
