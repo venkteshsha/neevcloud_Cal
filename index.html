@@ -281,6 +281,41 @@
 
   .nvme-section.hidden { display: none; }
 
+  /* ── ADD-ON SERVICES ── */
+  .addon-note { font-size: 0.75rem; color: var(--text-muted); font-weight: 600; margin-bottom: 1rem; line-height: 1.5; }
+  .addon-list { display: flex; flex-direction: column; gap: 10px; }
+  .addon-row {
+    display: grid; grid-template-columns: auto 1fr auto auto; align-items: center;
+    gap: 12px; padding: 12px 16px; border: 1px solid var(--border);
+    border-radius: 12px; background: white; transition: border-color 0.2s, background 0.2s;
+  }
+  .addon-row:hover { border-color: #cbd5e1; }
+  .addon-row.on { border-color: var(--primary); background: var(--primary-soft); }
+  .addon-ico { width: 34px; height: 34px; border-radius: 9px; display: flex; align-items: center; justify-content: center; background: #f1f5f9; font-size: 1rem; flex-shrink: 0; }
+  .addon-row.on .addon-ico { background: white; }
+  .addon-info { min-width: 0; }
+  .addon-name { font-size: 0.85rem; font-weight: 800; color: var(--text-dark); }
+  .addon-sub { font-size: 0.7rem; color: var(--text-muted); font-weight: 600; margin-top: 3px; display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+  .addon-rate { font-family: 'JetBrains Mono', monospace; font-size: 0.68rem; font-weight: 700; color: var(--primary); background: var(--primary-soft); padding: 2px 7px; border-radius: 6px; white-space: nowrap; }
+  .addon-row.on .addon-rate { background: white; }
+  .addon-ctrl { display: flex; align-items: center; gap: 8px; }
+  .addon-stepper { display: inline-flex; align-items: center; gap: 4px; background: #f8fafc; border: 1px solid var(--border); border-radius: 9px; padding: 3px; }
+  .addon-stepper button { width: 24px; height: 24px; border: none; background: white; border-radius: 6px; cursor: pointer; font-weight: 800; color: var(--text-muted); font-family: inherit; font-size: 0.85rem; line-height: 1; transition: 0.2s; }
+  .addon-stepper button:hover { color: var(--primary); }
+  .addon-qv { min-width: 26px; text-align: center; font-family: 'JetBrains Mono', monospace; font-weight: 800; font-size: 0.85rem; color: var(--text-dark); }
+  .addon-gb-input {
+    background: #f8fafc; border: 1px solid var(--border); border-radius: 8px; padding: 6px 10px;
+    color: var(--text-dark); font-family: 'JetBrains Mono', monospace; font-size: 0.85rem;
+    font-weight: 700; text-align: center; outline: none; width: 86px; transition: border-color 0.2s;
+  }
+  .addon-gb-input:focus { border-color: var(--primary); background: var(--primary-soft); }
+  .addon-unit { font-size: 0.7rem; color: var(--text-muted); font-weight: 700; }
+  .addon-cost { font-family: 'JetBrains Mono', monospace; font-size: 0.85rem; font-weight: 700; color: var(--primary); white-space: nowrap; min-width: 96px; text-align: right; }
+  @media (max-width: 620px) {
+    .addon-row { grid-template-columns: auto 1fr; row-gap: 10px; }
+    .addon-ctrl, .addon-cost { grid-column: 2; justify-self: start; text-align: left; min-width: 0; }
+  }
+
   /* ── DISCOUNT CARD ── */
   .discount-card {
     background: linear-gradient(135deg, #1e1b4b 0%, #312e81 50%, #1e1b4b 100%);
@@ -697,11 +732,24 @@
       </div>
     </div>
 
+    <!-- Add-on Services -->
+    <div class="card">
+      <div class="section-label">04 — Add-on Services</div>
+      <div class="addon-note">
+        Optional monthly services. Rates shown are for <strong id="addonRegionLabel">Central India</strong> and are GST-exclusive (18% GST added in the summary).
+      </div>
+      <div class="addon-list" id="addonList"></div>
+      <div class="storage-total-strip">
+        <span>Total Add-on Cost</span>
+        <span id="addonTotalDisplay">₹0 / month</span>
+      </div>
+    </div>
+
     <!-- Discount -->
     <div class="discount-card">
       <div class="discount-section-label">
         <span class="disc-icon">🏷️</span>
-        04 —  Discounts
+        05 —  Discounts
       </div>
 
       <div style="margin-bottom:0.5rem;">
@@ -1100,7 +1148,18 @@ const mumbaiWindows = {
   ],
 };
 
-let state = { region:'central', os:'ubuntu', hwTab:'general', selectedPlan:null, serverQty:1, ssdVolumes:[{id:1,gb:20}], nvmeVolumes:[] };
+// ── ADD-ON SERVICES (monthly rate per region, GST-exclusive) ──
+// unit:'qty' = billed per unit / month · unit:'gb' = billed per GB / month
+const addonData = [
+  { id:'lb',       name:'Load Balancer',          ico:'⚖️', unit:'qty', sub:'Managed load balancer',        central:936,    mumbai:1799 },
+  { id:'fip',      name:'Floating IP',            ico:'🌐', unit:'qty', sub:'Static public IP address',     central:200,    mumbai:300  },
+  { id:'router',   name:'Router',                 ico:'🔀', unit:'qty', sub:'Virtual router / gateway',     central:820.80, mumbai:1440 },
+  { id:'vpn',      name:'VPN',                    ico:'🔒', unit:'qty', sub:'Site-to-site VPN (same both regions)', central:2000, mumbai:2000 },
+  { id:'snapshot', name:'Snapshot',               ico:'📸', unit:'gb',  sub:'Volume snapshot storage',      central:3,      mumbai:3    },
+  { id:'image',    name:'Image',                  ico:'💽', unit:'gb',  sub:'Custom machine image storage', central:2,      mumbai:2    },
+];
+
+let state = { region:'central', os:'ubuntu', hwTab:'general', selectedPlan:null, serverQty:1, ssdVolumes:[{id:1,gb:20}], nvmeVolumes:[], addons:{} };
 let volIdCounter = 10;
 let estimate = [];        // cart of different server configs
 let estIdCounter = 0;
@@ -1159,6 +1218,7 @@ function selectRegion(el, region) {
   state.selectedPlan = null;
   renderVolumes('ssd');
   renderVolumes('nvme');
+  renderAddons();
   renderPlans();
   updateCalc();
 }
@@ -1279,6 +1339,76 @@ function renderVolumes(type) {
   });
 }
 
+// ── ADD-ON SERVICES ──
+function money(n) {
+  const v = Number(n) || 0;
+  return '₹' + v.toLocaleString('en-IN', { minimumFractionDigits: v % 1 ? 2 : 0, maximumFractionDigits: 2 });
+}
+
+function addonRate(a) { return isMumbai() ? a.mumbai : a.central; }
+function addonQty(id) { return state.addons[id] || 0; }
+
+function addonTotal() {
+  return addonData.reduce((s,a) => s + addonQty(a.id) * addonRate(a), 0);
+}
+
+function changeAddonQty(id, d) {
+  state.addons[id] = Math.max(0, Math.min(999, addonQty(id) + d));
+  renderAddons();
+  updateCalc();
+}
+
+function onAddonGb(id, val) {
+  state.addons[id] = Math.max(0, parseInt(val) || 0);
+  const a   = addonData.find(x => x.id === id);
+  const el  = document.getElementById('addoncost-' + id);
+  const row = document.getElementById('addonrow-' + id);
+  if (el)  el.textContent = money(addonQty(id) * addonRate(a)) + '/mo';
+  if (row) row.classList.toggle('on', addonQty(id) > 0);
+  updateCalc();
+}
+
+function renderAddons() {
+  const listEl = document.getElementById('addonList');
+  if (!listEl) return;
+  listEl.innerHTML = '';
+  addonData.forEach(a => {
+    const rate = addonRate(a);
+    const qty  = addonQty(a.id);
+    const row  = document.createElement('div');
+    row.className = 'addon-row' + (qty > 0 ? ' on' : '');
+    row.id = 'addonrow-' + a.id;
+    const ctrl = a.unit === 'gb'
+      ? `<div class="addon-ctrl">
+           <input class="addon-gb-input" type="number" min="0" max="1000000" value="${qty}"
+             oninput="onAddonGb('${a.id}', this.value)">
+           <span class="addon-unit">GB</span>
+         </div>`
+      : `<div class="addon-ctrl">
+           <span class="addon-stepper">
+             <button onclick="changeAddonQty('${a.id}',-1)">−</button>
+             <span class="addon-qv">${qty}</span>
+             <button onclick="changeAddonQty('${a.id}',1)">+</button>
+           </span>
+         </div>`;
+    row.innerHTML = `
+      <div class="addon-ico">${a.ico}</div>
+      <div class="addon-info">
+        <div class="addon-name">${a.name}</div>
+        <div class="addon-sub">
+          <span>${a.sub}</span>
+          <span class="addon-rate">${money(rate)}${a.unit === 'gb' ? ' /GB' : ''} /mo</span>
+        </div>
+      </div>
+      ${ctrl}
+      <div class="addon-cost" id="addoncost-${a.id}">${money(qty * rate)}/mo</div>
+    `;
+    listEl.appendChild(row);
+  });
+  const lbl = document.getElementById('addonRegionLabel');
+  if (lbl) lbl.textContent = isMumbai() ? 'Mumbai (West India)' : 'Central India';
+}
+
 function currentPerServer() {
   const r = ssdRate();
   const ssdTotal  = state.ssdVolumes.reduce((s,v) => s + v.gb * r, 0);
@@ -1295,7 +1425,9 @@ function updateCalc() {
   const planCost    = state.selectedPlan ? state.selectedPlan.price : 0;
   const qty         = state.serverQty || 1;
   const perServer   = planCost + storageCost;
-  const total       = perServer * qty;
+  const serversTotal = perServer * qty;
+  const addonCost   = addonTotal();
+  const total       = serversTotal + addonCost;
 
   document.getElementById('s-serverqty').innerText = qty;
   document.getElementById('s-plan').innerText  = state.selectedPlan ? state.selectedPlan.name : '—';
@@ -1319,15 +1451,28 @@ function updateCalc() {
   }
   if (qty > 1) {
     html += `<div class="summary-item"><span>Per-server cost</span><span class="summary-cost-val">₹${perServer.toLocaleString()}</span></div>`;
-    html += `<div class="summary-item"><span>× ${qty} servers</span><span class="summary-cost-val">₹${total.toLocaleString()}</span></div>`;
+    html += `<div class="summary-item"><span>× ${qty} servers</span><span class="summary-cost-val">₹${serversTotal.toLocaleString()}</span></div>`;
+  }
+  if (addonCost > 0) {
+    html += `<div style="height:1px;background:#334155;margin:1rem 0"></div>`;
+    addonData.forEach(a => {
+      const q = addonQty(a.id);
+      if (!q) return;
+      const rate = addonRate(a);
+      const qLabel = a.unit === 'gb' ? `${q} GB × ${money(rate)}` : `${q} × ${money(rate)}`;
+      html += `<div class="summary-item"><span>${a.ico} ${a.name} (${qLabel})</span><span class="summary-cost-val">${money(q * rate)}</span></div>`;
+    });
+    html += `<div class="summary-item" style="border-top:1px solid #334155;padding-top:0.6rem;margin-top:0.2rem"><span>Total Add-ons</span><span class="summary-cost-val">${money(addonCost)}</span></div>`;
   }
   document.getElementById('storageSummaryList').innerHTML = html;
 
+  document.getElementById('addonTotalDisplay').textContent = money(addonCost) + ' / month';
   document.getElementById('storageTotalDisplay').textContent = '₹' + storageCost.toLocaleString() + ' / month';
-  document.getElementById('totalAmount').innerText = '₹' + total.toLocaleString();
+  document.getElementById('totalAmount').innerText = money(total);
   document.getElementById('totalAmountGst').innerText = '₹' + Math.round(total * 1.18).toLocaleString('en-IN');
 
   document.getElementById('addEstBtn').disabled = !state.selectedPlan;
+  if (estimate.length > 0) renderEstimate();
 
   const resultEl = document.getElementById('discResult');
   if (resultEl.classList.contains('visible')) {
@@ -1405,10 +1550,27 @@ function renderEstimate() {
         </div>
       </div>`;
   });
+  const addons = addonTotal();
+  if (addons > 0) {
+    const bits = addonData.filter(a => addonQty(a.id) > 0)
+      .map(a => `${a.name} × ${addonQty(a.id)}${a.unit === 'gb' ? ' GB' : ''}`).join(' · ');
+    html += `
+      <div class="cart-item">
+        <div class="cart-item-top">
+          <div>
+            <div class="cart-item-name">🧩 Add-on Services</div>
+            <div class="cart-item-meta">${isMumbai() ? 'Mumbai' : 'Central India'} rates<br>${bits}</div>
+          </div>
+          <div style="display:flex;align-items:flex-start;">
+            <span class="cart-item-cost">${money(addons)}</span>
+          </div>
+        </div>
+      </div>`;
+  }
   listEl.innerHTML = html;
 
-  const grand = estimate.reduce((s,e) => s + e.lineTotal, 0);
-  document.getElementById('cartGrandVal').textContent = '₹' + grand.toLocaleString();
+  const grand = estimate.reduce((s,e) => s + e.lineTotal, 0) + addons;
+  document.getElementById('cartGrandVal').textContent = money(grand);
   document.getElementById('cartGrandGst').textContent = '₹' + Math.round(grand * 1.18).toLocaleString('en-IN');
   grandEl.style.display = '';
 }
@@ -1436,10 +1598,10 @@ function renderDiscountResult(base, months, pct) {
   const saving       = undiscounted * (pct / 100);
   const finalPay     = undiscounted - saving;
 
-  document.getElementById('dr-monthly').textContent  = '₹' + base.toLocaleString();
+  document.getElementById('dr-monthly').textContent  = money(base);
   document.getElementById('dr-months').textContent   = months + ' month' + (months > 1 ? 's' : '');
   document.getElementById('dr-discount').textContent = pct + '%';
-  document.getElementById('dr-original').textContent = '₹' + undiscounted.toLocaleString();
+  document.getElementById('dr-original').textContent = money(undiscounted);
   document.getElementById('dr-final').textContent    = '₹' + Math.round(finalPay).toLocaleString();
   document.getElementById('dr-savings-badge').textContent = '💰 You save ₹' + Math.round(saving).toLocaleString();
 
@@ -1468,8 +1630,9 @@ function clearDiscount() {
 
 function getCurrentTotal() {
   // If the estimate cart has items, discount applies to the grand total; otherwise the single config.
-  if (estimate.length > 0) return estimate.reduce((s,e) => s + e.lineTotal, 0);
-  return currentPerServer() * (state.serverQty || 1);
+  const addons = addonTotal();
+  if (estimate.length > 0) return estimate.reduce((s,e) => s + e.lineTotal, 0) + addons;
+  return currentPerServer() * (state.serverQty || 1) + addons;
 }
 
 function shakeInput(id) {
@@ -1480,7 +1643,7 @@ function shakeInput(id) {
 }
 
 function resetAll() {
-  state = { region:'central', os:'ubuntu', hwTab:'general', selectedPlan:null, serverQty:1, ssdVolumes:[{id:1,gb:20}], nvmeVolumes:[] };
+  state = { region:'central', os:'ubuntu', hwTab:'general', selectedPlan:null, serverQty:1, ssdVolumes:[{id:1,gb:20}], nvmeVolumes:[], addons:{} };
   volIdCounter = 10;
 
   document.querySelectorAll('.region-btn').forEach((b,i) => b.classList.toggle('active', i===0));
@@ -1502,6 +1665,7 @@ function resetAll() {
   clearDiscount();
   renderVolumes('ssd');
   renderVolumes('nvme');
+  renderAddons();
   renderPlans();
   updateCalc();
 }
@@ -1522,6 +1686,7 @@ function switchMode(mode) {
 initOS();
 renderVolumes('ssd');
 renderVolumes('nvme');
+renderAddons();
 renderPlans();
 updateCalc();
 renderEstimate();
@@ -1782,7 +1947,6 @@ window.getGpuQuoteData = function(){
 })();
 
 </script>
-
 <!-- ===================== QUOTE GENERATOR (MODAL + PDF) ===================== -->
 <style>
   .qg-trigger-btn {
@@ -1821,6 +1985,13 @@ window.getGpuQuoteData = function(){
   }
   .qg-discount-note.visible { display:flex; }
 
+  .qg-addon-note {
+    display:none; align-items:center; gap:6px; font-size:0.72rem; font-weight:700;
+    color:#0369a1; background:#f0f9ff; border:1px solid #bae6fd; border-radius:8px;
+    padding:6px 10px; margin:-6px 0 12px;
+  }
+  .qg-addon-note.visible { display:flex; }
+
   .qg-grid { display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-bottom:14px; }
   .qg-field { display:flex; flex-direction:column; gap:5px; }
   .qg-field.full { grid-column:1 / -1; }
@@ -1843,10 +2014,14 @@ window.getGpuQuoteData = function(){
 
   /* Offscreen printable quote sheet used for PDF rendering */
   #quoteSheetWrap { display:none; }
+  /* Zero page margins suppress the browser's own print header/footer, so the
+     calculator's URL / page title never appears on the client's quote. */
+  @page { size: A4; margin: 0; }
   @media print {
+    html, body { margin:0 !important; padding:0 !important; background:#fff !important; }
     body > *:not(#quoteSheetWrap) { display:none !important; }
     #quoteSheetWrap { display:block !important; position:static; }
-    #quoteSheet { width:100%; padding:20px 30px; box-shadow:none; }
+    #quoteSheet { width:100%; padding:24px 34px; box-shadow:none; }
   }
   #quoteSheet {
     width:794px; background:#fff; padding:40px 48px; font-family:Arial,Helvetica,sans-serif; color:#1f2937;
@@ -1899,6 +2074,7 @@ window.getGpuQuoteData = function(){
     </div>
 
     <div class="qg-discount-note" id="qgDiscountNote">✓ Auto-filled from your applied Discounts selection</div>
+    <div class="qg-addon-note" id="qgAddonNote">🧩 Add-on services from section 04 will be included as a separate line item</div>
 
     <div class="qg-grid">
       <div class="qg-field full">
@@ -2047,6 +2223,9 @@ function openQuoteModal(){
     document.getElementById('qgDiscountNote').classList.remove('visible');
   }
 
+  // Let the user know the section-04 add-ons will ride along on the quote.
+  document.getElementById('qgAddonNote').classList.toggle('visible', mode === 'cpu' && addonTotal() > 0);
+
   document.getElementById('qgOverlay').classList.add('open');
 }
 
@@ -2076,6 +2255,25 @@ function updateValidUntil(){
   if (dc) document.getElementById('qgValidUntil').value = addOneMonth(dc);
 }
 
+// Add-on services (section 04) become their own quote line item so the client
+// sees exactly which add-ons were priced and at which regional rate.
+function buildAddonLineItem(){
+  const total = addonTotal();
+  if (!total) return null;
+  const regionName = isMumbai() ? 'Mumbai (West India)' : 'Central India';
+  const lines = [`Add-on Services - ${regionName}`];
+  addonData.forEach(a => {
+    const q = addonQty(a.id);
+    if (!q) return;
+    const rate = addonRate(a);
+    lines.push(a.unit === 'gb'
+      ? `${a.name} - ${q} GB × ${money(rate)}/GB/month`
+      : `${a.name} - ${q} × ${money(rate)}/month`);
+  });
+  lines.push('Billed monthly alongside the server subscription');
+  return { qty: 1, unitMonthly: total, descLines: lines };
+}
+
 // Build line items depending on active mode + source
 function buildQuoteLineItems(){
   const mode = currentActiveMode();
@@ -2099,13 +2297,15 @@ function buildQuoteLineItems(){
     }));
   }
 
+  const items = [];
+
   // CPU mode
   if (qgSource === 'cart') {
-    return estimate.map(e => {
+    estimate.forEach(e => {
       const storageBits = [];
       if (e.ssdGb)  storageBits.push(`SSD - ${e.ssdGb}GB`);
       if (e.nvmeGb) storageBits.push(`NVMe - ${e.nvmeGb}GB`);
-      return {
+      items.push({
         qty: e.qty,
         unitMonthly: e.perServer,
         descLines: [
@@ -2119,38 +2319,55 @@ function buildQuoteLineItems(){
           `Uptime - 99.98%`,
           `Setup fee - None`,
         ],
-      };
+      });
+    });
+  } else if (state.selectedPlan) {
+    // CPU mode, current single configuration
+    const ssdGb  = state.ssdVolumes.reduce((s,v) => s + v.gb, 0);
+    const nvmeGb = isMumbai() ? 0 : state.nvmeVolumes.reduce((s,v) => s + v.gb, 0);
+    const storageBits = [];
+    if (ssdGb)  storageBits.push(`SSD - ${ssdGb}GB`);
+    if (nvmeGb) storageBits.push(`NVMe - ${nvmeGb}GB`);
+    const osName = osData.find(o => o.id === state.os).name;
+    items.push({
+      qty: state.serverQty || 1,
+      unitMonthly: currentPerServer(),
+      descLines: [
+        `Cloud Server - ${state.selectedPlan.name}`,
+        `CPU - ${state.selectedPlan.cpu}vCPU`,
+        `RAM - ${state.selectedPlan.ram} RAM`,
+        ...storageBits,
+        `IP Address - 1 IP Address`,
+        `Operating System - ${osName}`,
+        `Region - ${isMumbai() ? 'Mumbai (West India)' : 'Central India'}`,
+        `Support - Ticket/Whatsapp and Call support 24/7`,
+        `Uptime - 99.98%`,
+        `Setup fee - None`,
+      ],
     });
   }
 
-  // CPU mode, current single configuration
-  if (!state.selectedPlan) return [];
-  const r = ssdRate();
-  const ssdGb  = state.ssdVolumes.reduce((s,v) => s + v.gb, 0);
-  const nvmeGb = isMumbai() ? 0 : state.nvmeVolumes.reduce((s,v) => s + v.gb, 0);
-  const storageBits = [];
-  if (ssdGb)  storageBits.push(`SSD - ${ssdGb}GB`);
-  if (nvmeGb) storageBits.push(`NVMe - ${nvmeGb}GB`);
-  const osName = osData.find(o => o.id === state.os).name;
-  return [{
-    qty: state.serverQty || 1,
-    unitMonthly: currentPerServer(),
-    descLines: [
-      `Cloud Server - ${state.selectedPlan.name}`,
-      `CPU - ${state.selectedPlan.cpu}vCPU`,
-      `RAM - ${state.selectedPlan.ram} RAM`,
-      ...storageBits,
-      `IP Address - 1 IP Address`,
-      `Operating System - ${osName}`,
-      `Region - ${isMumbai() ? 'Mumbai (West India)' : 'Central India'}`,
-      `Support - Ticket/Whatsapp and Call support 24/7`,
-      `Uptime - 99.98%`,
-      `Setup fee - None`,
-    ],
-  }];
+  const addonItem = buildAddonLineItem();
+  if (addonItem) items.push(addonItem);
+
+  return items;
 }
 
 function inr(n){ return 'Rs. ' + n.toLocaleString('en-IN', {minimumFractionDigits:2, maximumFractionDigits:2}) + ' INR'; }
+
+// Print fallback used when the PDF libraries aren't available. The document
+// title is swapped to the quote name (and page margins are zeroed in CSS) so
+// the printed sheet carries no calculator URL or app title anywhere on it.
+function printQuoteSheet(quoteNo){
+  const originalTitle = document.title;
+  document.title = 'NeevCloud-Quote-' + quoteNo;
+  const restore = () => { document.title = originalTitle; };
+  window.addEventListener('afterprint', restore, { once: true });
+  setTimeout(() => {
+    window.print();
+    setTimeout(restore, 2000);
+  }, 50);
+}
 
 function generateQuotePDF(){
   const lineItems = buildQuoteLineItems();
@@ -2256,7 +2473,7 @@ function generateQuotePDF(){
         <li>Additional DataTransfer per TB @ Rs. 1500 INR Monthly.</li>
         <li>Additional Backup Service, Cyber Agent for VM/Cloud @Rs. 1000 + GST Monthly.</li>
         <li>Additional S3 Storage Rs. 1 per GB Monthly.</li>
-        <li>Load Balancer cost Rs.936/Monthly.</li>
+        <li>Load Balancer cost Rs.936/Monthly (Central India) / Rs.1799/Monthly (Mumbai).</li>
         <li>GST Taxes 18% applicable.</li>
       </ul>
       <b>Terms &amp; Conditions:</b>
@@ -2277,7 +2494,7 @@ function generateQuotePDF(){
     if (!librariesReady) {
       qgQuoteCounter = (parseInt(quoteNo) || qgQuoteCounter) + 1;
       closeQuoteModal();
-      setTimeout(() => { window.print(); }, 50);
+      printQuoteSheet(quoteNo);
       return;
     }
 
@@ -2318,7 +2535,7 @@ function generateQuotePDF(){
         btn.innerHTML = originalLabel;
         qgQuoteCounter = (parseInt(quoteNo) || qgQuoteCounter) + 1;
         closeQuoteModal();
-        setTimeout(() => { window.print(); }, 50);
+        printQuoteSheet(quoteNo);
       });
     } catch (err) {
       console.error(err);
@@ -2326,7 +2543,7 @@ function generateQuotePDF(){
       btn.innerHTML = originalLabel;
       qgQuoteCounter = (parseInt(quoteNo) || qgQuoteCounter) + 1;
       closeQuoteModal();
-      setTimeout(() => { window.print(); }, 50);
+      printQuoteSheet(quoteNo);
     }
   }
 
