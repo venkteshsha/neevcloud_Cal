@@ -51,6 +51,14 @@
 
   .header-right { display: flex; align-items: center; gap: 1rem; }
 
+  .hdr-quote-btn {
+    padding: 9px 18px; border: 0; border-radius: 100px;
+    background: linear-gradient(135deg,#0ea5e9,#2563eb); color: #fff;
+    font-family: inherit; font-size: 0.8rem; font-weight: 700; cursor: pointer;
+    white-space: nowrap; box-shadow: 0 4px 12px rgba(37,99,235,0.3); transition: 0.2s;
+  }
+  .hdr-quote-btn:hover { transform: translateY(-1px); box-shadow: 0 8px 18px rgba(37,99,235,0.4); }
+
   /* ── CALCULATOR MODE SWITCH ── */
   .mode-switch {
     display: flex;
@@ -284,8 +292,17 @@
   /* ── ADD-ON SERVICES ── */
   .addon-note { font-size: 0.75rem; color: var(--text-muted); font-weight: 600; margin-bottom: 1rem; line-height: 1.5; }
   .addon-list { display: flex; flex-direction: column; gap: 10px; }
+  .addon-picker { margin-bottom: 1rem; }
+  .addon-picker select {
+    width: 100%; padding: 11px 14px; border: 1.5px dashed var(--primary); border-radius: 12px;
+    background: var(--primary-soft); color: var(--primary); font-family: inherit; font-size: 0.85rem;
+    font-weight: 700; cursor: pointer; outline: none;
+  }
+  .addon-empty { font-size: 0.78rem; color: var(--text-muted); font-style: italic; padding: 6px 0 10px; }
+  .addon-del { width: 28px; height: 28px; border: 1px solid #fecaca; background: #fff5f5; color: #ef4444; border-radius: 7px; cursor: pointer; font-size: 0.8rem; }
+  .addon-del:hover { background: #fee2e2; border-color: #ef4444; }
   .addon-row {
-    display: grid; grid-template-columns: auto 1fr auto auto; align-items: center;
+    display: grid; grid-template-columns: auto 1fr auto auto auto; align-items: center;
     gap: 12px; padding: 12px 16px; border: 1px solid var(--border);
     border-radius: 12px; background: white; transition: border-color 0.2s, background 0.2s;
   }
@@ -312,7 +329,7 @@
   .addon-unit { font-size: 0.7rem; color: var(--text-muted); font-weight: 700; }
   .addon-cost { font-family: 'JetBrains Mono', monospace; font-size: 0.85rem; font-weight: 700; color: var(--primary); white-space: nowrap; min-width: 96px; text-align: right; }
   @media (max-width: 620px) {
-    .addon-row { grid-template-columns: auto 1fr; row-gap: 10px; }
+    .addon-row { grid-template-columns: auto 1fr auto; row-gap: 10px; }
     .addon-ctrl, .addon-cost { grid-column: 2; justify-self: start; text-align: left; min-width: 0; }
   }
 
@@ -610,6 +627,31 @@
   #gpuView .dot {width:18px;height:18px;border-radius:50%;border:2px solid #cbd5e1}
   #gpuView .opt.active .dot {border-color:var(--blue);background:radial-gradient(circle,var(--blue) 40%,transparent 42%)}
 
+  /* GPU group labels + discount plan cards */
+  #gpuView .gpu-group-label {font-size:12px;font-weight:700;color:var(--muted);margin:0 0 10px}
+  #gpuView .gplans-wrap {background:#fff;border:1px solid var(--line);border-radius:var(--radius);padding:26px;margin-bottom:26px}
+  #gpuView .gplans-help {font-size:13px;color:var(--muted);margin-bottom:20px;line-height:1.6}
+  #gpuView .gplans-help b {color:var(--ink)}
+  #gpuView .gplan-grid {display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px}
+  #gpuView .gplan {border:1.5px solid var(--line);border-radius:16px;padding:20px;cursor:pointer;background:#fff;transition:.16s}
+  #gpuView .gplan:hover {border-color:#b9c8ee;transform:translateY(-2px);box-shadow:0 8px 22px rgba(37,99,235,.10)}
+  #gpuView .gplan.active {border-color:var(--blue);background:#f5f8ff;box-shadow:0 8px 24px rgba(37,99,235,.18)}
+  #gpuView .gplan-name {font-weight:800;font-size:16px;margin-bottom:8px}
+  #gpuView .gplan-badge {display:inline-block;font-size:12px;font-weight:700;color:#15803d;background:#dcfce7;padding:3px 10px;border-radius:20px;margin-bottom:14px}
+  #gpuView .gplan-price {font-size:24px;font-weight:800;margin-bottom:12px;line-height:1.1}
+  #gpuView .gplan-price small {font-size:12px;color:var(--muted);font-weight:500}
+  #gpuView .gplan-row {display:flex;justify-content:space-between;gap:8px;font-size:13px;color:var(--muted);padding:3px 0}
+  #gpuView .gplan-row b {color:var(--ink)}
+  #gpuView .gplan-row.save b {color:#16a34a}
+  #gpuView .gdisc-side {display:none;margin-top:18px;padding:14px;background:rgba(139,92,246,.12);border:1px solid rgba(139,92,246,.3);border-radius:12px}
+  #gpuView .gdisc-side.visible {display:block}
+  #gpuView .gdisc-side .gs-label {font-size:11px;font-weight:700;color:#a78bfa;text-transform:uppercase;letter-spacing:.8px;margin-bottom:8px}
+  #gpuView .gdisc-side .gs-row {display:flex;justify-content:space-between;font-size:13px;color:#94a3b8;margin-bottom:4px}
+  #gpuView .gdisc-side .gs-row b {color:#c4b5fd}
+  #gpuView .gdisc-side .gs-final {display:flex;justify-content:space-between;align-items:baseline;margin-top:8px;padding-top:8px;border-top:1px dashed rgba(139,92,246,.3)}
+  #gpuView .gdisc-side .gs-final span:first-child {font-size:13px;color:#c4b5fd;font-weight:700}
+  #gpuView .gdisc-side .gs-final span:last-child {font-size:22px;color:#a78bfa;font-weight:800}
+
   /* dark summary panel */
   #gpuView .summary {
     background:var(--panel);color:#fff;border-radius:22px;padding:30px;
@@ -636,6 +678,8 @@
     cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;transition:.18s;
   }
   #gpuView .deploy:hover {transform:translateY(-1px);box-shadow:0 10px 26px rgba(20,184,166,.4)}
+  /* the #gpuView reset strips padding/margin from the shared quote button — restore it */
+  #gpuView .qg-trigger-btn {padding:12px;margin-top:.8rem}
 
 </style>
 </head>
@@ -656,6 +700,7 @@
       <button class="region-btn active" onclick="selectRegion(this,'central')">🇮🇳 Central India</button>
       <button class="region-btn" onclick="selectRegion(this,'mumbai')">🇮🇳 Mumbai</button>
     </div>
+    <button class="hdr-quote-btn" id="hdrCartBtn" onclick="openQuoteModal('cart')">🛒 Quote Cart (0)</button>
   </div>
 </header>
 
@@ -737,6 +782,9 @@
       <div class="section-label">04 — Add-on Services</div>
       <div class="addon-note">
         Optional monthly services. Rates shown are for <strong id="addonRegionLabel">Central India</strong> and are GST-exclusive (18% GST added in the summary).
+      </div>
+      <div class="addon-picker">
+        <select id="addonPicker" onchange="addAddonFromPicker(this.value)"></select>
       </div>
       <div class="addon-list" id="addonList"></div>
       <div class="storage-total-strip">
@@ -847,6 +895,7 @@
           </div>
         </div>
 
+        <button class="qc-add-btn" onclick="addToQuoteCart('cpu')">🛒 Add to Quote Cart</button>
         <button class="qg-trigger-btn" onclick="openQuoteModal()">🧾 Generate PDF Quote for Client</button>
         <button class="reset-btn" onclick="resetAll()">↺ Reset Configuration</button>
       </div>
@@ -862,6 +911,7 @@
             <span class="cart-grand-val" id="cartGrandVal">₹0</span>
           </div>
           <div class="cart-gst-line"><span>Incl. 18% GST</span><span id="cartGrandGst">₹0</span></div>
+          <button class="qc-add-btn" onclick="addToQuoteCart('cpu-est')">🛒 Add estimate to Quote Cart</button>
           <button class="cart-clear-btn" onclick="clearEstimate()">Clear estimate</button>
         </div>
       </div>
@@ -910,15 +960,22 @@
     <div class="section-head"><span>03 — Storage Type</span><span class="bar"></span></div>
     <div class="block">
       <div class="opt-grid">
-        <div class="opt active" data-storage="persistent" data-rate="2">
+        <div class="opt active" data-storage="persistent" data-rate="5.07">
           <div class="ohead"><span class="otitle">Persistent Storage</span><span class="dot"></span></div>
-          <p>Network storage persists. First 100 GB free, then ₹2.19/GB/mo. Billed monthly, cancel anytime.</p>
+          <p>Network storage persists. First 100 GB free, then ₹5.07/GB/mo. Billed monthly, cancel anytime.</p>
         </div>
         <div class="opt" data-storage="ephemeral" data-rate="0">
           <div class="ohead"><span class="otitle">Ephemeral <span class="ofree">Free</span></span><span class="dot"></span></div>
           <p>Temporary storage that is deleted when the instance is deleted. No disk cost.</p>
         </div>
       </div>
+    </div>
+
+    <!-- STEP 4 DISCOUNT PLANS -->
+    <div class="section-head"><span>04 — Discount Plans</span><span class="bar"></span></div>
+    <div class="gplans-wrap">
+      <div class="gplans-help">Discount plans are calculated on a full month of <b>730 hours</b> and apply to <b>GPU charges only</b> — storage is not discounted. Click a plan to apply it (click again to remove).</div>
+      <div class="gplan-grid" id="gPlanGrid"></div>
     </div>
   </div>
 
@@ -945,7 +1002,16 @@
       <div class="sub">Estimates assume selected usage hours; costs may vary.</div>
     </div>
 
+    <div class="gdisc-side" id="gDiscSide">
+      <div class="gs-label">🏷️ Discount Plan Applied</div>
+      <div class="gs-row"><span>Plan</span><b id="gs-cycle">—</b></div>
+      <div class="gs-row"><span>GPU discount</span><b id="gs-pct">—</b></div>
+      <div class="gs-row"><span>Monthly (after discount)</span><b id="gs-monthly">—</b></div>
+      <div class="gs-final"><span id="gs-totlabel">Total Payable</span><span id="gs-total">—</span></div>
+    </div>
+
     <button class="deploy" id="deployBtn">🚀 Deploy GPU</button>
+    <button class="qc-add-btn" onclick="addToQuoteCart('gpu')">🛒 Add to Quote Cart</button>
     <button class="qg-trigger-btn" onclick="openQuoteModal()">🧾 Generate PDF Quote for Client</button>
   </div>
 </div>
@@ -975,9 +1041,61 @@
       </div>
     </div>
 
+    <!-- Discount -->
+    <div class="discount-card">
+      <div class="discount-section-label">
+        <span class="disc-icon">🏷️</span>
+        02 —  Discounts
+      </div>
+
+      <div style="margin-bottom:0.5rem;">
+        <div style="font-size:0.7rem;font-weight:700;color:#a78bfa;text-transform:uppercase;letter-spacing:0.8px;margin-bottom:0.6rem;">Quick Select Duration</div>
+        <div class="month-pills">
+          <button class="month-pill" onclick="zataSelectPill(this, 3)">3 Months</button>
+          <button class="month-pill" onclick="zataSelectPill(this, 6)">6 Months</button>
+          <button class="month-pill" onclick="zataSelectPill(this, 12)">12 Months</button>
+          <button class="month-pill" onclick="zataSelectPill(this, 24)">24 Months</button>
+        </div>
+      </div>
+
+      <div class="disc-inputs">
+        <div class="disc-input-group">
+          <div class="disc-input-label">Duration (Months)</div>
+          <div class="disc-input-wrap">
+            <input class="disc-input" type="number" id="zDiscMonths" min="1" max="60" placeholder="e.g. 6">
+            <span class="disc-input-suffix">mo</span>
+          </div>
+        </div>
+        <div class="disc-input-group">
+          <div class="disc-input-label">Discount (%)</div>
+          <div class="disc-input-wrap">
+            <input class="disc-input" type="number" id="zDiscPercent" min="0" max="100" placeholder="e.g. 15">
+            <span class="disc-input-suffix">%</span>
+          </div>
+        </div>
+      </div>
+
+      <button class="disc-apply-btn" onclick="zataApplyDiscount()">✦ Calculate Discounted Price</button>
+
+      <div class="disc-result" id="zDiscResult">
+        <div class="disc-result-row"><span class="disc-result-label">Monthly Base</span><span class="disc-result-val" id="zdr-monthly">—</span></div>
+        <div class="disc-result-row"><span class="disc-result-label">Duration</span><span class="disc-result-val" id="zdr-months">—</span></div>
+        <div class="disc-result-row"><span class="disc-result-label">Discount Applied</span><span class="disc-result-val" id="zdr-discount">—</span></div>
+        <div class="disc-result-row"><span class="disc-result-label">Undiscounted Total</span><span class="disc-result-val" id="zdr-original">—</span></div>
+        <div class="disc-result-total">
+          <span class="disc-result-total-label">🎉 You Pay</span>
+          <span class="disc-result-total-val" id="zdr-final">—</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-top:8px;">
+          <span class="disc-savings-badge" id="zdr-savings-badge">💰 You save ₹0</span>
+          <button class="disc-clear-btn" onclick="zataClearDiscount()">✕ Clear</button>
+        </div>
+      </div>
+    </div>
+
     <!-- Why Zata -->
     <div class="card">
-      <div class="section-label">02 — Why Zata S3</div>
+      <div class="section-label">03 — Why Zata S3</div>
       <div class="zfeat">
         <div class="zfeat-ico">↕️</div>
         <div class="zfeat-txt"><b>Rescale anytime</b><p>Scale your storage plan up or down at any point of time, directly from the panel.</p></div>
@@ -1013,14 +1131,25 @@
           <p style="font-size:0.7rem;color:#64748b;margin-top:10px" id="z-note">Select a plan to see pricing.</p>
         </div>
 
+        <div class="disc-sidebar-box" id="zDiscSidebarBox">
+          <div class="disc-sidebar-label">🏷️ Team Discount Applied</div>
+          <div class="disc-sidebar-row"><span>Duration</span><span id="zds-months">—</span></div>
+          <div class="disc-sidebar-row"><span>Discount</span><span id="zds-pct">—</span></div>
+          <div class="disc-sidebar-row"><span>Saving / month</span><span id="zds-saving-mo">—</span></div>
+          <div class="disc-sidebar-final">
+            <span class="disc-sidebar-final-label">Total Payable</span>
+            <span class="disc-sidebar-final-val" id="zds-total">—</span>
+          </div>
+        </div>
+
         <button class="contact-btn" id="zataActionBtn" onclick="zataAction()">Select a plan</button>
+        <button class="qc-add-btn" onclick="addToQuoteCart('zata')">🛒 Add to Quote Cart</button>
         <button class="qg-trigger-btn" onclick="openQuoteModal()">🧾 Generate PDF Quote for Client</button>
       </div>
     </div>
   </div>
 </div>
 </div><!-- /zataView -->
-
 
 <script>
 // ========================= CPU CALCULATOR SCRIPT =========================
@@ -1150,6 +1279,7 @@ const mumbaiWindows = {
 
 // ── ADD-ON SERVICES (monthly rate per region, GST-exclusive) ──
 // unit:'qty' = billed per unit / month · unit:'gb' = billed per GB / month
+// mumbai:null = not offered in that region (row is hidden and ignored in totals)
 const addonData = [
   { id:'lb',       name:'Load Balancer',          ico:'⚖️', unit:'qty', sub:'Managed load balancer',        central:936,    mumbai:1799 },
   { id:'fip',      name:'Floating IP',            ico:'🌐', unit:'qty', sub:'Static public IP address',     central:200,    mumbai:300  },
@@ -1157,9 +1287,12 @@ const addonData = [
   { id:'vpn',      name:'VPN',                    ico:'🔒', unit:'qty', sub:'Site-to-site VPN (same both regions)', central:2000, mumbai:2000 },
   { id:'snapshot', name:'Snapshot',               ico:'📸', unit:'gb',  sub:'Volume snapshot storage',      central:3,      mumbai:3    },
   { id:'image',    name:'Image',                  ico:'💽', unit:'gb',  sub:'Custom machine image storage', central:2,      mumbai:2    },
+  { id:'ssd',      name:'SSD Storage',            ico:'💾', unit:'gb',  sub:'Additional SSD storage',       central:2,      mumbai:3    },
+  { id:'cal',      name:'RDS CAL (per user)',     ico:'👤', unit:'qty', sub:'Client Access License · per user', central:600, mumbai:600 },
+  { id:'nvme',     name:'NVMe Storage',           ico:'⚡', unit:'gb',  sub:'Additional NVMe Ultra storage (Central India only)', central:5, mumbai:null },
 ];
 
-let state = { region:'central', os:'ubuntu', hwTab:'general', selectedPlan:null, serverQty:1, ssdVolumes:[{id:1,gb:20}], nvmeVolumes:[], addons:{} };
+let state = { region:'central', os:'ubuntu', hwTab:'general', selectedPlan:null, serverQty:1, ssdVolumes:[{id:1,gb:20}], nvmeVolumes:[], addons:{}, addonOpen:{} };
 let volIdCounter = 10;
 let estimate = [];        // cart of different server configs
 let estIdCounter = 0;
@@ -1213,7 +1346,7 @@ function selectRegion(el, region) {
   document.getElementById('storageTypeRow').classList.toggle('single', isMumbai());
   document.getElementById('ssdRateDisplay').textContent = `₹${ssdRate()}/GB`;
 
-  if (isMumbai()) state.nvmeVolumes = [];
+  if (isMumbai()) { state.nvmeVolumes = []; state.addons.nvme = 0; }
 
   state.selectedPlan = null;
   renderVolumes('ssd');
@@ -1345,11 +1478,16 @@ function money(n) {
   return '₹' + v.toLocaleString('en-IN', { minimumFractionDigits: v % 1 ? 2 : 0, maximumFractionDigits: 2 });
 }
 
+// Returns null when the add-on is not offered in the selected region.
 function addonRate(a) { return isMumbai() ? a.mumbai : a.central; }
-function addonQty(id) { return state.addons[id] || 0; }
+function addonQty(id) {
+  const a = addonData.find(x => x.id === id);
+  if (!a || addonRate(a) === null) return 0;
+  return state.addons[id] || 0;
+}
 
 function addonTotal() {
-  return addonData.reduce((s,a) => s + addonQty(a.id) * addonRate(a), 0);
+  return addonData.reduce((s,a) => s + addonQty(a.id) * (addonRate(a) || 0), 0);
 }
 
 function changeAddonQty(id, d) {
@@ -1368,11 +1506,45 @@ function onAddonGb(id, val) {
   updateCalc();
 }
 
+function addonVisible(a) {
+  return addonRate(a) !== null && (state.addonOpen[a.id] || (state.addons[a.id] || 0) > 0);
+}
+
+function addAddonFromPicker(id) {
+  if (!id) return;
+  const a = addonData.find(x => x.id === id);
+  if (!a || addonRate(a) === null) return;
+  state.addonOpen[id] = true;
+  if (a.unit === 'qty' && !state.addons[id]) state.addons[id] = 1;
+  renderAddons();
+  updateCalc();
+}
+
+function removeAddon(id) {
+  state.addons[id] = 0;
+  delete state.addonOpen[id];
+  renderAddons();
+  updateCalc();
+}
+
 function renderAddons() {
   const listEl = document.getElementById('addonList');
   if (!listEl) return;
   listEl.innerHTML = '';
-  addonData.forEach(a => {
+
+  // dropdown: only services that are available in this region and not yet added
+  const picker = document.getElementById('addonPicker');
+  if (picker) {
+    const opts = addonData.filter(a => addonRate(a) !== null && !addonVisible(a));
+    picker.innerHTML = `<option value="">＋ Add a service…</option>` +
+      opts.map(a => `<option value="${a.id}">${a.ico} ${a.name} — ${money(addonRate(a))}${a.unit === 'gb' ? '/GB' : ''}/mo</option>`).join('');
+    picker.value = '';
+  }
+
+  const shown = addonData.filter(addonVisible);
+  if (!shown.length) listEl.innerHTML = `<div class="addon-empty">No add-on services selected. Use the dropdown above to add one.</div>`;
+
+  shown.forEach(a => {
     const rate = addonRate(a);
     const qty  = addonQty(a.id);
     const row  = document.createElement('div');
@@ -1390,6 +1562,7 @@ function renderAddons() {
              <span class="addon-qv">${qty}</span>
              <button onclick="changeAddonQty('${a.id}',1)">+</button>
            </span>
+           ${a.id === 'cal' ? '<span class="addon-unit">users</span>' : ''}
          </div>`;
     row.innerHTML = `
       <div class="addon-ico">${a.ico}</div>
@@ -1397,11 +1570,12 @@ function renderAddons() {
         <div class="addon-name">${a.name}</div>
         <div class="addon-sub">
           <span>${a.sub}</span>
-          <span class="addon-rate">${money(rate)}${a.unit === 'gb' ? ' /GB' : ''} /mo</span>
+          <span class="addon-rate">${money(rate)}${a.unit === 'gb' ? ' /GB' : (a.id === 'cal' ? ' /user' : '')} /mo</span>
         </div>
       </div>
       ${ctrl}
       <div class="addon-cost" id="addoncost-${a.id}">${money(qty * rate)}/mo</div>
+      <button class="addon-del" onclick="removeAddon('${a.id}')" title="Remove">✕</button>
     `;
     listEl.appendChild(row);
   });
@@ -1576,7 +1750,7 @@ function renderEstimate() {
 }
 
 function selectMonthPill(el, months) {
-  document.querySelectorAll('.month-pill').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('#cpuView .month-pill').forEach(p => p.classList.remove('active'));
   el.classList.add('active');
   document.getElementById('discMonths').value = months;
 }
@@ -1623,7 +1797,7 @@ function clearDiscount() {
   document.getElementById('discSidebarBox').classList.remove('visible');
   document.getElementById('discMonths').value  = '';
   document.getElementById('discPercent').value = '';
-  document.querySelectorAll('.month-pill').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('#cpuView .month-pill').forEach(p => p.classList.remove('active'));
   appliedDiscountMonths = null;
   appliedDiscountPct = null;
 }
@@ -1643,7 +1817,7 @@ function shakeInput(id) {
 }
 
 function resetAll() {
-  state = { region:'central', os:'ubuntu', hwTab:'general', selectedPlan:null, serverQty:1, ssdVolumes:[{id:1,gb:20}], nvmeVolumes:[], addons:{} };
+  state = { region:'central', os:'ubuntu', hwTab:'general', selectedPlan:null, serverQty:1, ssdVolumes:[{id:1,gb:20}], nvmeVolumes:[], addons:{}, addonOpen:{} };
   volIdCounter = 10;
 
   document.querySelectorAll('.region-btn').forEach((b,i) => b.classList.toggle('active', i===0));
@@ -1703,7 +1877,7 @@ renderEstimate();
     { id:'custom',     name:'Custom Plan', sub:'Tailored to your needs', tb:null, price:null, ico:'🎧', tier:3, custom:true },
   ];
 
-  let zState = { plan:null };
+  let zState = { plan:null, months:null, pct:null };
   const fmtINR = n => '₹' + Math.round(n).toLocaleString('en-IN');
 
   const grid = document.getElementById('zataPlanGrid');
@@ -1744,7 +1918,66 @@ renderEstimate();
     return { unit: p.price, tb: p.tb, isCustom:false };
   }
 
-  window.zataRender = function() {
+  // Discounted-price card (same behaviour as the CPU Discounts card)
+  function zRenderDisc() {
+    const p = zState.plan;
+    const resEl  = document.getElementById('zDiscResult');
+    const sideEl = document.getElementById('zDiscSidebarBox');
+    if (!zState.months || zState.pct === null || !p || p.custom) {
+      resEl.classList.remove('visible');
+      sideEl.classList.remove('visible');
+      return;
+    }
+    const base = p.price, months = zState.months, pct = zState.pct;
+    const undiscounted = base * months;
+    const saving = undiscounted * (pct / 100);
+    const finalPay = undiscounted - saving;
+
+    document.getElementById('zdr-monthly').textContent  = fmtINR(base);
+    document.getElementById('zdr-months').textContent   = months + ' month' + (months > 1 ? 's' : '');
+    document.getElementById('zdr-discount').textContent = pct + '%';
+    document.getElementById('zdr-original').textContent = fmtINR(undiscounted);
+    document.getElementById('zdr-final').textContent    = fmtINR(finalPay);
+    document.getElementById('zdr-savings-badge').textContent = '💰 You save ' + fmtINR(saving);
+    resEl.classList.add('visible');
+
+    document.getElementById('zds-months').textContent    = months + ' month' + (months > 1 ? 's' : '');
+    document.getElementById('zds-pct').textContent       = pct + '%';
+    document.getElementById('zds-saving-mo').textContent = fmtINR(base * pct / 100);
+    document.getElementById('zds-total').textContent     = fmtINR(finalPay);
+    sideEl.classList.add('visible');
+  }
+
+  window.zataSelectPill = function(el, months) {
+    document.querySelectorAll('#zataView .month-pill').forEach(p => p.classList.remove('active'));
+    el.classList.add('active');
+    document.getElementById('zDiscMonths').value = months;
+  };
+
+  window.zataApplyDiscount = function() {
+    const months = parseInt(document.getElementById('zDiscMonths').value);
+    const pct    = parseFloat(document.getElementById('zDiscPercent').value);
+    if (!months || months < 1) { shakeInput('zDiscMonths'); return; }
+    if (isNaN(pct) || pct < 0 || pct > 100) { shakeInput('zDiscPercent'); return; }
+    if (!zState.plan) { alert('Please select a storage plan first.'); return; }
+    if (zState.plan.custom) { alert('Custom plans are quoted by the Zata team — no standard discount calculation applies.'); return; }
+    zState.months = months;
+    zState.pct = pct;
+    zRenderDisc();
+  };
+
+  window.zataClearDiscount = function() {
+    zState.months = null;
+    zState.pct = null;
+    document.getElementById('zDiscMonths').value  = '';
+    document.getElementById('zDiscPercent').value = '';
+    document.querySelectorAll('#zataView .month-pill').forEach(p => p.classList.remove('active'));
+    zRenderDisc();
+  };
+
+  window.zataApplied = function() { return { months: zState.months, pct: zState.pct }; };
+
+  function zataRenderCore() {
     const p = zState.plan;
     const planEl = document.getElementById('z-plan');
     const actionBtn = document.getElementById('zataActionBtn');
@@ -1783,7 +2016,9 @@ renderEstimate();
     document.getElementById('z-note').textContent = 'Base amount is exclusive of GST.';
 
     actionBtn.textContent = `Upgrade to ${p.name} Plan →`;
-  };
+  }
+
+  window.zataRender = function() { zataRenderCore(); zRenderDisc(); };
 
   window.zataAction = function() {
     if (!zState.plan) { alert('Please select a storage plan first.'); return; }
@@ -1801,6 +2036,7 @@ renderEstimate();
     if (!p || p.custom) return null;
     return {
       subjectDefault: 'Zata S3 Storage | NeevCloud',
+      planName: p.name,
       lineItems: [{
         qty: 1,
         unitMonthly: p.price,
@@ -1820,31 +2056,51 @@ renderEstimate();
 
 // ========================= GPU CALCULATOR SCRIPT (isolated scope) =========================
 (function(){
+// Live GPU catalogue (₹/hr). avail:true = in stock and selectable; max = max GPUs per order.
 const GPUS = [
-  {id:'a30',     name:'NVIDIA A30',                          price:76.59,  vram:24,  cpu:24, ram:192, avail:true},
-  {id:'rtx5090', name:'NVIDIA GeForce RTX 5090',             price:93.82,  vram:32,  cpu:16, ram:96,  avail:true},
-  {id:'rtx6000', name:'NVIDIA RTX PRO 6000 Blackwell',       price:147.43, vram:96,  cpu:24, ram:112, avail:true},
-  {id:'rtx6000s',name:'NVIDIA RTX PRO 6000 Blackwell Server',price:114.88, vram:96,  cpu:14, ram:56,  avail:true},
-  {id:'a100',    name:'NVIDIA A100',                         price:126.37, vram:80,  cpu:12, ram:125, avail:true},
-  {id:'rtx3090', name:'NVIDIA GeForce RTX 3090',             price:51.70,  vram:24,  cpu:24, ram:112, avail:true},
-  {id:'h100',    name:'NVIDIA H100',                         price:190.51, vram:80,  cpu:20, ram:125, avail:true},
-  {id:'h200',    name:'NVIDIA H200',                         price:228.81, vram:141, cpu:20, ram:192, avail:true},
-  {id:'a6000',   name:'NVIDIA RTX A6000',                    price:80.42, vram:48,  cpu:48, ram:128, avail:true},
-  {id:'t4',      name:'Tesla T4',                            price:27.76,  vram:16,  cpu:12, ram:64,  avail:true},
+  {id:'a30',      name:'NVIDIA A30',                                   price:93.01,  vram:24,  cpu:24, ram:192, avail:true,  max:1},
+  {id:'rtx3090',  name:'NVIDIA GeForce RTX 3090',                      price:62.97,  vram:24,  cpu:8,  ram:40,  avail:true,  max:2},
+  {id:'rtx5090',  name:'NVIDIA GeForce RTX 5090',                      price:86.23,  vram:32,  cpu:14, ram:56,  avail:true,  max:1},
+  {id:'rtx6000s', name:'NVIDIA RTX PRO 6000 Blackwell Server Edition', price:139.51, vram:96,  cpu:14, ram:56,  avail:true,  max:1},
+  {id:'a100',     name:'NVIDIA A100',                                  price:153.08, vram:80,  cpu:12, ram:125, avail:true, max:8},
+  {id:'rtx3090b', name:'NVIDIA GeForce RTX 3090',                      price:62.97,  vram:24,  cpu:24, ram:112, avail:true, max:8},
+  {id:'rtx5090b', name:'NVIDIA GeForce RTX 5090',                      price:114.32, vram:32,  cpu:16, ram:96,  avail:true, max:8},
+  {id:'h100',     name:'NVIDIA H100',                                  price:231.55, vram:80,  cpu:20, ram:125, avail:true, max:8},
+  {id:'h200',     name:'NVIDIA H200',                                  price:278.06, vram:141, cpu:20, ram:192, avail:true, max:8},
+  {id:'a6000',    name:'NVIDIA RTX A6000',                             price:97.85,  vram:48,  cpu:48, ram:128, avail:true, max:8},
+  {id:'rtx6000',  name:'NVIDIA RTX PRO 6000 Blackwell Server Edition', price:179.23, vram:96,  cpu:24, ram:112, avail:true, max:8},
+  {id:'t4',       name:'Tesla T4',                                     price:33.91,  vram:16,  cpu:12, ram:128, avail:true, max:8},
 ];
+
+// Persistent disk rate (₹ per billable GB / month). First 100 GB are free.
+const DISK_RATE = 5.07;
+const FULL_MONTH = 730;
+
+// Discount plans: apply to GPU charges only (730 hrs), storage is never discounted.
+const GPU_PLANS = [
+  { m:1,  name:'Monthly',    pct:5  },
+  { m:3,  name:'Quarterly',  pct:5  },
+  { m:6,  name:'Six Months', pct:10 },
+  { m:12, name:'Yearly',     pct:15 },
+];
+const planFor = m => GPU_PLANS.find(p => p.m === m);
+// Used by the quote form: longer commitments (24+ months) default to the Yearly 15%.
+window.gpuDiscRule = function(months){ months = +months; const p = planFor(months); return months >= 12 ? 15 : (p ? p.pct : 0); };
 
 const ICON_VRAM = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="7" width="18" height="10" rx="2"/><path d="M7 17v3M17 17v3"/></svg>';
 const ICON_CPU  = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="6" y="6" width="12" height="12" rx="1"/><path d="M9 2v3M15 2v3M9 19v3M15 19v3M2 9h3M2 15h3M19 9h3M19 15h3"/></svg>';
 const ICON_RAM  = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="8" width="20" height="8" rx="1"/><path d="M6 16v2M10 16v2M14 16v2M18 16v2"/></svg>';
 
 const fmt = n => '₹' + n.toLocaleString('en-IN',{maximumFractionDigits:2});
+const fmt0 = n => '₹' + Math.round(n).toLocaleString('en-IN');
 
-const state = { gpu:GPUS[0], qty:1, disk:100, hours:730, diskRate:2, region:'Central India' };
+const state = { gpu:GPUS[0], qty:1, disk:100, hours:730, diskRate:DISK_RATE, region:'Central India', cycle:null };
 
-const grid = document.getElementById('gpuGrid');
+const gridIn  = document.getElementById('gpuGrid');
+const gridOut = document.getElementById('gpuGridOut');
 GPUS.forEach(g=>{
   const c = document.createElement('div');
-  c.className = 'gpu-card' + (g.id===state.gpu.id?' selected':'');
+  c.className = 'gpu-card' + (g.id===state.gpu.id?' selected':'') + (g.avail?'':' disabled');
   c.dataset.id = g.id;
   c.innerHTML = `
     <div class="check">✓</div>
@@ -1852,20 +2108,26 @@ GPUS.forEach(g=>{
       <div class="gpu-name"><span class="nv"></span>${g.name}</div>
       <div class="gpu-price">${fmt(g.price)}<small>/hr</small></div>
     </div>
-    <div class="spec">${ICON_VRAM}${g.vram} GB VRAM</div>
-    <div class="spec">${ICON_CPU}${g.cpu} vCPU</div>
-    <div class="spec">${ICON_RAM}${g.ram} GB RAM</div>`;
-  c.addEventListener('click',()=>{
-    state.gpu = g; state.qty = 1;
-    document.querySelectorAll('.gpu-card').forEach(x=>x.classList.remove('selected'));
-    c.classList.add('selected');
-    document.getElementById('qtyVal').textContent = 1;
-    render();
-  });
-  grid.appendChild(c);
+    <div class="spec">${ICON_VRAM}${g.vram} GB VRAM / GPU</div>
+    <div class="spec">${ICON_CPU}${g.cpu} vCPU / GPU</div>
+    <div class="spec">${ICON_RAM}${g.ram} GB RAM / GPU</div>
+    <div class="gpu-foot">
+      <span class="badge ${g.avail?'avail':'out'}">${g.avail?'Available':'Unavailable'}</span>
+      ${g.avail ? `<span>Max: ${g.max} GPU${g.max>1?'s':''}</span>` : ''}
+    </div>`;
+  if (g.avail) {
+    c.addEventListener('click',()=>{
+      state.gpu = g; state.qty = 1;
+      document.querySelectorAll('#gpuView .gpu-card').forEach(x=>x.classList.remove('selected'));
+      c.classList.add('selected');
+      document.getElementById('qtyVal').textContent = 1;
+      render();
+    });
+  }
+  (g.avail ? gridIn : gridOut).appendChild(c);
 });
 
-document.getElementById('qtyPlus').onclick = ()=>{ if(state.qty<8){state.qty++; document.getElementById('qtyVal').textContent=state.qty; render();} };
+document.getElementById('qtyPlus').onclick = ()=>{ if(state.qty<state.gpu.max){state.qty++; document.getElementById('qtyVal').textContent=state.qty; render();} };
 document.getElementById('qtyMinus').onclick = ()=>{ if(state.qty>1){state.qty--; document.getElementById('qtyVal').textContent=state.qty; render();} };
 
 const diskS = document.getElementById('diskSlider');
@@ -1881,13 +2143,22 @@ const hrS = document.getElementById('hrSlider');
 hrS.oninput = e=>{ state.hours=+e.target.value; document.getElementById('hrNum').textContent=state.hours+' hrs'; setFill(hrS,1,730); render(); };
 function setFill(el,min,max){ el.style.setProperty('--fill', ((el.value-min)/(max-min)*100)+'%'); }
 
-document.querySelectorAll('.opt').forEach(o=>{
+document.querySelectorAll('#gpuView .opt').forEach(o=>{
   o.onclick = ()=>{
-    document.querySelectorAll('.opt').forEach(x=>x.classList.remove('active'));
+    document.querySelectorAll('#gpuView .opt').forEach(x=>x.classList.remove('active'));
     o.classList.add('active');
     state.diskRate = +o.dataset.rate;
     render();
   };
+});
+
+// Discount plan cards: click to apply, click again to remove
+document.getElementById('gPlanGrid').addEventListener('click', e=>{
+  const card = e.target.closest('.gplan');
+  if (!card) return;
+  const m = +card.dataset.m;
+  state.cycle = (state.cycle === m) ? null : m;
+  render();
 });
 
 document.getElementById('deployBtn').onclick = ()=>{
@@ -1895,13 +2166,57 @@ document.getElementById('deployBtn').onclick = ()=>{
   alert(`Deploying ${state.qty} × ${state.gpu.name}\nEstimated monthly: ${m}`);
 };
 
+function diskMonthly(){
+  const billableDisk = Math.max(0, state.disk - 100);
+  return state.diskRate === 0 ? 0 : billableDisk * DISK_RATE;
+}
+
+function gpuMonthly(){
+  const gpuHr = state.gpu.price * state.qty;
+  const diskMo = diskMonthly();
+  return { gpuHr, diskMo, monthly: gpuHr * state.hours + diskMo };
+}
+
+function planCalc(p){
+  const gpuFull  = state.gpu.price * state.qty * FULL_MONTH;
+  const gpuAfter = gpuFull * (1 - p.pct/100);
+  const storage  = diskMonthly();
+  const monthly  = gpuAfter + storage;
+  return { gpuFull, gpuAfter, storage, monthly, total: monthly * p.m, save: gpuFull * p.pct/100 * p.m };
+}
+
+function renderPlans(){
+  const grid = document.getElementById('gPlanGrid');
+  grid.innerHTML = GPU_PLANS.map(p=>{
+    const c = planCalc(p);
+    return `
+      <div class="gplan${state.cycle===p.m?' active':''}" data-m="${p.m}">
+        <div class="gplan-name">${p.name}</div>
+        <span class="gplan-badge">${p.pct}% off GPU</span>
+        <div class="gplan-price">${fmt0(c.monthly)} <small>/ month</small></div>
+        <div class="gplan-row"><span>GPU @ ${FULL_MONTH} hrs</span><b>${fmt0(c.gpuFull)}</b></div>
+        <div class="gplan-row"><span>GPU after discount</span><b>${fmt0(c.gpuAfter)}</b></div>
+        <div class="gplan-row"><span>Storage (no discount)</span><b>${fmt0(c.storage)}</b></div>
+        <div class="gplan-row"><span>${p.m} mo total</span><b>${fmt0(c.total)}</b></div>
+        <div class="gplan-row save"><span>You save</span><b>${fmt0(c.save)}</b></div>
+      </div>`;
+  }).join('');
+
+  const side = document.getElementById('gDiscSide');
+  const p = state.cycle ? planFor(state.cycle) : null;
+  if (!p) { side.classList.remove('visible'); return; }
+  const c = planCalc(p);
+  document.getElementById('gs-cycle').textContent    = p.name;
+  document.getElementById('gs-pct').textContent      = p.pct + '% (GPU only)';
+  document.getElementById('gs-monthly').textContent  = fmt0(c.monthly);
+  document.getElementById('gs-totlabel').textContent = `Total Payable (${p.m} mo)`;
+  document.getElementById('gs-total').textContent    = fmt0(c.total);
+  side.classList.add('visible');
+}
+
 function render(){
   const g = state.gpu;
-  const gpuHr   = g.price * state.qty;
-  const billableDisk = Math.max(0, state.disk - 100);
-  const diskMo  = state.diskRate === 0 ? 0 : billableDisk * 2.19;
-  const gpuMo   = gpuHr * state.hours;
-  const monthly = gpuMo + diskMo;
+  const { gpuHr, diskMo, monthly } = gpuMonthly();
 
   document.getElementById('sumGpu').textContent   = g.name;
   document.getElementById('sumCount').textContent = `${state.qty} × ${g.name.split(' ').slice(-1)[0]}`;
@@ -1915,39 +2230,55 @@ function render(){
   document.getElementById('hrTotal').textContent  = fmt(gpuHr)+'/hr';
   document.getElementById('monthTotal').textContent = fmt(Math.round(monthly));
   document.getElementById('monthTotalGst').textContent = fmt(Math.round(monthly * 1.18));
+
+  const note = document.querySelector('#gpuView .ctrl-label small');
+  if (note) note.textContent = `Number of GPUs in this pod (max ${g.max})`;
+
+  renderPlans();
 }
 
 setFill(diskS,10,1024); setFill(hrS,1,730);
 render();
 
+window.gpuApplied = function(){ const p = state.cycle ? planFor(state.cycle) : null; return { months: p ? p.m : null, pct: p ? p.pct : null }; };
+
+// When a discount plan is applied the quote uses the plan's 730-hour basis; storage is a separate, undiscounted line.
 window.getGpuQuoteData = function(){
   const g = state.gpu;
-  const gpuHr = g.price * state.qty;
-  const billableDisk = Math.max(0, state.disk - 100);
-  const diskMo = state.diskRate === 0 ? 0 : billableDisk * 2.19;
-  const monthly = (gpuHr * state.hours) + diskMo;
-  return {
-    subjectDefault: 'GPU Server | NeevCloud',
-    lineItems: [{
-      qty: 1,
-      unitMonthly: monthly,
-      descLines: [
-        `GPU Server - ${g.name}`,
-        `GPU Count - ${state.qty}`,
-        `VRAM - ${g.vram * state.qty} GB`,
-        `vCPU - ${g.cpu * state.qty}`,
-        `RAM - ${g.ram * state.qty} GB`,
-        `Disk - ${state.disk} GB (${state.diskRate === 0 ? 'Ephemeral' : 'Persistent'})`,
-        `Usage - ${state.hours} hrs/month`,
-        `Support - Ticket/Whatsapp and Call support 24/7`,
-      ],
-    }],
-  };
+  const hours = state.cycle ? FULL_MONTH : state.hours;
+  const gpuMo = g.price * state.qty * hours;
+  const diskMo = diskMonthly();
+  const billable = Math.max(0, state.disk - 100);
+  const items = [{
+    qty: 1,
+    unitMonthly: gpuMo,
+    descLines: [
+      `GPU Server - ${g.name}`,
+      `GPU Count - ${state.qty}`,
+      `VRAM - ${g.vram * state.qty} GB`,
+      `vCPU - ${g.cpu * state.qty}`,
+      `RAM - ${g.ram * state.qty} GB`,
+      `Disk - ${state.disk} GB (${state.diskRate === 0 ? 'Ephemeral' : 'Persistent'})`,
+      `Usage - ${hours} hrs/month`,
+      `Support - Ticket/Whatsapp and Call support 24/7`,
+    ],
+  }];
+  if (diskMo > 0) items.push({
+    qty: 1,
+    unitMonthly: diskMo,
+    noDiscount: true,
+    descLines: [
+      `GPU Persistent Storage - ${billable} GB billable`,
+      `Rate - ${fmt(DISK_RATE)}/GB/month (first 100 GB free)`,
+      `Storage is not discounted`,
+    ],
+  });
+  return { subjectDefault: 'GPU Server | NeevCloud', gpuName: g.name, lineItems: items };
 };
 })();
 
 </script>
-<!-- ===================== QUOTE GENERATOR (MODAL + PDF) ===================== -->
+<!-- ===================== UNIFIED QUOTE GENERATOR (MODAL + PDF) ===================== -->
 <style>
   .qg-trigger-btn {
     width:100%; margin-top:0.8rem; padding:12px; border:0; border-radius:12px;
@@ -1964,34 +2295,55 @@ window.getGpuQuoteData = function(){
   }
   .qg-overlay.open { display:flex; }
   .qg-modal {
-    background:#fff; border-radius:20px; width:100%; max-width:640px; padding:1.8rem 2rem 2rem;
+    background:#fff; border-radius:20px; width:100%; max-width:680px; padding:1.8rem 2rem 2rem;
     box-shadow:0 30px 60px rgba(0,0,0,0.3); font-family:'Plus Jakarta Sans',sans-serif; color:var(--text-dark);
     margin:2vh 0;
   }
-  .qg-modal-head { display:flex; justify-content:space-between; align-items:center; margin-bottom:1.4rem; }
+  .qg-modal-head { display:flex; justify-content:space-between; align-items:center; margin-bottom:1.2rem; }
   .qg-modal-head h3 { font-size:1.15rem; font-weight:800; }
   .qg-close-btn { width:32px; height:32px; border-radius:9px; border:1px solid var(--border); background:#f8fafc; cursor:pointer; font-size:1rem; color:var(--text-muted); }
   .qg-close-btn:hover { background:#fee2e2; border-color:#ef4444; color:#ef4444; }
 
-  .qg-source-toggle { display:flex; gap:8px; background:#f1f5f9; padding:5px; border-radius:12px; margin-bottom:1.2rem; }
-  .qg-source-btn { flex:1; padding:10px; border:0; background:transparent; border-radius:8px; font-weight:700; font-size:0.82rem; cursor:pointer; color:var(--text-muted); font-family:inherit; transition:0.2s; }
-  .qg-source-btn.active { background:#fff; color:var(--primary); box-shadow:0 2px 6px rgba(0,0,0,0.08); }
-  .qg-source-btn:disabled { opacity:0.4; cursor:not-allowed; }
+  .qg-sec-title { font-size:0.72rem; font-weight:800; text-transform:uppercase; color:var(--primary); letter-spacing:1px; margin:2px 0 8px; }
+
+  /* services included in the quote */
+  .qg-svc-list { display:flex; flex-direction:column; gap:8px; margin-bottom:14px; }
+  .qg-svc {
+    display:grid; grid-template-columns:auto 1fr auto; gap:12px; align-items:center;
+    padding:10px 14px; border:1.5px solid var(--border); border-radius:12px; background:#f8fafc;
+    cursor:pointer; transition:0.2s;
+  }
+  .qg-svc:hover { border-color:#cbd5e1; }
+  .qg-svc.on { border-color:var(--primary); background:var(--primary-soft); }
+  .qg-svc.off { opacity:0.5; cursor:not-allowed; }
+  .qg-svc input[type=checkbox] { width:18px; height:18px; accent-color:var(--primary); cursor:inherit; }
+  .qg-svc-title { font-size:0.86rem; font-weight:800; }
+  .qg-svc-sub { font-size:0.72rem; color:var(--text-muted); font-weight:600; margin-top:1px; }
+  .qg-svc select {
+    border:1.5px solid var(--border); border-radius:8px; padding:5px 8px; font-family:inherit;
+    font-size:0.74rem; font-weight:600; background:#fff; color:var(--text-dark); outline:none;
+  }
 
   .qg-discount-note {
     display:none; align-items:center; gap:6px; font-size:0.72rem; font-weight:700;
     color:#7c3aed; background:#f5f3ff; border:1px solid #ddd6fe; border-radius:8px;
-    padding:6px 10px; margin:-6px 0 12px;
+    padding:6px 10px; margin:0 0 12px;
   }
   .qg-discount-note.visible { display:flex; }
 
   .qg-addon-note {
     display:none; align-items:center; gap:6px; font-size:0.72rem; font-weight:700;
     color:#0369a1; background:#f0f9ff; border:1px solid #bae6fd; border-radius:8px;
-    padding:6px 10px; margin:-6px 0 12px;
+    padding:6px 10px; margin:0 0 12px;
   }
   .qg-addon-note.visible { display:flex; }
 
+  .qg-banner { font-size:0.8rem; font-weight:700; color:#0369a1; background:#f0f9ff; border:1px solid #bae6fd; border-radius:10px; padding:9px 12px; margin-bottom:14px; line-height:1.5; }
+  .qg-link-btn { background:transparent; border:0; color:#ef4444; font-family:inherit; font-size:0.72rem; font-weight:700; cursor:pointer; text-transform:none; letter-spacing:0; }
+  .qg-cart-row { display:grid; grid-template-columns:1fr auto auto; gap:12px; align-items:center; padding:10px 14px; border:1.5px solid var(--primary); background:var(--primary-soft); border-radius:12px; margin-bottom:8px; }
+  .qg-cart-disc { display:flex; align-items:center; gap:4px; font-size:0.78rem; font-weight:700; color:var(--text-muted); }
+  .qg-cart-disc input { width:66px; border:1.5px solid var(--border); border-radius:8px; padding:6px 8px; font-family:inherit; font-size:0.85rem; text-align:center; outline:none; background:#fff; }
+  .qg-cart-empty { font-size:0.8rem; color:var(--text-muted); font-style:italic; padding:10px 12px; border:1.5px dashed var(--border); border-radius:12px; line-height:1.5; }
   .qg-grid { display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-bottom:14px; }
   .qg-field { display:flex; flex-direction:column; gap:5px; }
   .qg-field.full { grid-column:1 / -1; }
@@ -2002,6 +2354,9 @@ window.getGpuQuoteData = function(){
   }
   .qg-field input:focus, .qg-field select:focus, .qg-field textarea:focus { border-color:var(--primary); background:#fff; }
   .qg-field textarea { resize:vertical; min-height:54px; }
+
+  .qg-disc-row { display:grid; grid-template-columns:repeat(3,1fr); gap:14px; margin-bottom:14px; }
+  @media (max-width:560px){ .qg-disc-row, .qg-grid { grid-template-columns:1fr; } }
 
   .qg-generate-btn {
     width:100%; margin-top:0.6rem; padding:13px; border:0; border-radius:12px;
@@ -2059,6 +2414,19 @@ window.getGpuQuoteData = function(){
   #quoteSheet .qs-notes { margin-top:24px; font-size:10.5px; color:#334155; line-height:1.7; }
   #quoteSheet .qs-notes b { display:block; margin-bottom:4px; color:#0f172a; font-size:11.5px; }
   #quoteSheet .qs-notes ul { margin:4px 0 12px 16px; padding:0; }
+  .qc-add-btn {
+    width:100%; margin-top:0.8rem; padding:12px; border:1.5px solid #38bdf8; border-radius:12px;
+    background:rgba(56,189,248,0.12); color:#7dd3fc; font-family:inherit; font-weight:700; font-size:0.88rem;
+    cursor:pointer; display:flex; align-items:center; justify-content:center; gap:8px; transition:0.2s;
+  }
+  .qc-add-btn:hover { background:rgba(56,189,248,0.24); color:#e0f2fe; }
+  #gpuView .qc-add-btn { padding:12px; margin-top:.8rem; }
+  .qc-toast {
+    position:fixed; bottom:24px; left:50%; transform:translateX(-50%) translateY(20px); opacity:0;
+    background:#0f172a; color:#fff; padding:11px 20px; border-radius:100px; font-size:0.85rem; font-weight:700;
+    z-index:2000; pointer-events:none; transition:0.25s; box-shadow:0 10px 30px rgba(0,0,0,0.3);
+  }
+  .qc-toast.show { opacity:1; transform:translateX(-50%) translateY(0); }
 </style>
 
 <div class="qg-overlay" id="qgOverlay">
@@ -2068,18 +2436,19 @@ window.getGpuQuoteData = function(){
       <button class="qg-close-btn" onclick="closeQuoteModal()">✕</button>
     </div>
 
-    <div class="qg-source-toggle" id="qgSourceToggle">
-      <button class="qg-source-btn active" id="qgSrcCurrent" onclick="setQuoteSource('current')">Current Configuration</button>
-      <button class="qg-source-btn" id="qgSrcCart" onclick="setQuoteSource('cart')">Cost Estimate (Multiple VMs)</button>
+    <div class="qg-banner" id="qgBanner"></div>
+    <div id="qgCartBox" style="display:none;margin-bottom:14px;">
+      <div class="qg-sec-title" style="display:flex;justify-content:space-between;align-items:center;"><span>Services in this quote</span><button class="qg-link-btn" onclick="clearQuoteCart()">Clear cart</button></div>
+      <div id="qgCartList"></div>
     </div>
 
-    <div class="qg-discount-note" id="qgDiscountNote">✓ Auto-filled from your applied Discounts selection</div>
-    <div class="qg-addon-note" id="qgAddonNote">🧩 Add-on services from section 04 will be included as a separate line item</div>
+    <div class="qg-discount-note" id="qgDiscountNote">✓ Discounts pre-filled from your Discounts selections (you can edit them below)</div>
+    <div class="qg-addon-note" id="qgAddonNote">🧩 Add-on services from the CPU section 04 will be included as a separate line item</div>
 
     <div class="qg-grid">
       <div class="qg-field full">
         <label>Quote Subject</label>
-        <input type="text" id="qgSubject" placeholder="e.g. Cloud Server | NeevCloud | Annual">
+        <input type="text" id="qgSubject" oninput="qgTouched.subject=true" placeholder="e.g. Cloud Server | NeevCloud | Annual">
       </div>
 
       <div class="qg-field">
@@ -2103,28 +2472,43 @@ window.getGpuQuoteData = function(){
           <option value="3">Quarterly</option>
           <option value="6">Semi Annual</option>
           <option value="12" selected>Annual</option>
+          <option value="24">Biennial</option>
+          <option value="36">Triennial</option>
+          <option value="48">Quadrennial</option>
+          <option value="60">Quinquennial</option>
         </select>
       </div>
-      <div class="qg-field">
-        <label>Discount (%)</label>
-        <input type="number" id="qgDiscount" min="0" max="100" value="0">
-      </div>
-
       <div class="qg-field">
         <label>GST (%)</label>
         <input type="number" id="qgGst" min="0" max="100" value="18">
       </div>
+    </div>
+
+    <div class="qg-grid" id="qgSingleBox">
+      <div class="qg-field" id="qgCpuSrcWrap">
+        <label>CPU quote source</label>
+        <select id="qgCpuSource" onchange="refreshQuoteForm()">
+          <option value="current">Current configuration</option>
+          <option value="cart">Cost estimate (multiple VMs)</option>
+        </select>
+      </div>
+      <div class="qg-field">
+        <label id="qgSingleDiscLabel">Discount (%)</label>
+        <input type="number" id="qgDisc_single" min="0" max="100" value="0" oninput="qgTouched.single=true">
+      </div>
+    </div>
+
+    <div class="qg-grid">
       <div class="qg-field">
         <label>Quote #</label>
         <input type="text" id="qgQuoteNo" placeholder="350">
       </div>
-
       <div class="qg-field">
         <label>Date Created</label>
         <input type="date" id="qgDateCreated" onchange="updateValidUntil()">
       </div>
-      <div class="qg-field">
-        <label>Valid Until (auto: +1 month)</label>
+      <div class="qg-field full">
+        <label>Valid Until (auto: created date + 7 days)</label>
         <input type="date" id="qgValidUntil">
       </div>
     </div>
@@ -2137,9 +2521,16 @@ window.getGpuQuoteData = function(){
 <div id="quoteSheetWrap"><div id="quoteSheet"></div></div>
 
 <script>
-// ========================= QUOTE GENERATOR =========================
+// ========================= UNIFIED QUOTE GENERATOR =========================
 let qgQuoteCounter = 350;
 let qgSource = 'current';
+const QG_VALIDITY_DAYS = 7;
+const QG_VALID_CYCLES = ['1','3','6','12','24','36','48','60'];
+let qgTouched = { subject:false, single:false };
+let quoteCart = [];     // snapshots added with "Add to Quote Cart"
+let qcIdCounter = 0;
+let qgKind = 'single';  // 'single' = current tab only · 'cart' = combined quote from the cart
+let qgSvc = 'cpu';
 
 // Logo used on the printable quote sheet — same NeevCloud mark shown in the header.
 // html2canvas needs the crossOrigin attribute set (and useCORS:true, already passed
@@ -2153,14 +2544,18 @@ function fmtDisplayDate(iso){
   const dt = new Date(y, m-1, d);
   return pad2(dt.getDate())+'/'+pad2(dt.getMonth()+1)+'/'+dt.getFullYear();
 }
-function addOneMonth(iso){
+function addDaysIso(iso, days){
   const [y,m,d] = iso.split('-').map(Number);
   const dt = new Date(y, m-1, d);
-  dt.setMonth(dt.getMonth()+1);
+  dt.setDate(dt.getDate() + days);
   return toInputDate(dt);
 }
 function cycleLabel(months){
-  return { '1':'Monthly', '3':'Quarterly', '6':'Semi Annual', '12':'Annual' }[String(months)] || (months+' Months');
+  return {
+    '1':'Monthly', '3':'Quarterly', '6':'Semi Annual', '12':'Annual',
+    '24':'Biennial', '36':'Triennial',
+    '48':'Quadrennial', '60':'Quinquennial'
+  }[String(months)] || (months+' Months');
 }
 
 function currentActiveMode(){
@@ -2169,63 +2564,154 @@ function currentActiveMode(){
   return 'cpu';
 }
 
-// Pulls the discount % (and, when it lines up with a billing-cycle option,
-// the matching duration) from whatever the user already applied in the
-// Discounts card, so the quote isn't stuck defaulting to 0.
-function applyAutoDiscountToModal(){
-  const noteEl = document.getElementById('qgDiscountNote');
-  const discField = document.getElementById('qgDiscount');
-  const cycleField = document.getElementById('qgBillingCycle');
-  const validCycles = ['1','3','6','12'];
+function qgPct(id){
+  return Math.max(0, Math.min(100, parseFloat(document.getElementById(id).value) || 0));
+}
+const QG_SVC_NAME = { cpu:'Cloud Server', gpu:'GPU Server', zata:'Zata S3 Storage' };
+const QG_SVC_ICON = { cpu:'🖥️', gpu:'⚡', zata:'🗄️' };
 
-  if (appliedDiscountPct !== null && appliedDiscountPct !== undefined) {
-    discField.value = appliedDiscountPct;
-    const monthsStr = String(appliedDiscountMonths);
-    if (validCycles.includes(monthsStr)) {
-      cycleField.value = monthsStr;
-    }
-    noteEl.classList.add('visible');
-  } else {
-    discField.value = 0;
-    noteEl.classList.remove('visible');
-  }
+function showToast(msg){
+  let t = document.getElementById('qcToast');
+  if (!t) { t = document.createElement('div'); t.id = 'qcToast'; t.className = 'qc-toast'; document.body.appendChild(t); }
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(showToast._t);
+  showToast._t = setTimeout(() => t.classList.remove('show'), 2200);
+}
+function updateCartBadge(){
+  const b = document.getElementById('hdrCartBtn');
+  if (b) b.textContent = '🛒 Quote Cart (' + quoteCart.length + ')';
 }
 
-function openQuoteModal(){
-  const mode = currentActiveMode();
-  const toggle = document.getElementById('qgSourceToggle');
-  const cartBtn = document.getElementById('qgSrcCart');
+// ---- Quote cart: snapshot a configuration so several services can go on one quote ----
+function addToQuoteCart(kind){
+  let item = null;
+  if (kind === 'cpu' || kind === 'cpu-est') {
+    const src = kind === 'cpu-est' ? 'cart' : 'current';
+    if (src === 'current' && !state.selectedPlan) { alert('Select an instance plan first.'); return; }
+    if (src === 'cart' && !estimate.length) { alert('Add servers to the estimate first.'); return; }
+    const region = isMumbai() ? 'Mumbai' : 'Central India';
+    const qty = state.serverQty || 1;
+    item = {
+      svc:'cpu',
+      title: src === 'cart'
+        ? `Cloud Server Estimate (${estimate.length} config${estimate.length > 1 ? 's' : ''})`
+        : `Cloud Server – ${state.selectedPlan.name}${qty > 1 ? ' × ' + qty : ''}`,
+      sub: src === 'cart'
+        ? `${region} · multi-server estimate`
+        : `${state.selectedPlan.cpu} vCPU / ${state.selectedPlan.ram} · ${region}` + (addonTotal() > 0 ? ' · incl. add-ons' : ''),
+      lineItems: buildCpuLineItems(src),
+      discount: (appliedDiscountPct !== null && appliedDiscountPct !== undefined) ? appliedDiscountPct : 0,
+      auto: false,
+      months: appliedDiscountMonths,
+    };
+  } else if (kind === 'gpu') {
+    const gd = window.getGpuQuoteData();
+    const ga = window.gpuApplied();
+    const d = gd.lineItems[0].descLines;
+    item = {
+      svc:'gpu',
+      title: `GPU Server – ${gd.gpuName}`,
+      sub: `${d[1]} · ${d[6]}`,
+      lineItems: gd.lineItems,
+      discount: ga.pct !== null ? ga.pct : 0,
+      auto: ga.pct === null,      // no plan applied → follows the billing-cycle rule in the quote form
+      months: ga.months,
+    };
+  } else if (kind === 'zata') {
+    const zd = window.getZataQuoteData();
+    if (!zd) { alert('Select a fixed Zata plan first. Custom plans are quoted separately by the Zata team.'); return; }
+    const za = window.zataApplied();
+    item = {
+      svc:'zata',
+      title: `Zata S3 – ${zd.planName} plan`,
+      sub: zd.lineItems[0].descLines[1],
+      lineItems: zd.lineItems,
+      discount: (za.pct !== null && za.pct !== undefined) ? za.pct : 0,
+      auto: false,
+      months: za.months,
+    };
+  }
+  if (!item) return;
+  item.id = ++qcIdCounter;
+  quoteCart.push(item);
+  updateCartBadge();
+  showToast(`Added to Quote Cart (${quoteCart.length} item${quoteCart.length > 1 ? 's' : ''})`);
+}
 
-  if (mode === 'cpu') {
-    toggle.style.display = '';
-    cartBtn.disabled = estimate.length === 0;
-    setQuoteSource(estimate.length > 0 && !state.selectedPlan ? 'cart' : 'current');
-  } else {
-    toggle.style.display = 'none';
-    qgSource = 'current';
+function removeFromQuoteCart(id){
+  quoteCart = quoteCart.filter(i => i.id !== id);
+  updateCartBadge();
+  refreshQuoteForm();
+}
+function clearQuoteCart(){
+  quoteCart = [];
+  updateCartBadge();
+  refreshQuoteForm();
+}
+function setCartDiscount(id, val){
+  const it = quoteCart.find(i => i.id === id);
+  if (!it) return;
+  it.discount = Math.max(0, Math.min(100, parseFloat(val) || 0));
+  it.auto = false;
+}
+function renderQuoteCartList(){
+  const el = document.getElementById('qgCartList');
+  if (!quoteCart.length) {
+    el.innerHTML = `<div class="qg-cart-empty">Your Quote Cart is empty. Configure a service in the CPU, GPU or Zata tab and press “🛒 Add to Quote Cart”, then come back here to generate one combined quote.</div>`;
+    return;
+  }
+  el.innerHTML = quoteCart.map(it => `
+    <div class="qg-cart-row">
+      <div>
+        <div class="qg-svc-title">${QG_SVC_ICON[it.svc]} ${it.title}</div>
+        <div class="qg-svc-sub">${it.sub}</div>
+      </div>
+      <div class="qg-cart-disc"><input type="number" min="0" max="100" value="${it.discount}" oninput="setCartDiscount(${it.id}, this.value)">%</div>
+      <button class="addon-del" onclick="removeFromQuoteCart(${it.id})" title="Remove">✕</button>
+    </div>`).join('');
+}
+
+// kind: 'cart' = combined quote from the Quote Cart · anything else = quote for the tab you're on
+function openQuoteModal(kind){
+  qgKind = kind === 'cart' ? 'cart' : 'single';
+  qgTouched = { subject:false, single:false };
+  qgSvc = currentActiveMode();
+
+  if (qgKind === 'single') {
+    if (qgSvc === 'cpu' && !state.selectedPlan && !estimate.length) { alert('Select an instance plan (or add servers to the estimate) first.'); return; }
+    if (qgSvc === 'zata' && !window.getZataQuoteData()) { alert('Select a fixed Zata plan first. Custom plans are quoted separately by the Zata team.'); return; }
   }
 
-  const today = new Date();
-  const todayIso = toInputDate(today);
+  document.getElementById('qgCartBox').style.display   = qgKind === 'cart' ? '' : 'none';
+  document.getElementById('qgSingleBox').style.display = qgKind === 'cart' ? 'none' : '';
+  document.getElementById('qgBanner').textContent = qgKind === 'cart'
+    ? '🛒 Combined quote — built from the services in your Quote Cart. Set a discount for each service below.'
+    : `${QG_SVC_ICON[qgSvc]} Quote for ${QG_SVC_NAME[qgSvc]} only (current tab). To combine services, use “Add to Quote Cart” and open the cart from the top bar.`;
+
+  // CPU source select only matters when both a plan and an estimate exist
+  const srcSel = document.getElementById('qgCpuSource');
+  srcSel.options[0].disabled = !state.selectedPlan;
+  srcSel.options[1].disabled = estimate.length === 0;
+  srcSel.value = state.selectedPlan ? 'current' : 'cart';
+  document.getElementById('qgCpuSrcWrap').style.display = (qgKind === 'single' && qgSvc === 'cpu' && state.selectedPlan && estimate.length > 0) ? '' : 'none';
+
+  // Dates: valid for 7 days from the date the quote is generated
+  const todayIso = toInputDate(new Date());
   document.getElementById('qgDateCreated').value = todayIso;
-  document.getElementById('qgValidUntil').value = addOneMonth(todayIso);
+  document.getElementById('qgValidUntil').value = addDaysIso(todayIso, QG_VALIDITY_DAYS);
   document.getElementById('qgQuoteNo').value = qgQuoteCounter;
   document.getElementById('qgGst').value = 18;
 
-  // Billing cycle default resolved first, then possibly overridden by the
-  // auto-discount sync below (which also drives the subject line refresh).
-  onBillingCycleChange();
-  if (mode === 'cpu') {
-    applyAutoDiscountToModal();
-    onBillingCycleChange();
-  } else {
-    document.getElementById('qgDiscount').value = 0;
-    document.getElementById('qgDiscountNote').classList.remove('visible');
-  }
+  // Billing cycle: start from the cycle already chosen in the discount section
+  let applied = null;
+  if (qgKind === 'cart') applied = quoteCart.length ? quoteCart[0].months : null;
+  else if (qgSvc === 'cpu') applied = appliedDiscountMonths;
+  else if (qgSvc === 'gpu') applied = window.gpuApplied().months;
+  else applied = window.zataApplied().months;
+  document.getElementById('qgBillingCycle').value = QG_VALID_CYCLES.includes(String(applied)) ? String(applied) : '12';
 
-  // Let the user know the section-04 add-ons will ride along on the quote.
-  document.getElementById('qgAddonNote').classList.toggle('visible', mode === 'cpu' && addonTotal() > 0);
-
+  refreshQuoteForm();
   document.getElementById('qgOverlay').classList.add('open');
 }
 
@@ -2233,26 +2719,54 @@ function closeQuoteModal(){
   document.getElementById('qgOverlay').classList.remove('open');
 }
 
-function setQuoteSource(src){
-  qgSource = src;
-  document.getElementById('qgSrcCurrent').classList.toggle('active', src==='current');
-  document.getElementById('qgSrcCart').classList.toggle('active', src==='cart');
-  onBillingCycleChange();
+// Re-derives discount defaults, notes, subject and button state from the current selections.
+function refreshQuoteForm(){
+  const months = document.getElementById('qgBillingCycle').value;
+  const genBtn = document.getElementById('qgGenerateBtn');
+
+  if (qgKind === 'cart') {
+    quoteCart.forEach(it => { if (it.auto) it.discount = window.gpuDiscRule(months); });
+    renderQuoteCartList();
+    document.getElementById('qgDiscountNote').classList.remove('visible');
+    document.getElementById('qgAddonNote').classList.remove('visible');
+    genBtn.disabled = quoteCart.length === 0;
+  } else {
+    qgSource = document.getElementById('qgCpuSource').value;
+    if (!qgTouched.single) {
+      let v = 0;
+      if (qgSvc === 'cpu') v = (appliedDiscountPct !== null && appliedDiscountPct !== undefined) ? appliedDiscountPct : 0;
+      else if (qgSvc === 'gpu') v = window.gpuDiscRule(months);
+      else { const za = window.zataApplied().pct; v = (za !== null && za !== undefined) ? za : 0; }
+      document.getElementById('qgDisc_single').value = v;
+    }
+    document.getElementById('qgSingleDiscLabel').textContent = 'Discount (%)' + (qgSvc === 'gpu' ? ' — GPU only, not storage' : '');
+    const prefill = (qgSvc === 'cpu' && appliedDiscountPct !== null) || (qgSvc === 'zata' && window.zataApplied().pct !== null);
+    document.getElementById('qgDiscountNote').classList.toggle('visible', prefill);
+    document.getElementById('qgAddonNote').classList.toggle('visible', qgSvc === 'cpu' && qgSource === 'current' && addonTotal() > 0);
+    genBtn.disabled = false;
+  }
+
+  if (!qgTouched.subject) document.getElementById('qgSubject').value = qgDefaultSubject(months);
 }
 
-function onBillingCycleChange(){
-  const months = document.getElementById('qgBillingCycle').value;
-  const mode = currentActiveMode();
-  let defaultSubject = 'Cloud Server | NeevCloud | ' + cycleLabel(months);
-  if (mode === 'gpu') defaultSubject = 'GPU Server | NeevCloud | ' + cycleLabel(months);
-  if (mode === 'zata') defaultSubject = 'Zata S3 Storage | NeevCloud | ' + cycleLabel(months);
-  if (qgSource === 'cart') defaultSubject = 'Cloud Server Estimate | NeevCloud | ' + cycleLabel(months);
-  document.getElementById('qgSubject').value = defaultSubject;
+function qgDefaultSubject(months){
+  const names = [];
+  if (qgKind === 'cart') {
+    const has = s => quoteCart.some(i => i.svc === s);
+    if (has('cpu')) names.push(quoteCart.some(i => i.svc === 'cpu' && /Estimate/.test(i.title)) ? 'Cloud Server Estimate' : 'Cloud Server');
+    if (has('gpu')) names.push('GPU Server');
+    if (has('zata')) names.push('Zata S3 Storage');
+  } else if (qgSvc === 'cpu') names.push(qgSource === 'cart' ? 'Cloud Server Estimate' : 'Cloud Server');
+  else names.push(QG_SVC_NAME[qgSvc]);
+  if (!names.length) names.push('Cloud Services');
+  return names.join(' + ') + ' | NeevCloud | ' + cycleLabel(months);
 }
+
+function onBillingCycleChange(){ refreshQuoteForm(); }
 
 function updateValidUntil(){
   const dc = document.getElementById('qgDateCreated').value;
-  if (dc) document.getElementById('qgValidUntil').value = addOneMonth(dc);
+  if (dc) document.getElementById('qgValidUntil').value = addDaysIso(dc, QG_VALIDITY_DAYS);
 }
 
 // Add-on services (section 04) become their own quote line item so the client
@@ -2274,33 +2788,9 @@ function buildAddonLineItem(){
   return { qty: 1, unitMonthly: total, descLines: lines };
 }
 
-// Build line items depending on active mode + source
-function buildQuoteLineItems(){
-  const mode = currentActiveMode();
-
-  if (mode === 'gpu') {
-    const d = window.getGpuQuoteData();
-    return d.lineItems.map(li => ({
-      qty: li.qty,
-      unitMonthly: li.unitMonthly,
-      descLines: li.descLines,
-    }));
-  }
-
-  if (mode === 'zata') {
-    const d = window.getZataQuoteData();
-    if (!d) return [];
-    return d.lineItems.map(li => ({
-      qty: li.qty,
-      unitMonthly: li.unitMonthly,
-      descLines: li.descLines,
-    }));
-  }
-
+function buildCpuLineItems(source){
   const items = [];
-
-  // CPU mode
-  if (qgSource === 'cart') {
+  if (source === 'cart') {
     estimate.forEach(e => {
       const storageBits = [];
       if (e.ssdGb)  storageBits.push(`SSD - ${e.ssdGb}GB`);
@@ -2322,7 +2812,6 @@ function buildQuoteLineItems(){
       });
     });
   } else if (state.selectedPlan) {
-    // CPU mode, current single configuration
     const ssdGb  = state.ssdVolumes.reduce((s,v) => s + v.gb, 0);
     const nvmeGb = isMumbai() ? 0 : state.nvmeVolumes.reduce((s,v) => s + v.gb, 0);
     const storageBits = [];
@@ -2346,11 +2835,29 @@ function buildQuoteLineItems(){
       ],
     });
   }
-
   const addonItem = buildAddonLineItem();
   if (addonItem) items.push(addonItem);
-
   return items;
+}
+
+// Line items for the quote being generated (cart = every cart item, otherwise the current tab).
+// Each item carries its own discount %; lines flagged noDiscount (GPU storage) always get 0%.
+function buildQuoteLineItems(){
+  const out = [];
+  if (qgKind === 'cart') {
+    quoteCart.forEach(it => {
+      const d = Math.max(0, Math.min(100, parseFloat(it.discount) || 0));
+      it.lineItems.forEach(li => out.push({ qty: li.qty, unitMonthly: li.unitMonthly, descLines: li.descLines, discount: li.noDiscount ? 0 : d }));
+    });
+    return out;
+  }
+  const d = qgPct('qgDisc_single');
+  let src = [];
+  if (qgSvc === 'cpu') src = buildCpuLineItems(qgSource);
+  else if (qgSvc === 'gpu') src = window.getGpuQuoteData().lineItems;
+  else { const zd = window.getZataQuoteData(); if (zd) src = zd.lineItems; }
+  src.forEach(li => out.push({ qty: li.qty, unitMonthly: li.unitMonthly, descLines: li.descLines, discount: li.noDiscount ? 0 : d }));
+  return out;
 }
 
 function inr(n){ return 'Rs. ' + n.toLocaleString('en-IN', {minimumFractionDigits:2, maximumFractionDigits:2}) + ' INR'; }
@@ -2372,24 +2879,25 @@ function printQuoteSheet(quoteNo){
 function generateQuotePDF(){
   const lineItems = buildQuoteLineItems();
   if (!lineItems.length) {
-    alert('Please select a plan / configuration (or add items to the cost estimate) before generating a quote.');
+    alert('There is nothing to quote yet. Configure a service (or add services to the Quote Cart) first.');
     return;
   }
 
   const months = parseInt(document.getElementById('qgBillingCycle').value);
-  const discount = Math.max(0, Math.min(100, parseFloat(document.getElementById('qgDiscount').value) || 0));
   const gstPct = Math.max(0, parseFloat(document.getElementById('qgGst').value) || 0);
   const quoteNo = document.getElementById('qgQuoteNo').value || qgQuoteCounter;
-  const subject = document.getElementById('qgSubject').value || 'Cloud Server | NeevCloud';
+  const subject = document.getElementById('qgSubject').value || 'Cloud Services | NeevCloud';
   const dateCreated = document.getElementById('qgDateCreated').value;
   const validUntil = document.getElementById('qgValidUntil').value;
   const recipientName = document.getElementById('qgRecipientName').value || '—';
   const recipientAttn = document.getElementById('qgRecipientAttn').value || recipientName;
   const recipientAddress = document.getElementById('qgRecipientAddress').value;
+  const validityDays = Math.max(0, Math.round((new Date(validUntil) - new Date(dateCreated)) / 86400000)) || QG_VALIDITY_DAYS;
 
   let rows = '';
   let subTotal = 0;
   lineItems.forEach(li => {
+    const discount = li.discount || 0;
     const unitPrice = li.unitMonthly * months;
     const lineTotalPreQty = unitPrice * (1 - discount/100);
     const lineTotal = lineTotalPreQty * li.qty;
@@ -2479,7 +2987,7 @@ function generateQuotePDF(){
       <b>Terms &amp; Conditions:</b>
       1. The proposed commercials have been worked out based on information provided by the Customer during the presales stage and as per the technical scope/assumptions as mentioned in the technical proposal/ commercial offer.
       The customer should check with NeevAI for explicit clarifications for any queries arising out of this offer, as Prices / Terms shall be adjusted accordingly in the event of any changes/deviation to the technical scope/assumptions.<br><br>
-      2. Validity of the Quote: This commercial offer is valid for 30 days from the date of this proposal.<br>
+      2. Validity of the Quote: This commercial offer is valid for ${validityDays} days from the date of this proposal.<br>
       Taxes: Taxes extra, as applicable, to the above-mentioned charges. Any revision of taxes by the Government at a later date will be charged as applicable.
     </div>
   `;
