@@ -838,6 +838,7 @@
           <span class="disc-result-total-label">🎉 You Pay</span>
           <span class="disc-result-total-val" id="dr-final">—</span>
         </div>
+        <div class="disc-result-row" style="margin-top:8px;"><span class="disc-result-label">Incl. 18% GST</span><span class="disc-result-val" id="dr-final-gst">—</span></div>
         <div style="display:flex;justify-content:space-between;align-items:center;margin-top:8px;">
           <span class="disc-savings-badge" id="dr-savings-badge">💰 You save ₹0</span>
           <button class="disc-clear-btn" onclick="clearDiscount()">✕ Clear</button>
@@ -893,6 +894,7 @@
             <span class="disc-sidebar-final-label">Total Payable</span>
             <span class="disc-sidebar-final-val" id="ds-total">—</span>
           </div>
+          <div class="disc-sidebar-row" style="margin-top:8px;"><span>Incl. 18% GST</span><span id="ds-total-gst">—</span></div>
         </div>
 
         <button class="qc-add-btn" onclick="addToQuoteCart('cpu')">🛒 Add to Quote Cart</button>
@@ -1007,7 +1009,9 @@
       <div class="gs-row"><span>Plan</span><b id="gs-cycle">—</b></div>
       <div class="gs-row"><span>GPU discount</span><b id="gs-pct">—</b></div>
       <div class="gs-row"><span>Monthly (after discount)</span><b id="gs-monthly">—</b></div>
+      <div class="gs-row"><span>Monthly incl. 18% GST</span><b id="gs-monthly-gst">—</b></div>
       <div class="gs-final"><span id="gs-totlabel">Total Payable</span><span id="gs-total">—</span></div>
+      <div class="gs-row" style="margin-top:8px;"><span>Total incl. 18% GST</span><b id="gs-total-gst">—</b></div>
     </div>
 
     <button class="deploy" id="deployBtn">🚀 Deploy GPU</button>
@@ -1086,6 +1090,7 @@
           <span class="disc-result-total-label">🎉 You Pay</span>
           <span class="disc-result-total-val" id="zdr-final">—</span>
         </div>
+        <div class="disc-result-row" style="margin-top:8px;"><span class="disc-result-label">Incl. 18% GST</span><span class="disc-result-val" id="zdr-final-gst">—</span></div>
         <div style="display:flex;justify-content:space-between;align-items:center;margin-top:8px;">
           <span class="disc-savings-badge" id="zdr-savings-badge">💰 You save ₹0</span>
           <button class="disc-clear-btn" onclick="zataClearDiscount()">✕ Clear</button>
@@ -1140,6 +1145,7 @@
             <span class="disc-sidebar-final-label">Total Payable</span>
             <span class="disc-sidebar-final-val" id="zds-total">—</span>
           </div>
+          <div class="disc-sidebar-row" style="margin-top:8px;"><span>Incl. 18% GST</span><span id="zds-total-gst">—</span></div>
         </div>
 
         <button class="contact-btn" id="zataActionBtn" onclick="zataAction()">Select a plan</button>
@@ -1777,6 +1783,7 @@ function renderDiscountResult(base, months, pct) {
   document.getElementById('dr-discount').textContent = pct + '%';
   document.getElementById('dr-original').textContent = money(undiscounted);
   document.getElementById('dr-final').textContent    = '₹' + Math.round(finalPay).toLocaleString();
+  document.getElementById('dr-final-gst').textContent = '₹' + Math.round(finalPay * 1.18).toLocaleString('en-IN');
   document.getElementById('dr-savings-badge').textContent = '💰 You save ₹' + Math.round(saving).toLocaleString();
 
   const el = document.getElementById('discResult');
@@ -1789,6 +1796,7 @@ function renderDiscountResult(base, months, pct) {
   document.getElementById('ds-pct').textContent       = pct + '%';
   document.getElementById('ds-saving-mo').textContent = '₹' + Math.round(savingPerMo).toLocaleString();
   document.getElementById('ds-total').textContent     = '₹' + Math.round(finalPay).toLocaleString();
+  document.getElementById('ds-total-gst').textContent = '₹' + Math.round(finalPay * 1.18).toLocaleString('en-IN');
   document.getElementById('discSidebarBox').classList.add('visible');
 }
 
@@ -1938,6 +1946,7 @@ renderEstimate();
     document.getElementById('zdr-discount').textContent = pct + '%';
     document.getElementById('zdr-original').textContent = fmtINR(undiscounted);
     document.getElementById('zdr-final').textContent    = fmtINR(finalPay);
+    document.getElementById('zdr-final-gst').textContent = fmtINR(finalPay * 1.18);
     document.getElementById('zdr-savings-badge').textContent = '💰 You save ' + fmtINR(saving);
     resEl.classList.add('visible');
 
@@ -1945,6 +1954,7 @@ renderEstimate();
     document.getElementById('zds-pct').textContent       = pct + '%';
     document.getElementById('zds-saving-mo').textContent = fmtINR(base * pct / 100);
     document.getElementById('zds-total').textContent     = fmtINR(finalPay);
+    document.getElementById('zds-total-gst').textContent = fmtINR(finalPay * 1.18);
     sideEl.classList.add('visible');
   }
 
@@ -2198,6 +2208,7 @@ function renderPlans(){
         <div class="gplan-row"><span>GPU after discount</span><b>${fmt0(c.gpuAfter)}</b></div>
         <div class="gplan-row"><span>Storage (no discount)</span><b>${fmt0(c.storage)}</b></div>
         <div class="gplan-row"><span>${p.m} mo total</span><b>${fmt0(c.total)}</b></div>
+        <div class="gplan-row"><span>${p.m} mo total incl. GST</span><b>${fmt0(c.total * 1.18)}</b></div>
         <div class="gplan-row save"><span>You save</span><b>${fmt0(c.save)}</b></div>
       </div>`;
   }).join('');
@@ -2209,8 +2220,10 @@ function renderPlans(){
   document.getElementById('gs-cycle').textContent    = p.name;
   document.getElementById('gs-pct').textContent      = p.pct + '% (GPU only)';
   document.getElementById('gs-monthly').textContent  = fmt0(c.monthly);
+  document.getElementById('gs-monthly-gst').textContent = fmt0(c.monthly * 1.18);
   document.getElementById('gs-totlabel').textContent = `Total Payable (${p.m} mo)`;
   document.getElementById('gs-total').textContent    = fmt0(c.total);
+  document.getElementById('gs-total-gst').textContent = fmt0(c.total * 1.18);
   side.classList.add('visible');
 }
 
